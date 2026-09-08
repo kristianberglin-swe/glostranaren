@@ -1,0 +1,4286 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Glostränaren</title>
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+  <style>
+    :root{--bg:#07111f;--panel:#101827;--panel2:#182235;--line:#30415d;--text:#f8fafc;--muted:#9fb0c7;--accent:#38bdf8;--green:#22c55e;--yellow:#f59e0b;--red:#ef4444;--violet:#a78bfa;--shadow:0 20px 60px rgba(0,0,0,.3)}
+    *{box-sizing:border-box} body{margin:0;min-height:100vh;font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;color:var(--text);background:radial-gradient(circle at 10% 10%,rgba(56,189,248,.12),transparent 25%),radial-gradient(circle at 90% 5%,rgba(167,139,250,.1),transparent 25%),linear-gradient(135deg,#020617,#0b1220 55%,#101827)}
+    button,input,textarea{font:inherit}.app{max-width:1220px;margin:auto;padding:24px 16px 42px}header{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;margin-bottom:18px}.brand h1{margin:0;font-size:clamp(2.3rem,6vw,4.8rem);letter-spacing:-.06em;line-height:.9}.brand p{margin:12px 0 0;max-width:760px;color:var(--muted);line-height:1.5}.badge{border:1px solid var(--line);padding:9px 12px;border-radius:999px;color:#cbd5e1;background:#0b1220b8;white-space:nowrap}
+    .grid{display:grid;grid-template-columns:380px 1fr;gap:18px}.panel{background:rgba(16,24,39,.9);border:1px solid rgba(148,163,184,.15);border-radius:22px;box-shadow:var(--shadow);backdrop-filter:blur(10px)}.sidebar{padding:17px;align-self:start;position:sticky;top:16px;max-height:calc(100vh - 32px);overflow:auto}.main{padding:22px;min-height:650px}h2{font-size:1.05rem;margin:0 0 11px;color:#e2e8f0}.section-title{margin-top:22px}.hidden{display:none!important}
+    .library{display:grid;gap:9px}.library-head{display:flex;justify-content:space-between;gap:10px;align-items:center}.library-head small{color:var(--muted)}.unit-select{width:100%;background:#0b1220;color:#e5eef9;border:1px solid #30415d;border-radius:10px;padding:10px 12px;font-size:.9rem;font-weight:800;outline:none}.unit-select:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(56,189,248,.12)}.material-note{font-size:.76rem;color:var(--muted);line-height:1.4}
+    .upload,.pastebox{border:1.5px dashed #465873;border-radius:15px;padding:14px;text-align:center;background:#07111f80;cursor:pointer;transition:.16s}.upload:hover,.pastebox:hover,.upload.drag,.pastebox.active{border-color:var(--accent);background:rgba(56,189,248,.07)}.upload strong,.pastebox strong{display:block;margin-bottom:4px}.upload small,.pastebox small{display:block;color:var(--muted);line-height:1.35}.or{display:flex;align-items:center;gap:8px;color:#60728b;font-size:.72rem;margin:11px 0}.or:before,.or:after{content:"";height:1px;background:#30415d;flex:1}input[type=file]{display:none}.imagePreview{display:none;margin-top:8px;width:100%;max-height:150px;object-fit:contain;border:1px solid #30415d;border-radius:10px;background:#020617}.hint{font-size:.76rem;color:var(--muted);line-height:1.4;margin-top:6px}textarea{width:100%;min-height:95px;resize:vertical;background:#091321;border:1px solid #30415d;color:white;border-radius:12px;padding:11px;line-height:1.4}input[type=text]{width:100%;background:#091321;border:1px solid #30415d;color:#fff;border-radius:13px;padding:14px}textarea:focus,input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(56,189,248,.12)}
+    .controls{display:grid;gap:8px;margin-top:10px}button{border:0;transition:.15s}.primary,.secondary,.danger{border-radius:13px;padding:12px 14px;font-weight:800;cursor:pointer}.primary{background:linear-gradient(135deg,#38bdf8,#0ea5e9);color:#04202b}.secondary{background:#1a2639;color:#e2e8f0;border:1px solid #34465f}.danger{background:#2a1318;color:#fecaca;border:1px solid #7f1d1d}button:hover{transform:translateY(-1px)}button:disabled{opacity:.4;cursor:not-allowed;transform:none}
+    .mode-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.mode-btn{padding:13px 10px;border-radius:14px;border:2px solid #30415d;background:#0b1220;color:#dce8f6;text-align:left;cursor:pointer}.mode-btn b{display:block;font-size:.92rem}.mode-btn span{display:block;color:var(--muted);font-size:.72rem;margin-top:2px}.mode-btn.active{border-color:var(--violet);background:rgba(167,139,250,.1)}
+    .level-list{display:grid;gap:7px}.level-item{display:grid;grid-template-columns:38px 1fr 22px;align-items:center;gap:9px;width:100%;padding:10px;background:#0b1220;border:2px solid #2c3b52;border-radius:13px;color:#e2e8f0;text-align:left;cursor:pointer}.level-no{width:32px;height:32px;display:grid;place-items:center;border-radius:50%;background:#1d2a3c;font-weight:900}.level-text b{display:block;font-size:.85rem}.level-text span{display:block;font-size:.69rem;color:var(--muted);line-height:1.25}.level-check{opacity:0}.level-item.active{border-color:var(--accent);background:rgba(56,189,248,.09)}.level-item.active .level-no{background:var(--accent);color:#03202d}.level-item.active .level-check{opacity:1;color:var(--accent)}.level-help{font-size:.74rem;color:#cbd5e1;margin-top:7px;line-height:1.4}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:12px}.stat{padding:8px;border-radius:11px;background:#091321;border:1px solid #28374d;text-align:center}.stat b{display:block}.stat span{font-size:.68rem;color:var(--muted)}
+    .empty{min-height:560px;display:grid;place-items:center;text-align:center;color:var(--muted);padding:30px}.empty .icon{font-size:4rem}.practice,.summary,.wordList,.shootout,.click-practice,.match-practice{display:none}.topline{display:flex;align-items:center;gap:12px;margin-bottom:17px}.progressWrap{flex:1;height:9px;border-radius:999px;background:#091321;border:1px solid #28374d;overflow:hidden}.progress{height:100%;width:0;background:linear-gradient(90deg,#38bdf8,#22c55e);transition:.25s}.counter{font-size:.84rem;color:#cbd5e1}.card{background:linear-gradient(180deg,#1a2639,#0e1726);border:1px solid #30415d;border-radius:24px;padding:clamp(24px,5vw,50px);text-align:center;min-height:410px;display:flex;flex-direction:column;justify-content:center}.label{color:var(--muted);font-size:.7rem;font-weight:900;text-transform:uppercase;letter-spacing:.16em}.swedish{font-size:clamp(2.1rem,5vw,4.6rem);font-weight:900;letter-spacing:-.05em;margin:12px 0}.clue{font-size:clamp(1.2rem,3vw,2rem);font-weight:800;color:#7dd3fc;min-height:44px;margin-bottom:20px;letter-spacing:.07em;white-space:pre-wrap;line-height:1.55}.practice-tools{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin:0 auto 14px}.tool-btn{padding:9px 13px;border-radius:12px;background:#172338;color:#e5eef9;border:1px solid #3b4f6a;font-weight:850;cursor:pointer}.tool-btn:hover{border-color:var(--accent)}.answerRow{display:flex;gap:8px;max-width:610px;margin:auto;width:100%}.answerRow input{text-align:center;font-size:1.12rem}.answerRow button{min-width:120px}.verb-panel{display:none;max-width:720px;margin:0 auto 18px;text-align:left;background:#091321;border:1px solid #3b4f6a;border-radius:15px;padding:12px}.verb-panel.open{display:block}.verb-select{width:100%;background:#111d2e;color:#fff;border:1px solid #3b4f6a;border-radius:10px;padding:10px 12px;font-weight:800}.verb-content{margin-top:10px;padding:12px;background:#07111f;border-radius:10px;line-height:1.55;color:#e2e8f0;white-space:pre-line}.help-note{font-size:.72rem;color:var(--muted);text-align:center;margin-top:-6px;margin-bottom:10px}.feedback{min-height:82px;margin-top:17px;display:flex;flex-direction:column;justify-content:center;gap:3px}.result{font-size:1.28rem;font-weight:900;letter-spacing:.06em}.feedback.right .result{color:var(--green)}.feedback.near .result{color:var(--yellow)}.feedback.wrong .result{color:var(--red)}.correct-word{font-size:1.08rem}.next{display:none;margin:8px auto 0;min-width:170px}
+    .click-practice{height:100%;min-height:0}.click-card{background:linear-gradient(180deg,#1a2639,#0e1726);border:1px solid #30415d;border-radius:24px;padding:clamp(20px,4vw,42px);text-align:center;min-height:420px;display:flex;flex-direction:column;justify-content:center}.click-label{color:var(--muted);font-size:.7rem;font-weight:900;text-transform:uppercase;letter-spacing:.16em}.click-word{font-size:clamp(2rem,5vw,4.2rem);font-weight:900;letter-spacing:-.04em;margin:12px 0 24px}.click-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;max-width:720px;width:100%;margin:0 auto}.click-option{padding:18px 14px;border-radius:14px;border:2px solid #3b4f6a;background:#172338;color:#fff;font-size:1.08rem;font-weight:900;cursor:pointer;transition:.15s}.click-option:hover{transform:translateY(-1px);border-color:#b58a52}.click-option.correct{border-color:#22c55e;background:rgba(34,197,94,.14)}.click-option.wrong{border-color:#ef4444;background:rgba(239,68,68,.14)}.click-option:disabled{cursor:default;opacity:.88}.click-feedback{min-height:56px;margin-top:18px;font-size:1.45rem;font-weight:1000;letter-spacing:.06em}.click-feedback.good{color:#22c55e}.click-feedback.bad{color:#ef4444}.click-correct{display:block;margin-top:5px;font-size:.98rem;letter-spacing:0;color:#e8d8c0}.click-next{display:none;margin:8px auto 0;min-width:170px}@media(max-width:620px){.click-options{grid-template-columns:1fr}.mode-grid{grid-template-columns:1fr 1fr 1fr}.mode-btn{min-width:0}}
+    .shootHud{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px}.lives{font-size:1.2rem;letter-spacing:.12em}.shootPrompt{flex:1;text-align:center}.shootPrompt .small{font-size:.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:.15em;font-weight:800}.shootPrompt .word{font-size:clamp(1.8rem,4vw,3.4rem);font-weight:900;letter-spacing:-.04em}.shootArea{position:relative;height:520px;overflow:hidden;border:1px solid #334765;border-radius:22px;background:radial-gradient(circle at 50% 45%,#17304b 0,#0d1b2e 45%,#07111f 100%);cursor:none;user-select:none}.shootArea:before{content:"";position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);background-size:40px 40px;pointer-events:none}.crosshair{position:absolute;width:46px;height:46px;border:2px solid rgba(255,255,255,.92);border-radius:50%;pointer-events:none;z-index:10;transform:translate(-50%,-50%);filter:drop-shadow(0 0 4px #000)}.crosshair:before,.crosshair:after{content:"";position:absolute;background:#fff}.crosshair:before{width:60px;height:2px;left:-9px;top:20px}.crosshair:after{height:60px;width:2px;top:-9px;left:20px}.target{position:absolute;min-width:110px;max-width:210px;padding:12px 16px;border-radius:999px;border:2px solid #6b86a8;background:rgba(13,28,46,.95);color:#fff;text-align:center;font-weight:900;box-shadow:0 8px 24px rgba(0,0,0,.35);cursor:none;z-index:3}.target.hit{background:rgba(34,197,94,.9);border-color:#86efac}.target.miss{background:rgba(239,68,68,.9);border-color:#fecaca}.shootMessage{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:20;font-size:clamp(2rem,6vw,5rem);font-weight:1000;text-shadow:0 4px 14px #000;pointer-events:none;opacity:0}.shootMessage.show{animation:pop .65s ease}.shootMessage.good{color:#86efac}.shootMessage.bad{color:#fca5a5}@keyframes pop{0%{opacity:0;transform:translate(-50%,-50%) scale(.6)}25%{opacity:1;transform:translate(-50%,-50%) scale(1.06)}100%{opacity:0;transform:translate(-50%,-50%) scale(1)}}.shoot-help{text-align:center;color:var(--muted);font-size:.75rem;margin-top:8px}
+    .summary{text-align:center;padding:44px 20px}.summary h2{font-size:2.2rem;margin-bottom:6px}.summary p{color:var(--muted)}.summary-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:11px;max-width:620px;margin:24px auto}.summary-card{padding:18px;border-radius:15px;background:#091321;border:1px solid #28374d}.summary-card b{display:block;font-size:1.7rem}.summary-card span{font-size:.78rem;color:var(--muted)}.wordList{margin-top:18px;border-top:1px solid #30415d;padding-top:16px}.wordTable{max-height:280px;overflow:auto;border:1px solid #28374d;border-radius:13px}table{width:100%;border-collapse:collapse;font-size:.88rem}th,td{padding:9px 11px;text-align:left;border-bottom:1px solid #28374d}th{position:sticky;top:0;background:#172033}.footer-note{text-align:center;font-size:.68rem;color:#61728a;margin-top:11px}
+    @media(max-width:880px){.grid{grid-template-columns:1fr}.sidebar{position:static;max-height:none}.badge{display:none}.main{min-height:auto}.answerRow{flex-direction:column}.summary-cards{grid-template-columns:1fr}.shootArea{height:470px}}@media(max-width:520px){.shootArea{height:420px}.target{min-width:90px;padding:10px 12px;font-size:.86rem}}
+  #verbBtn,#verbPanel{display:none!important;}
+  
+.unit-actions{display:flex;gap:8px;margin-top:2px}.unit-actions button{width:100%}.library-verb{margin-top:2px;display:grid;gap:8px}.library-verb-toggle{width:100%;display:flex;align-items:center;justify-content:center;gap:8px}.library-verb-panel{display:none;background:#120d09;border:1px solid #4b3525;border-radius:6px;padding:10px}.library-verb-panel.open{display:grid;gap:8px}.library-verb-panel .verb-content{font-size:.8rem;margin-top:0;max-height:220px;overflow:auto}.verb-head{margin-top:4px;margin-bottom:0}
+.result-lists{max-width:900px;margin:28px auto 0;text-align:left;display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.result-group{background:#100b08;border:1px solid #453024;border-radius:8px;padding:15px}
+.result-group h3{margin:0 0 10px;color:#e8d7bc;font-family:Georgia,"Times New Roman",serif;font-size:1.08rem}
+.result-scroll{max-height:310px;overflow:auto;border:1px solid #34251c;border-radius:6px}
+.result-table{width:100%;border-collapse:collapse;font-size:.86rem}
+.result-table th,.result-table td{padding:8px 9px;border-bottom:1px solid #34251c;text-align:left;vertical-align:top}
+.result-table th{position:sticky;top:0;background:#1a120d;color:#d8c5a8}
+.result-badge{display:inline-block;padding:2px 7px;border-radius:999px;font-size:.72rem;font-weight:900;white-space:nowrap}
+.result-badge.ok{background:#18331f;color:#a9e7b6}.result-badge.near{background:#3c3013;color:#f3d67a}.result-badge.bad{background:#3b1717;color:#efaaaa}.result-badge.none{background:#29231f;color:#b8a995}
+.empty-result{padding:15px;color:#8f806b;text-align:center;font-size:.84rem}
+@media(max-width:720px){.result-lists{grid-template-columns:1fr}}
+
+/* Uttal / text-till-tal */
+.tts-control{margin-top:8px;display:flex;align-items:center;gap:8px}
+.tts-toggle{width:100%;padding:8px 10px;border-radius:6px;border:1px solid #6b4b32;background:#19110c;color:#e8d8c0;font-weight:850;cursor:pointer}
+.tts-toggle.on{border-color:#b58a52;background:#2a1d14;color:#fff0d7}
+.speak-btn{display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;margin-left:7px;padding:0;border-radius:50%;border:1px solid #6b4b32;background:#19110c;color:#f4ead7;cursor:pointer;font-size:.9rem;vertical-align:middle}
+.speak-btn:hover{border-color:#b58a52;background:#2a1d14}
+.word-audio-cell{display:flex;align-items:center;justify-content:space-between;gap:8px}
+</style>
+
+<style id="godfather-theme">
+:root{
+  --bg:#0b0907 !important;
+  --panel:#17110d !important;
+  --panel2:#211712 !important;
+  --text:#f4ead7 !important;
+  --muted:#b7a78e !important;
+  --accent:#b58a52 !important;
+  --danger:#8f2d22 !important;
+  --line:#4a3527 !important;
+}
+body{
+  background:
+    radial-gradient(circle at 20% 0%, rgba(126,82,45,.18), transparent 28%),
+    linear-gradient(rgba(8,6,5,.94),rgba(8,6,5,.97)),
+    repeating-linear-gradient(90deg, rgba(255,255,255,.015) 0 1px, transparent 1px 4px);
+  color:var(--text)!important;
+  font-family: Georgia, 'Times New Roman', serif!important;
+}
+body:before{
+  content:""; position:fixed; inset:0; pointer-events:none; z-index:0;
+  background:radial-gradient(circle at center, transparent 45%, rgba(0,0,0,.55) 100%);
+}
+.app{position:relative;z-index:1;max-width:1400px}
+header{
+  background:linear-gradient(180deg,#24170f 0%,#120d09 100%)!important;
+  border:1px solid #5c402c!important;
+  box-shadow:0 16px 40px rgba(0,0,0,.45)!important;
+  border-radius:8px!important;
+}
+.brand h1{
+  font-family: Georgia, 'Times New Roman', serif!important;
+  letter-spacing:.04em; text-transform:uppercase; font-weight:700!important;
+  color:#f7ecd8!important; text-shadow:0 2px 0 #000, 0 0 18px rgba(181,138,82,.18);
+}
+.brand p,.hint,.material-note,.footer-note,.small,.shoot-help{color:#b9aa92!important}
+.badge{background:#15100c!important;border:1px solid #8f6c45!important;color:#e7d5b7!important;border-radius:999px!important}
+.panel{
+  background:linear-gradient(180deg,rgba(31,22,16,.98),rgba(17,13,10,.98))!important;
+  border:1px solid #513925!important; border-radius:8px!important;
+  box-shadow:0 18px 45px rgba(0,0,0,.38), inset 0 1px rgba(255,255,255,.025)!important;
+}
+.sidebar h2,.section-title,.wordList h2{color:#e8d7bc!important;letter-spacing:.02em}
+.library,.card,.wordTable,.verb-panel{background:#120d09!important;border:1px solid #4b3525!important;border-radius:6px!important}
+select,textarea,input[type=text]{
+  background:#0e0a07!important;color:#f2e6d2!important;border:1px solid #5b402b!important;border-radius:5px!important;
+  font-family:Georgia,'Times New Roman',serif!important;
+}
+select:focus,textarea:focus,input[type=text]:focus{outline:none!important;border-color:#b58a52!important;box-shadow:0 0 0 3px rgba(181,138,82,.12)!important}
+button{font-family:Georgia,'Times New Roman',serif!important;letter-spacing:.01em}
+.primary,.mode-btn.active{
+  background:linear-gradient(180deg,#b58a52,#7d5a35)!important;color:#120c08!important;border:1px solid #d0aa76!important;
+  box-shadow:0 4px 0 #4a311c,0 10px 20px rgba(0,0,0,.22)!important;
+}
+.secondary,.tool-btn,.mode-btn{background:#19110c!important;color:#e8d8c0!important;border:1px solid #6b4b32!important}
+.secondary:hover,.tool-btn:hover,.mode-btn:hover{background:#24170f!important;border-color:#b58a52!important}
+.danger{background:linear-gradient(180deg,#7e2a20,#4f1812)!important;color:#f7e8dd!important;border:1px solid #a64b3e!important}
+.level-item{background:#120d09!important;border:1px solid #473123!important;border-radius:6px!important}
+.level-item.active{background:#2a1b12!important;border-color:#b58a52!important;box-shadow:inset 4px 0 #b58a52!important}
+.level-no{background:#0c0907!important;color:#d6bd95!important;border:1px solid #5e412c!important}
+.level-help{background:#0f0b08!important;border:1px solid #4a3527!important;color:#d9c7aa!important}
+.swedish,.shootPrompt .word{font-family:Georgia,'Times New Roman',serif!important;color:#f5ead6!important}
+.clue{color:#cfb48c!important}.feedback.right{border-color:#6d8b5a!important;background:#11160f!important}.feedback.near{border-color:#b58a52!important;background:#1d160d!important}.feedback.wrong{border-color:#8f2d22!important;background:#1d0f0c!important}
+.progressWrap{background:#0d0906!important;border:1px solid #3f2d20!important}.progress{background:linear-gradient(90deg,#7c5a36,#c89a60)!important}
+.stat,.summary-card{background:#100b08!important;border:1px solid #453024!important;border-radius:6px!important}
+th{background:#1b120c!important;color:#e6d2b3!important}td,th{border-color:#39271c!important}
+.upload,.pastebox{background:#120d09!important;border:1px dashed #6f4f35!important;border-radius:6px!important}
+.upload:hover,.pastebox:hover{border-color:#b58a52!important;background:#19110c!important}
+.shootArea{
+  background:
+    radial-gradient(circle at 50% 40%, rgba(119,76,39,.08), transparent 28%),
+    linear-gradient(180deg,#0f0b08,#090604)!important;
+  border:1px solid #4b3525!important;border-radius:6px!important;
+}
+.target{background:linear-gradient(180deg,#2b1b12,#150e0a)!important;color:#f3e4cf!important;border:1px solid #8b6544!important;box-shadow:0 8px 20px rgba(0,0,0,.35)!important}
+.target:hover{border-color:#d2a86e!important}.crosshair{filter:sepia(.9) saturate(.7) brightness(1.1)}
+.or{color:#8f806b!important}.or:before,.or:after{background:#4b3525!important}
+::selection{background:#8e6a43;color:#fff7ea}
+
+.mode-btn{text-align:center!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;min-height:72px!important}
+.mode-btn b{display:block!important}
+@media (min-width:881px){.mode-btn{min-height:62px!important;padding:5px 7px!important}}
+</style>
+
+<style id="no-scroll-app-layout">
+/* Kompakt appvy: normal träning ska rymmas på en skärm utan sidscrollning. */
+html,body{height:100%;}
+@media (min-width:881px){
+  body{overflow:hidden!important;}
+  .app{height:100vh!important;max-width:1440px!important;padding:10px 14px 12px!important;display:flex!important;flex-direction:column!important;overflow:hidden!important;}
+  header{flex:0 0 auto!important;margin-bottom:8px!important;align-items:center!important;}
+  .brand h1{font-size:clamp(1.85rem,3.1vw,3rem)!important;line-height:.95!important;}
+  .brand p{margin-top:4px!important;font-size:.78rem!important;line-height:1.25!important;max-width:760px!important;}
+  .badge{padding:6px 10px!important;font-size:.72rem!important;}
+  .grid{flex:1 1 auto!important;min-height:0!important;display:grid!important;grid-template-columns:310px minmax(0,1fr)!important;gap:10px!important;overflow:hidden!important;}
+  .sidebar{position:relative!important;top:auto!important;height:100%!important;max-height:none!important;overflow:hidden!important;padding:12px!important;display:flex!important;flex-direction:column!important;}
+  .main{height:100%!important;min-height:0!important;overflow:hidden!important;padding:14px!important;display:block!important;}
+  .sidebar h2{font-size:.84rem!important;margin-bottom:6px!important;}
+  .section-title{margin-top:10px!important;margin-bottom:6px!important;}
+  .library{gap:5px!important;padding:8px!important;}
+  .unit-select{padding:7px 9px!important;font-size:.78rem!important;}
+  .unit-actions{margin-top:0!important}.unit-actions button{padding:7px 9px!important;font-size:.76rem!important;}
+  .material-note{display:none!important;}
+  #materialStatus{min-height:0!important;margin-top:2px!important;font-size:.66rem!important;}
+  .mode-grid{gap:6px!important;}
+  .mode-btn{padding:8px 8px!important;border-radius:6px!important;}
+  .mode-btn b{font-size:.8rem!important;}.mode-btn span{font-size:.62rem!important;}
+  .level-list{display:grid!important;grid-template-columns:repeat(5,1fr)!important;gap:5px!important;}
+  .level-item{display:flex!important;justify-content:center!important;align-items:center!important;padding:5px!important;min-height:34px!important;border-radius:5px!important;}
+  .level-no{width:24px!important;height:24px!important;font-size:.76rem!important;flex:0 0 24px!important;}
+  .level-text,.level-check{display:none!important;}
+  .level-help{font-size:.65rem!important;margin-top:5px!important;padding:5px 7px!important;line-height:1.25!important;}
+  .controls{gap:5px!important;margin-top:7px!important;grid-template-columns:1fr 1fr!important;}
+  .controls button{padding:8px 8px!important;font-size:.73rem!important;}
+  .stats{gap:5px!important;margin-top:6px!important;}
+  .stat{padding:5px!important;}.stat b{font-size:.85rem!important}.stat span{font-size:.58rem!important;}
+  .own-words{margin-top:auto!important;padding-top:5px!important;border-top:1px solid #3b2a1f!important;max-height:44%!important;overflow:auto!important;scrollbar-width:thin;}
+  .own-words>summary{padding:6px 0!important;font-size:.75rem!important;}
+  .own-words:not([open]){overflow:hidden!important;max-height:34px!important;}
+  .own-words .upload,.own-words .pastebox{padding:8px!important;font-size:.72rem!important;}
+  .own-words textarea{min-height:62px!important;max-height:90px!important;font-size:.72rem!important;}
+  .own-words .or{margin:5px 0!important;}
+  .own-words .footer-note{display:none!important;}
+  .empty{height:100%!important;min-height:0!important;padding:18px!important;}
+  .empty .icon{font-size:2.8rem!important;}
+  .practice,.shootout,.click-practice,.match-practice,.summary{height:100%!important;min-height:0!important;overflow:hidden!important;}
+  .topline{margin-bottom:8px!important;gap:8px!important;}
+  .card{height:calc(100% - 24px)!important;min-height:0!important;padding:18px clamp(18px,4vw,44px)!important;border-radius:8px!important;justify-content:center!important;overflow:hidden!important;}
+  .swedish{font-size:clamp(2rem,4.2vw,4.3rem)!important;margin:6px 0!important;}
+  .clue{font-size:clamp(1.05rem,2.2vw,1.75rem)!important;min-height:34px!important;margin-bottom:10px!important;line-height:1.35!important;}
+  .practice-tools{margin-bottom:8px!important;}.tool-btn{padding:7px 10px!important;font-size:.75rem!important;}
+  .answerRow input{padding:10px!important;font-size:1rem!important;}.answerRow button{padding:10px!important;}
+  .help-note{margin:4px 0!important;}.feedback{min-height:58px!important;margin-top:8px!important;}.next{margin-top:3px!important;padding:9px 12px!important;}
+  .shootout{display:none;}
+  .shootHud{margin-bottom:7px!important;}.shootArea{height:calc(100% - 92px)!important;min-height:360px!important;}
+  .shoot-help{margin-top:4px!important;font-size:.65rem!important;}
+  .summary{overflow:auto!important;padding:14px 18px!important;scrollbar-width:thin;}
+  .summary>div:first-child{font-size:2.2rem!important}.summary h2{font-size:1.55rem!important}.summary-cards{margin:10px auto!important;gap:7px!important}.summary-card{padding:9px!important}.summary-card b{font-size:1.25rem!important;}
+  .result-lists{margin:10px auto 0!important;gap:10px!important;}.result-group{padding:9px!important;}.result-scroll{max-height:calc(100vh - 380px)!important;min-height:120px!important;}
+}
+/* Alla-glosor visas som popup istället för längst ned på sidan. */
+.wordList{position:fixed!important;inset:0!important;z-index:1000!important;margin:0!important;padding:18px!important;border:0!important;background:rgba(5,3,2,.82)!important;backdrop-filter:blur(5px)!important;place-items:center!important;}
+.wordList[style*="display: block"]{display:grid!important;}
+.wordListBox{width:min(860px,94vw)!important;max-height:88vh!important;background:linear-gradient(180deg,#1f1610,#110d0a)!important;border:1px solid #6b4b32!important;border-radius:8px!important;padding:14px!important;box-shadow:0 24px 80px rgba(0,0,0,.65)!important;display:flex!important;flex-direction:column!important;}
+.wordListHead{display:flex!important;justify-content:space-between!important;align-items:center!important;gap:12px!important;margin-bottom:10px!important;}
+.wordListHead h2{margin:0!important;font-size:1.15rem!important;}.wordListClose{padding:7px 10px!important;font-size:.76rem!important;}
+.wordList .wordTable{max-height:calc(88vh - 70px)!important;overflow:auto!important;}
+@media(max-width:880px){
+  body{overflow:auto!important;}
+  .wordList{padding:8px!important;}.wordListBox{width:100%!important;max-height:94vh!important;}.wordList .wordTable{max-height:calc(94vh - 70px)!important;}
+}
+
+.verb-study-modes{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:2px}
+.verb-study-mode{padding:8px 6px;border:1px solid #4b3525;background:#17100c;color:#d9c7aa;border-radius:5px;font-size:.74rem;font-weight:800;cursor:pointer}
+.verb-study-mode.active{border-color:#b58a52;background:#2a1d14;color:#fff0d7}
+.verb-start{width:100%;margin-top:2px}
+.verb-practice{display:none;min-height:100%;align-items:center;justify-content:center;padding:12px}
+.verb-practice-card{width:min(760px,100%);background:#120d09;border:1px solid #4b3525;border-radius:8px;padding:clamp(20px,4vw,42px);text-align:center;box-shadow:0 18px 45px rgba(0,0,0,.32)}
+.verb-practice-top{display:flex;align-items:center;gap:12px;margin-bottom:22px}.verb-practice-top .progressWrap{flex:1}.verb-exit{white-space:nowrap}
+.verb-kicker{font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:#b7a78e;font-weight:800}.verb-prompt{font-size:clamp(2rem,5vw,4rem);font-weight:700;margin:12px 0 6px;color:#f4ead7}.verb-meaning{color:#b7a78e;margin-bottom:22px}
+.verb-options{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;max-width:560px;margin:0 auto}.verb-option{padding:14px;border:1px solid #5a402d;background:#1c130e;color:#f4ead7;border-radius:6px;font-weight:800;cursor:pointer}.verb-option:hover{border-color:#b58a52}.verb-option.correct{background:#18331f;border-color:#4d8a5b}.verb-option.wrong{background:#3b1717;border-color:#8f3c32}
+.verb-write-row{display:flex;gap:8px;max-width:560px;margin:0 auto}.verb-write-row input{text-align:center;font-size:1.15rem}.verb-write-row button{min-width:120px}.verb-feedback{min-height:54px;margin-top:16px;font-weight:900;font-size:1.45rem;letter-spacing:.08em}.verb-feedback.good{color:#9bd7a8}.verb-feedback.bad{color:#efaaaa}.verb-full-form{margin-top:10px}.verb-practice:has(.verb-options) .verb-practice-card{padding-top:20px;padding-bottom:20px}.verb-practice:has(.verb-options) .verb-feedback{min-height:40px;margin-top:10px}.verb-practice:has(.verb-options) .verb-next{margin-top:8px}.verb-full-form-title{font-size:.74rem;letter-spacing:.12em;text-transform:uppercase;color:#b7a78e;font-weight:900;margin-bottom:8px}.verb-learn-row.current{background:#2a1d14;outline:1px solid #b58a52;outline-offset:-1px}.verb-next{display:none;margin:6px auto 0}.verb-learn-table{max-width:560px;margin:0 auto;text-align:left;border:1px solid #3d2b20;border-radius:6px;overflow:hidden}.verb-learn-row{display:grid;grid-template-columns:110px 1fr;gap:12px;padding:10px 12px;border-bottom:1px solid #33241b}.verb-learn-row:last-child{border-bottom:0}.verb-learn-row b{color:#e8d7bc}.verb-learn-actions{margin-top:18px;display:flex;justify-content:center;gap:8px;flex-wrap:wrap}
+@media(max-width:620px){.verb-study-modes{grid-template-columns:1fr}.verb-options{grid-template-columns:1fr}.verb-write-row{flex-direction:column}}
+</style>
+
+<style id="match-practice-style">
+  .mode-grid{grid-template-columns:repeat(4,1fr)!important}
+  .match-practice{height:100%;min-height:0;overflow:hidden}
+  .match-card{height:100%;min-height:0;background:linear-gradient(180deg,#1a2639,#0e1726);border:1px solid #30415d;border-radius:24px;padding:18px;display:flex;flex-direction:column}
+  .match-head{display:flex;align-items:center;gap:12px;margin-bottom:10px}.match-head .progressWrap{flex:1}.match-info{font-size:.82rem;color:#cbd5e1;white-space:nowrap}
+  .match-instruction{text-align:center;color:#d6c19e;font-weight:800;margin:2px 0 12px;font-size:.9rem}
+  .match-board{display:grid;grid-template-columns:1fr 1fr;gap:18px;min-height:0;flex:1;overflow:hidden}
+  .match-column{min-height:0;overflow:auto;padding:8px;border:1px solid #344359;border-radius:16px;background:rgba(7,17,31,.55)}
+  .match-column h3{position:sticky;top:-8px;z-index:2;margin:-8px -8px 8px;padding:9px 10px;background:#111b2b;border-bottom:1px solid #344359;text-align:center;font-size:.82rem;letter-spacing:.08em;text-transform:uppercase;color:#d6c19e}
+  .match-word{user-select:none;cursor:grab;border:2px solid #3b4f6a;border-radius:12px;background:#172338;color:#f6f1e8;padding:11px 12px;margin:7px 0;font-weight:850;text-align:center;transition:.15s;line-height:1.2}
+  .match-word:hover{border-color:#b58a52;transform:translateY(-1px)}.match-word.dragging{opacity:.45}.match-word.drag-over{border-color:#f4d08a;background:rgba(181,138,82,.2)}
+  .match-word.match-wrong{border-color:#ef4444!important;background:rgba(239,68,68,.15)!important;animation:matchShake .22s linear 1}.match-word.match-right{border-color:#22c55e!important;background:rgba(34,197,94,.14)!important}
+  .match-feedback{min-height:26px;text-align:center;font-size:1.05rem;font-weight:1000;letter-spacing:.07em;margin-top:8px}.match-feedback.good{color:#22c55e}.match-feedback.bad{color:#ef4444}
+  @keyframes matchShake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+  @media(max-width:720px){.mode-grid{grid-template-columns:1fr 1fr!important}.match-board{gap:8px}.match-card{padding:10px}.match-word{padding:9px 7px;font-size:.82rem}.match-column{padding:5px}.match-column h3{top:-5px;margin:-5px -5px 6px}}
+</style>
+
+<style id="mode-grid-two-by-two">
+.mode-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:7px!important}
+.mode-btn{min-width:0!important;min-height:68px!important;padding:8px 8px!important;box-sizing:border-box!important}
+.mode-btn b{font-size:.86rem!important;line-height:1.15!important}.mode-btn span{font-size:.66rem!important;line-height:1.2!important}
+@media(max-width:620px){.mode-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
+</style>
+</head>
+<body>
+<div class="app">
+  <header><div class="brand"><h1>Glostränaren</h1><p>Välj ett färdigt italienskt glosmaterial eller lägg in egna glosor. Träna med fem hjälpnivåer eller spela Shootout.</p></div><div class="badge">Träning + Shootout</div></header>
+  <div class="grid">
+    <aside class="panel sidebar">
+      <h2>1. Färdigt material – Italienska 🇮🇹</h2>
+      <div class="library">
+        <div class="library-head"><small>Välj Unità</small><small id="selectedMaterial">Ingen vald</small></div>
+        <select class="unit-select" id="unitSelect" aria-label="Välj Unità"><option value="">Välj Unità…</option></select>
+        <div class="unit-actions"><button class="secondary" id="unitWordsBtn" disabled>Visa alla glosor</button></div>
+        <div class="library-verb">
+          <div class="library-head verb-head"><small>Välj verb</small></div>
+          <select class="unit-select" id="materialVerbSelect" aria-label="Välj italienskt verb">
+            <option value="">Välj verb…</option>
+            <option value="stare">STARE – att må</option>
+            <option value="essere">ESSERE – att vara</option>
+            <option value="parlare">PARLARE – tala (-ARE)</option>
+            <option value="credere">CREDERE – tro (-ERE)</option>
+            <option value="dormire">DORMIRE – sova (-IRE)</option>
+            <option value="capire">CAPIRE – förstå (-IRE, -ISC)</option>
+            <option value="finire">FINIRE – sluta</option>
+            <option value="preferire">PREFERIRE – föredra</option>
+          </select>
+          <div class="library-verb-panel" id="materialVerbPanel">
+            <div class="verb-study-modes" id="verbStudyModes">
+              <button class="verb-study-mode active" type="button" data-verb-mode="learn">Se och lär</button>
+              <button class="verb-study-mode" type="button" data-verb-mode="choice">Välj rätt</button>
+              <button class="verb-study-mode" type="button" data-verb-mode="write">Skriv själv</button>
+            </div>
+            <div class="verb-content" id="materialVerbContent">Välj ett verb för att se alla böjningar.</div>
+            <button class="primary verb-start" id="verbStartBtn" type="button" disabled>Starta verbträning</button>
+          </div>
+        </div>
+        <div class="material-note">Välj Unità i rullmenyn. Glosor som är färdigkontrollerade mot PDF:en kan tränas direkt.</div>
+      </div>
+
+      <div id="materialStatus" class="hint"></div>
+
+      <h2 class="section-title">2. Välj träningssätt</h2>
+      <div class="mode-grid">
+        <button class="mode-btn" data-mode="match"><b>🧩 Matcha</b><span>Dra glosor till rätt översättning</span></button>
+        <button class="mode-btn" data-mode="click"><b>👆 Klicka</b><span>Välj rätt av fyra</span></button>
+        <button class="mode-btn active" data-mode="write"><b>⌨️ Skriv</b><span>Fem hjälpnivåer</span></button>
+        <button class="mode-btn" data-mode="shootout"><b>🎯 Shootout</b><span>Skjut rätt ord</span></button>
+      </div>
+      <div class="tts-control"><button class="tts-toggle on" id="ttsToggle" type="button" title="Slå av eller på italienskt uttal">🔊 Uttal: PÅ</button></div>
+
+      <div id="levelBox">
+        <h2 class="section-title">3. Välj nivå</h2>
+        <div class="level-list">
+          <button class="level-item active" data-level="1"><span class="level-no">1</span><span class="level-text"><b>Mycket hjälp</b><span>Första + sista + antal</span></span><span class="level-check">✓</span></button>
+          <button class="level-item" data-level="2"><span class="level-no">2</span><span class="level-text"><b>Lite hjälp</b><span>Första bokstaven + antal</span></span><span class="level-check">✓</span></button>
+          <button class="level-item" data-level="3"><span class="level-no">3</span><span class="level-text"><b>Första bokstaven</b><span>Bara första bokstaven</span></span><span class="level-check">✓</span></button>
+          <button class="level-item" data-level="4"><span class="level-no">4</span><span class="level-text"><b>Antal bokstäver</b><span>Bara ordets längd</span></span><span class="level-check">✓</span></button>
+          <button class="level-item" data-level="5"><span class="level-no">5</span><span class="level-text"><b>Ingen hjälp</b><span>Bara svenska ordet</span></span><span class="level-check">✓</span></button>
+        </div>
+        <div class="level-help" id="levelHelp">Första + sista bokstaven och antal bokstäver</div>
+      </div>
+
+      <div class="controls"><button class="primary" id="startBtn" disabled>Starta träningen</button><button class="danger" id="clearBtn" disabled>Rensa valda glosor</button></div>
+      <div class="stats"><div class="stat"><b id="wordCount">0</b><span>glosor</span></div><div class="stat"><b id="rightCount">0</b><span>rätt</span></div><div class="stat"><b id="nearCount">0</b><span>nära</span></div></div>
+
+      <details class="own-words" style="margin-top:24px">
+        <summary style="cursor:pointer;font-weight:800;color:#e2e8f0;padding:10px 0">4. Lägg in egna glosor</summary>
+        <label class="upload" id="dropZone" for="pdfInput"><strong>📄 Ladda upp PDF</strong><small>Klicka eller dra en PDF hit</small></label><input id="pdfInput" type="file" accept="application/pdf"><div id="pdfStatus" class="hint"></div>
+        <div class="or">ELLER</div>
+        <label class="pastebox" id="imageZone" for="imageInput"><strong>🖼️ Bild / skärmdump</strong><small>Ctrl+V / Cmd+V eller klicka för PNG/JPG</small></label><input id="imageInput" type="file" accept="image/*"><img id="imagePreview" class="imagePreview" alt="Förhandsvisning"><div id="imageStatus" class="hint"></div>
+        <div class="or">ELLER</div>
+        <textarea id="manualInput" placeholder="svenska = italienska&#10;hund = cane&#10;katt = gatto"></textarea>
+        <div class="controls"><button class="secondary" id="parseManual">Läs in ordlistan</button><button class="secondary" id="toggleWords" disabled>Visa glosor</button></div>
+        <div class="footer-note">Egna glosor sparas lokalt i webbläsaren.</div>
+      </details>
+    </aside>
+
+    <main class="panel main">
+      <div class="empty" id="emptyState"><div><div class="icon">🧠</div><h2 style="font-size:1.5rem">Välj glosor och börja</h2><p>Välj en italiensk Unità eller lägg in egna glosor. Välj sedan Skriv, Shootout, Klicka eller Matcha.</p></div></div>
+
+      <section class="practice" id="practice">
+        <div class="topline"><div class="progressWrap"><div class="progress" id="progress"></div></div><div class="counter" id="counter"></div></div>
+        <div class="card"><div class="label">Svenska ordet</div><div class="swedish" id="swedishWord"></div><div class="clue" id="clue"></div><div class="practice-tools"><button class="tool-btn" id="helpBtn" title="Fyll i en bokstav">💡 HJÄLP</button><button class="tool-btn" id="verbBtn" title="Visa italienska verb">📚 VERB</button></div><div class="verb-panel" id="verbPanel"><select class="verb-select" id="verbSelect"><option value="stare">STARE – att må</option><option value="essere">ESSERE – att vara</option><option value="parlare">PARLARE – tala (-ARE)</option><option value="credere">CREDERE – tro (-ERE)</option><option value="dormire">DORMIRE – sova (-IRE)</option><option value="capire">CAPIRE – förstå (-IRE, -ISC)</option><option value="isc">FINIRE / PREFERIRE – samma typ som CAPIRE</option></select><div class="verb-content" id="verbContent"></div></div><div class="answerRow"><input id="answerInput" type="text" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="Skriv glosan..."><button class="primary" id="checkBtn">Svara</button></div><div class="help-note" id="helpNote"></div><div class="feedback" id="feedback"></div><button class="secondary next" id="nextBtn">Nästa glosa →</button></div>
+      </section>
+
+      <section class="verb-practice" id="verbPractice">
+        <div class="verb-practice-card">
+          <div class="verb-practice-top"><div class="progressWrap"><div class="progress" id="verbProgress"></div></div><div class="counter" id="verbCounter"></div><button class="danger verb-exit" id="verbExitBtn" type="button">✕ Avsluta</button></div>
+          <div class="verb-kicker" id="verbPracticeModeLabel">VERBTRÄNING</div>
+          <div class="verb-prompt" id="verbPrompt"></div>
+          <div class="verb-meaning" id="verbMeaning"></div>
+          <div id="verbLearnArea"></div>
+          <div class="verb-options" id="verbOptions"></div>
+          <div class="verb-write-row" id="verbWriteRow"><input id="verbAnswerInput" type="text" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="Skriv verbformen…"><button class="primary" id="verbCheckBtn" type="button">Svara</button></div>
+          <div class="verb-feedback" id="verbFeedback"></div>
+          <button class="secondary verb-next" id="verbNextBtn" type="button">Nästa →</button>
+        </div>
+      </section>
+
+      <section class="click-practice" id="clickPractice">
+        <div class="topline"><div class="progressWrap"><div class="progress" id="clickProgress"></div></div><div class="counter" id="clickCounter"></div></div>
+        <div class="click-card">
+          <div class="click-label">Klicka på det italienska ordet för</div>
+          <div class="click-word" id="clickSwedish"></div>
+          <div class="click-options" id="clickOptions"></div>
+          <div class="click-feedback" id="clickFeedback"></div>
+          <button class="secondary click-next" id="clickNextBtn" type="button">Nästa glosa →</button>
+        </div>
+      </section>
+
+      <section class="match-practice" id="matchPractice">
+        <div class="match-card">
+          <div class="match-head"><div class="progressWrap"><div class="progress" id="matchProgress"></div></div><div class="match-info" id="matchCounter"></div></div>
+          <div class="match-instruction">Dra ett ord till rätt översättning – du kan dra åt båda hållen.</div>
+          <div class="match-board">
+            <div class="match-column"><h3>Svenska</h3><div id="matchSwedish"></div></div>
+            <div class="match-column"><h3>Italienska</h3><div id="matchItalian"></div></div>
+          </div>
+          <div class="match-feedback" id="matchFeedback"></div>
+        </div>
+      </section>
+
+      <section class="shootout" id="shootout">
+        <div class="topline"><div class="progressWrap"><div class="progress" id="shootProgress"></div></div><div class="counter" id="shootCounter"></div></div>
+        <div class="shootHud"><div class="lives" id="lives">❤️ ❤️ ❤️</div><div class="shootPrompt"><div class="small">Skjut det italienska ordet för</div><div class="word" id="shootSwedish"></div></div><button class="danger" id="exitShootout" style="padding:9px 12px;white-space:nowrap">✕ Avsluta</button></div>
+        <div class="shootArea" id="shootArea"><div class="crosshair" id="crosshair"></div><div class="shootMessage" id="shootMessage"></div></div>
+        <div class="shoot-help">Flytta musen för att sikta och klicka på rätt ord. Fel träff kostar ett liv.</div>
+      </section>
+
+      <section class="summary" id="summary"><div style="font-size:4rem">🏁</div><h2 id="summaryTitle">Träningen är klar!</h2><p id="summaryText"></p><div class="summary-cards"><div class="summary-card"><b id="summaryRight">0</b><span>Rätt</span></div><div class="summary-card"><b id="summaryNear">0</b><span>Nära</span></div><div class="summary-card"><b id="summaryWrong">0</b><span>Fel</span></div></div><div class="result-lists"><div class="result-group"><h3>✓ Klarade</h3><div class="result-scroll" id="passedResults"></div></div><div class="result-group"><h3>↻ Behöver träna mer</h3><div class="result-scroll" id="failedResults"></div></div></div><div style="margin-top:20px"><button class="primary" id="againBtn">Träna igen</button></div></section>
+
+      <section class="wordList" id="wordList"><div class="wordListBox"><div class="wordListHead"><h2>Valda glosor</h2><button class="danger wordListClose" id="wordListClose" type="button">✕ Stäng</button></div><div class="wordTable"><table><thead><tr><th>#</th><th>Svenska</th><th>Italienska / glosa</th></tr></thead><tbody id="wordTableBody"></tbody></table></div></div></section>
+    </main>
+  </div>
+</div>
+
+<script type="module">
+  import * as pdfjsLib from 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.10.38/pdf.min.mjs';
+  pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.10.38/pdf.worker.min.mjs';
+  const $=id=>document.getElementById(id);
+
+  // Unità-rubriker från ordlistan (sidor 206–215).
+  // PDF:en är skannad som bilder, så ordparen behöver verifieras mot sidbilderna innan de fylls in helt.
+  const ITALIAN_UNITS={
+  "Unità 1A – All’entrata dell’università": [
+    {
+      "sv": "ingång",
+      "target": "entrata"
+    },
+    {
+      "sv": "vid ingången",
+      "target": "all’entrata"
+    },
+    {
+      "sv": "universitet",
+      "target": "università"
+    },
+    {
+      "sv": "till universitetet",
+      "target": "dell’università"
+    },
+    {
+      "sv": "hej",
+      "target": "salve"
+    },
+    {
+      "sv": "jag är",
+      "target": "sono"
+    },
+    {
+      "sv": "en",
+      "target": "un"
+    },
+    {
+      "sv": "ny",
+      "target": "nuovo"
+    },
+    {
+      "sv": "student",
+      "target": "studente"
+    },
+    {
+      "sv": "var",
+      "target": "dove"
+    },
+    {
+      "sv": "var är?",
+      "target": "dov’è"
+    },
+    {
+      "sv": "expeditionen",
+      "target": "la segreteria"
+    },
+    {
+      "sv": "den är",
+      "target": "è"
+    },
+    {
+      "sv": "på",
+      "target": "al"
+    },
+    {
+      "sv": "första",
+      "target": "primo"
+    },
+    {
+      "sv": "våning",
+      "target": "piano"
+    },
+    {
+      "sv": "Vad heter du?",
+      "target": "Come ti chiami?"
+    },
+    {
+      "sv": "och",
+      "target": "e"
+    },
+    {
+      "sv": "du",
+      "target": "tu"
+    },
+    {
+      "sv": "du är",
+      "target": "sei"
+    },
+    {
+      "sv": "tysk",
+      "target": "tedesco"
+    },
+    {
+      "sv": "nej",
+      "target": "no"
+    },
+    {
+      "sv": "svensk",
+      "target": "svedese"
+    },
+    {
+      "sv": "är det kallt",
+      "target": "fa freddo"
+    },
+    {
+      "sv": "i",
+      "target": "in"
+    },
+    {
+      "sv": "Sverige",
+      "target": "Svezia"
+    },
+    {
+      "sv": "inte",
+      "target": "non"
+    },
+    {
+      "sv": "alltid",
+      "target": "sempre"
+    },
+    {
+      "sv": "hej",
+      "target": "ciao"
+    },
+    {
+      "sv": "jag heter",
+      "target": "mi chiamo"
+    },
+    {
+      "sv": "killen",
+      "target": "il ragazzo"
+    },
+    {
+      "sv": "vännen",
+      "target": "l’amico"
+    },
+    {
+      "sv": "Marias vän",
+      "target": "l’amico di Maria"
+    },
+    {
+      "sv": "precis",
+      "target": "esatto"
+    },
+    {
+      "sv": "finns det",
+      "target": "c’è"
+    },
+    {
+      "sv": "ett studenthem",
+      "target": "un ostello per studenti"
+    },
+    {
+      "sv": "i",
+      "target": "a"
+    },
+    {
+      "sv": "Florens",
+      "target": "Firenze"
+    },
+    {
+      "sv": "(student)hemmet",
+      "target": "l’ostello"
+    },
+    {
+      "sv": "här",
+      "target": "qui"
+    },
+    {
+      "sv": "här i närheten",
+      "target": "qui vicino"
+    },
+    {
+      "sv": "dyr",
+      "target": "caro"
+    },
+    {
+      "sv": "billig",
+      "target": "economico"
+    },
+    {
+      "sv": "vi är",
+      "target": "siamo"
+    },
+    {
+      "sv": "alla",
+      "target": "tutti"
+    },
+    {
+      "sv": "studenter",
+      "target": "studenti"
+    },
+    {
+      "sv": "tack",
+      "target": "grazie"
+    },
+    {
+      "sv": "hej då, på återseende",
+      "target": "arrivederci"
+    },
+    {
+      "sv": "varsågod",
+      "target": "prego"
+    }
+  ],
+  "Unità 1B – Più tardi": [
+    {
+      "sv": "senare",
+      "target": "più tardi"
+    },
+    {
+      "sv": "god kväll",
+      "target": "buona sera"
+    },
+    {
+      "sv": "läraren",
+      "target": "il professore"
+    },
+    {
+      "sv": "magister Rossi",
+      "target": "il professor Rossi"
+    },
+    {
+      "sv": "mycket trevligt att träffas",
+      "target": "molto piacere"
+    },
+    {
+      "sv": "fru",
+      "target": "la signora"
+    },
+    {
+      "sv": "sekreteraren",
+      "target": "la segretaria"
+    },
+    {
+      "sv": "jag",
+      "target": "io"
+    },
+    {
+      "sv": "Ni",
+      "target": "lei"
+    },
+    {
+      "sv": "Vad heter Ni?",
+      "target": "Come si chiama?"
+    },
+    {
+      "sv": "trevligt att träffas",
+      "target": "piacere"
+    }
+  ],
+  "Unità 1C – Il giorno dopo": [
+    {
+      "sv": "dagen efter",
+      "target": "il giorno dopo"
+    },
+    {
+      "sv": "hur mår du?",
+      "target": "come stai?"
+    },
+    {
+      "sv": "inte så illa, riktigt bra",
+      "target": "non c’è male"
+    },
+    {
+      "sv": "jag klarar mig",
+      "target": "tiro avanti"
+    },
+    {
+      "sv": "vi ses",
+      "target": "ci vediamo"
+    },
+    {
+      "sv": "vi ses i morgon",
+      "target": "a domani"
+    },
+    {
+      "sv": "god dag",
+      "target": "buon giorno"
+    },
+    {
+      "sv": "Hur mår Ni?",
+      "target": "Come sta?"
+    },
+    {
+      "sv": "bra",
+      "target": "bene"
+    },
+    {
+      "sv": "mycket",
+      "target": "molto"
+    }
+  ],
+  "Unità 2A – In treno": [
+    {
+      "sv": "på tåget",
+      "target": "in treno"
+    },
+    {
+      "sv": "ursäkta",
+      "target": "scusa"
+    },
+    {
+      "sv": "ledig",
+      "target": "libero"
+    },
+    {
+      "sv": "den här",
+      "target": "questo"
+    },
+    {
+      "sv": "plats",
+      "target": "posto"
+    },
+    {
+      "sv": "eller hur?",
+      "target": "vero?"
+    },
+    {
+      "sv": "varifrån",
+      "target": "di dove"
+    },
+    {
+      "sv": "jag är från Stockholm",
+      "target": "sono di Stoccolma"
+    },
+    {
+      "sv": "berlinare, från Berlin",
+      "target": "berlinese"
+    },
+    {
+      "sv": "oj då!",
+      "target": "caspita"
+    },
+    {
+      "sv": "intressant",
+      "target": "interessante"
+    },
+    {
+      "sv": "hur är",
+      "target": "com’è"
+    },
+    {
+      "sv": "Berlin",
+      "target": "Berlino"
+    },
+    {
+      "sv": "vacker",
+      "target": "bella"
+    },
+    {
+      "sv": "stad",
+      "target": "città"
+    },
+    {
+      "sv": "full av",
+      "target": "piena di"
+    },
+    {
+      "sv": "liv",
+      "target": "vita"
+    },
+    {
+      "sv": "också",
+      "target": "anche"
+    },
+    {
+      "sv": "konstig",
+      "target": "strano"
+    },
+    {
+      "sv": "eller hur?",
+      "target": "no?"
+    },
+    {
+      "sv": "senare",
+      "target": "più tardi"
+    },
+    {
+      "sv": "ursäkta (till flera personer)",
+      "target": "scusate"
+    },
+    {
+      "sv": "jag är ledsen, tyvärr",
+      "target": "mi dispiace"
+    },
+    {
+      "sv": "min (fem.)",
+      "target": "la mia"
+    },
+    {
+      "sv": "tjej",
+      "target": "ragazza"
+    },
+    {
+      "sv": "den är min tjejs",
+      "target": "è della mia ragazza"
+    },
+    {
+      "sv": "min (mask.)",
+      "target": "mio"
+    },
+    {
+      "sv": "längre fram",
+      "target": "più avanti"
+    },
+    {
+      "sv": "engelsk, från England",
+      "target": "inglese"
+    },
+    {
+      "sv": "London",
+      "target": "Londra"
+    },
+    {
+      "sv": "jag slår vad om att",
+      "target": "scommetto che"
+    },
+    {
+      "sv": "tysk, från Tyskland",
+      "target": "tedesco"
+    },
+    {
+      "sv": "varför, hur kommer det sig att",
+      "target": "come mai"
+    },
+    {
+      "sv": "utlänningar",
+      "target": "stranieri"
+    },
+    {
+      "sv": "ni är, är ni",
+      "target": "siete"
+    },
+    {
+      "sv": "på semester",
+      "target": "in vacanza"
+    },
+    {
+      "sv": "vi studerar",
+      "target": "studiamo"
+    },
+    {
+      "sv": "Universitetet för utlänningar i Perugia",
+      "target": "l’Università per stranieri di Perugia"
+    },
+    {
+      "sv": "nu",
+      "target": "adesso"
+    },
+    {
+      "sv": "vi åker",
+      "target": "andiamo"
+    },
+    {
+      "sv": "till Assisi",
+      "target": "ad Assisi"
+    },
+    {
+      "sv": "för att",
+      "target": "per"
+    },
+    {
+      "sv": "se",
+      "target": "vedere"
+    },
+    {
+      "sv": "San Francesco-kyrkan",
+      "target": "la basilica di San Francesco"
+    },
+    {
+      "sv": "jag åker",
+      "target": "vado"
+    },
+    {
+      "sv": "men",
+      "target": "però"
+    },
+    {
+      "sv": "när jag tänker på saken",
+      "target": "quasi, quasi"
+    },
+    {
+      "sv": "först",
+      "target": "prima"
+    },
+    {
+      "sv": "jag också",
+      "target": "anch’io"
+    }
+  ],
+  "Unità 2C – Alla stazione": [
+    {
+      "sv": "stationen",
+      "target": "la stazione"
+    },
+    {
+      "sv": "på stationen i Assisi",
+      "target": "alla stazione di Assisi"
+    },
+    {
+      "sv": "vi går",
+      "target": "andiamo"
+    },
+    {
+      "sv": "då",
+      "target": "allora"
+    },
+    {
+      "sv": "ögonblick",
+      "target": "momento"
+    },
+    {
+      "sv": "ryggsäcken",
+      "target": "lo zaino"
+    },
+    {
+      "sv": "röd",
+      "target": "rosso"
+    },
+    {
+      "sv": "från Stockholm",
+      "target": "di Stoccolma"
+    },
+    {
+      "sv": "med",
+      "target": "con"
+    },
+    {
+      "sv": "pengarna",
+      "target": "i soldi"
+    },
+    {
+      "sv": "här: ID-kort",
+      "target": "i documenti"
+    },
+    {
+      "sv": "polisen",
+      "target": "la polizia"
+    },
+    {
+      "sv": "de pratar",
+      "target": "parlano"
+    },
+    {
+      "sv": "polisman",
+      "target": "poliziotto"
+    },
+    {
+      "sv": "jag hittar",
+      "target": "trovo"
+    },
+    {
+      "sv": "Er",
+      "target": "il suo"
+    },
+    {
+      "sv": "på tåget",
+      "target": "sul treno"
+    },
+    {
+      "sv": "jag tror det",
+      "target": "credo di sì"
+    },
+    {
+      "sv": "förtvivlad, jätteledsen",
+      "target": "disperato"
+    },
+    {
+      "sv": "lugn bara",
+      "target": "su, su"
+    },
+    {
+      "sv": "vi tar hand om det här",
+      "target": "sistemiamo le cose"
+    },
+    {
+      "sv": "färg",
+      "target": "colore"
+    },
+    {
+      "sv": "vilken färg är __?",
+      "target": "di che colore è"
+    },
+    {
+      "sv": "minuter",
+      "target": "minuti"
+    },
+    {
+      "sv": "kommer",
+      "target": "arriva"
+    },
+    {
+      "sv": "er",
+      "target": "vostro"
+    },
+    {
+      "sv": "den var",
+      "target": "era"
+    },
+    {
+      "sv": "duktig (fem.)",
+      "target": "brava"
+    },
+    {
+      "sv": "söt (fem.)",
+      "target": "carina"
+    },
+    {
+      "sv": "intelligent",
+      "target": "intelligente"
+    },
+    {
+      "sv": "jag bjuder dig på",
+      "target": "ti offro"
+    },
+    {
+      "sv": "kaffe",
+      "target": "caffè"
+    },
+    {
+      "sv": "unge man",
+      "target": "giovanotto"
+    },
+    {
+      "sv": "åtminstone",
+      "target": "almeno"
+    },
+    {
+      "sv": "middag",
+      "target": "cena"
+    },
+    {
+      "sv": "här är",
+      "target": "ecco"
+    },
+    {
+      "sv": "det finns (plur.)",
+      "target": "ci sono"
+    },
+    {
+      "sv": "självklart",
+      "target": "certo"
+    },
+    {
+      "sv": "med tur",
+      "target": "fortunato"
+    },
+    {
+      "sv": "verkligen",
+      "target": "davvero"
+    },
+    {
+      "sv": "OK, det är bra",
+      "target": "va bene"
+    }
+  ],
+  "Unità 2D – In centro": [
+    {
+      "sv": "i centrum",
+      "target": "in centro"
+    },
+    {
+      "sv": "i Assisis centrum",
+      "target": "nel centro di Assisi"
+    },
+    {
+      "sv": "tillsammans",
+      "target": "insieme"
+    },
+    {
+      "sv": "idé",
+      "target": "idea"
+    },
+    {
+      "sv": "mycket vacker",
+      "target": "bellissima"
+    },
+    {
+      "sv": "jättebra",
+      "target": "benissimo"
+    },
+    {
+      "sv": "ni",
+      "target": "voi"
+    },
+    {
+      "sv": "det här (fem.)",
+      "target": "questa"
+    },
+    {
+      "sv": "en kompis (fem.) till mig",
+      "target": "una mia amica"
+    },
+    {
+      "sv": "hon bor",
+      "target": "abita"
+    },
+    {
+      "sv": "verkligen",
+      "target": "davvero"
+    },
+    {
+      "sv": "italienska",
+      "target": "italiana"
+    },
+    {
+      "sv": "bor du",
+      "target": "abiti"
+    },
+    {
+      "sv": "jag bor",
+      "target": "abito"
+    },
+    {
+      "sv": "framför kyrkan",
+      "target": "davanti alla basilica"
+    },
+    {
+      "sv": "café",
+      "target": "bar"
+    },
+    {
+      "sv": "vill du ha en kaffe?",
+      "target": "prendi un caffè?"
+    },
+    {
+      "sv": "OK",
+      "target": "d’accordo"
+    },
+    {
+      "sv": "fyra",
+      "target": "quattro"
+    },
+    {
+      "sv": "artighetsord, motsvarar eng. please",
+      "target": "per favore"
+    },
+    {
+      "sv": "varsågod",
+      "target": "ecco a lei"
+    }
+  ],
+  "Unità 3A – La famiglia": [
+    {
+      "sv": "familj",
+      "target": "la famiglia"
+    },
+    {
+      "sv": "besök",
+      "target": "la visita"
+    },
+    {
+      "sv": "för att",
+      "target": "per"
+    },
+    {
+      "sv": "tillbringa",
+      "target": "passare"
+    },
+    {
+      "sv": "någon, något",
+      "target": "qualche"
+    },
+    {
+      "sv": "semester",
+      "target": "la vacanza"
+    },
+    {
+      "sv": "huvudstad",
+      "target": "la capitale"
+    },
+    {
+      "sv": "i huvudstaden",
+      "target": "nella capitale"
+    },
+    {
+      "sv": "de besöker",
+      "target": "visitano (av visitare)"
+    },
+    {
+      "sv": "hur gammal är du?",
+      "target": "quanti anni hai?"
+    },
+    {
+      "sv": "tjugoett",
+      "target": "ventuno"
+    },
+    {
+      "sv": "ekonomisk fakultet vid universitetet",
+      "target": "Economia e Commercio"
+    },
+    {
+      "sv": "jag arbetar",
+      "target": "lavoro (av lavorare)"
+    },
+    {
+      "sv": "livsmedelsaffär, snabbköp",
+      "target": "il supermercato"
+    },
+    {
+      "sv": "men",
+      "target": "ma"
+    },
+    {
+      "sv": "jag vill",
+      "target": "voglio (av volere)"
+    },
+    {
+      "sv": "arbeta som arkitekt",
+      "target": "fare l’architetto"
+    },
+    {
+      "sv": "Italien",
+      "target": "l’Italia"
+    },
+    {
+      "sv": "landet",
+      "target": "il paese"
+    },
+    {
+      "sv": "för dig",
+      "target": "per te"
+    },
+    {
+      "sv": "jättemånga",
+      "target": "moltissimi"
+    },
+    {
+      "sv": "monument",
+      "target": "il monumento"
+    },
+    {
+      "sv": "palats",
+      "target": "il palazzo"
+    },
+    {
+      "sv": "museum",
+      "target": "il museo"
+    },
+    {
+      "sv": "alltför många",
+      "target": "troppi"
+    },
+    {
+      "sv": "olika",
+      "target": "diverse"
+    },
+    {
+      "sv": "syskon",
+      "target": "i fratelli"
+    },
+    {
+      "sv": "jag har",
+      "target": "ho (av avere)"
+    },
+    {
+      "sv": "bror",
+      "target": "il fratello"
+    },
+    {
+      "sv": "syster",
+      "target": "la sorella"
+    },
+    {
+      "sv": "vad?",
+      "target": "che cosa?"
+    },
+    {
+      "sv": "otrolig",
+      "target": "incredibile"
+    },
+    {
+      "sv": "du vet, du förstår",
+      "target": "sai (av sapere)"
+    },
+    {
+      "sv": "mina föräldrar",
+      "target": "i miei genitori"
+    },
+    {
+      "sv": "andra",
+      "target": "secondo"
+    },
+    {
+      "sv": "äktenskap",
+      "target": "il matrimonio"
+    },
+    {
+      "sv": "mamma",
+      "target": "la madre"
+    },
+    {
+      "sv": "hon, han har",
+      "target": "ha (av avere)"
+    },
+    {
+      "sv": "barn",
+      "target": "i figli"
+    },
+    {
+      "sv": "pappa",
+      "target": "il padre"
+    },
+    {
+      "sv": "tvillingar",
+      "target": "i gemelli"
+    },
+    {
+      "sv": "speciell",
+      "target": "speciale"
+    },
+    {
+      "sv": "jag tror dig!",
+      "target": "ti credo!"
+    },
+    {
+      "sv": "och (ofta före e)",
+      "target": "ed"
+    },
+    {
+      "sv": "redan",
+      "target": "già"
+    },
+    {
+      "sv": "för mycket",
+      "target": "troppo"
+    },
+    {
+      "sv": "storebror",
+      "target": "il fratello maggiore"
+    },
+    {
+      "sv": "tjugonio",
+      "target": "ventinove"
+    }
+  ],
+  "Unità 3B – Fotografie di famiglia": [
+    {
+      "sv": "foto",
+      "target": "la foto, la fotografia"
+    },
+    {
+      "sv": "du vill",
+      "target": "vuoi (av volere)"
+    },
+    {
+      "sv": "se",
+      "target": "vedere"
+    },
+    {
+      "sv": "på min familj",
+      "target": "della mia famiglia"
+    },
+    {
+      "sv": "gärna",
+      "target": "con piacere"
+    },
+    {
+      "sv": "vem",
+      "target": "chi"
+    },
+    {
+      "sv": "lång",
+      "target": "alto"
+    },
+    {
+      "sv": "blond, ljushårig",
+      "target": "biondo"
+    },
+    {
+      "sv": "vilken",
+      "target": "quale"
+    },
+    {
+      "sv": "den här framme",
+      "target": "questo qui davanti"
+    },
+    {
+      "sv": "kort",
+      "target": "basso"
+    },
+    {
+      "sv": "mörk",
+      "target": "bruno"
+    },
+    {
+      "sv": "knä",
+      "target": "il ginocchio"
+    },
+    {
+      "sv": "han står på knä",
+      "target": "è in ginocchio"
+    },
+    {
+      "sv": "du har rätt",
+      "target": "hai ragione"
+    },
+    {
+      "sv": "inte riktigt",
+      "target": "non proprio"
+    },
+    {
+      "sv": "musik",
+      "target": "la musica"
+    },
+    {
+      "sv": "knubbig",
+      "target": "grassottella"
+    },
+    {
+      "sv": "sjuksköterska",
+      "target": "l’infermiera"
+    },
+    {
+      "sv": "trevlig",
+      "target": "simpatico"
+    },
+    {
+      "sv": "han ser ut som",
+      "target": "sembra"
+    },
+    {
+      "sv": "viking",
+      "target": "il vichingo"
+    },
+    {
+      "sv": "däremot",
+      "target": "invece"
+    },
+    {
+      "sv": "liten",
+      "target": "piccolo"
+    },
+    {
+      "sv": "liten kille",
+      "target": "il ragazzino"
+    },
+    {
+      "sv": "smal",
+      "target": "magro"
+    },
+    {
+      "sv": "han äter",
+      "target": "mangia (av mangiare)"
+    },
+    {
+      "sv": "inte så värst",
+      "target": "non - tanto"
+    },
+    {
+      "sv": "inte – heller",
+      "target": "nemmeno"
+    },
+    {
+      "sv": "längre än",
+      "target": "più alto di"
+    },
+    {
+      "sv": "lustigkurre",
+      "target": "spiritoso"
+    }
+  ],
+  "Unità 3D – La prima giornata a Roma": [
+    {
+      "sv": "dag",
+      "target": "la giornata"
+    },
+    {
+      "sv": "förslag",
+      "target": "la proposta"
+    },
+    {
+      "sv": "vi börjar",
+      "target": "cominciamo (av cominciare)"
+    },
+    {
+      "sv": "frukost",
+      "target": "la (prima) colazione"
+    },
+    {
+      "sv": "berömd",
+      "target": "famoso"
+    },
+    {
+      "sv": "vi promenerar",
+      "target": "passeggiamo (av passeggiare)"
+    },
+    {
+      "sv": "vi äter lunch",
+      "target": "pranziamo (av pranzare)"
+    },
+    {
+      "sv": "restaurang",
+      "target": "la trattoria"
+    },
+    {
+      "sv": "på eftermiddagen",
+      "target": "nel pomeriggio"
+    },
+    {
+      "sv": "vi besöker",
+      "target": "visitiamo (av visitare)"
+    },
+    {
+      "sv": "Forum Romanum (del av det antika Rom)",
+      "target": "il Foro Romano"
+    },
+    {
+      "sv": "i solnedgången",
+      "target": "al tramonto"
+    },
+    {
+      "sv": "Colosseum (amfiteater i det antika Rom)",
+      "target": "il Colosseo"
+    },
+    {
+      "sv": "glass",
+      "target": "il gelato"
+    },
+    {
+      "sv": "cafeteria",
+      "target": "la caffetteria"
+    },
+    {
+      "sv": "lätt måltid/mellis",
+      "target": "lo spuntino"
+    },
+    {
+      "sv": "kl 12 på dagen",
+      "target": "a mezzogiorno"
+    },
+    {
+      "sv": "tallrik",
+      "target": "il piatto"
+    },
+    {
+      "sv": "sallad",
+      "target": "l’insalata"
+    },
+    {
+      "sv": "restaurang med självbetjäning",
+      "target": "il self service"
+    },
+    {
+      "sv": "resten",
+      "target": "il resto"
+    },
+    {
+      "sv": "program",
+      "target": "il programma"
+    },
+    {
+      "sv": "romantisk",
+      "target": "romantico"
+    },
+    {
+      "sv": "praktisk",
+      "target": "pratico"
+    },
+    {
+      "sv": "bara",
+      "target": "solo"
+    },
+    {
+      "sv": "tvåhundra",
+      "target": "duecento"
+    },
+    {
+      "sv": "det är dyrt att leva",
+      "target": "la vita costa cara"
+    },
+    {
+      "sv": "sedan",
+      "target": "poi"
+    },
+    {
+      "sv": "utan",
+      "target": "senza"
+    },
+    {
+      "sv": "kanske / wish",
+      "target": "magari"
+    },
+    {
+      "sv": "sista",
+      "target": "ultimo"
+    },
+    {
+      "sv": "underbar",
+      "target": "meraviglioso"
+    },
+    {
+      "sv": "titta",
+      "target": "guarda"
+    },
+    {
+      "sv": "katt",
+      "target": "il gatto"
+    },
+    {
+      "sv": "de sover",
+      "target": "dormono (av dormire)"
+    },
+    {
+      "sv": "hela dagen",
+      "target": "tutto il giorno"
+    }
+  ],
+  "Revisione A – In albergo, a colazione": [
+    {
+      "sv": "i dag",
+      "target": "oggi"
+    },
+    {
+      "sv": "bada",
+      "target": "fare il bagno"
+    },
+    {
+      "sv": "vädret",
+      "target": "il tempo"
+    },
+    {
+      "sv": "det är varmt",
+      "target": "fa caldo"
+    },
+    {
+      "sv": "så",
+      "target": "così"
+    },
+    {
+      "sv": "vi blir solbrända",
+      "target": "ci abbronziamo"
+    },
+    {
+      "sv": "hur lång tid",
+      "target": "quanto tempo"
+    },
+    {
+      "sv": "det tar (om tid)",
+      "target": "ci vuole"
+    },
+    {
+      "sv": "lite",
+      "target": "poco"
+    },
+    {
+      "sv": "mindre än",
+      "target": "meno di"
+    },
+    {
+      "sv": "timme",
+      "target": "l’ora"
+    },
+    {
+      "sv": "sammanlagt",
+      "target": "in tutto"
+    },
+    {
+      "sv": "färdig",
+      "target": "pronto"
+    },
+    {
+      "sv": "ta med",
+      "target": "portare"
+    },
+    {
+      "sv": "baddräkt",
+      "target": "il costume"
+    },
+    {
+      "sv": "solkräm",
+      "target": "la crema solare"
+    }
+  ],
+  "Revisione B – Alla biglietteria": [
+    {
+      "sv": "biljettlucka",
+      "target": "la biglietteria"
+    },
+    {
+      "sv": "biljett",
+      "target": "il biglietto"
+    },
+    {
+      "sv": "till Ostia",
+      "target": "per Ostia"
+    },
+    {
+      "sv": "det blir 4 euro styck",
+      "target": "sono 4 euro l’uno"
+    },
+    {
+      "sv": "tur och retur",
+      "target": "andata e ritorno"
+    },
+    {
+      "sv": "varsågod",
+      "target": "ecco qua"
+    },
+    {
+      "sv": "karta",
+      "target": "la cartina"
+    },
+    {
+      "sv": "nära",
+      "target": "vicino a"
+    },
+    {
+      "sv": "hav",
+      "target": "il mare"
+    },
+    {
+      "sv": "mycket nöje",
+      "target": "buon divertimento"
+    }
+  ],
+  "Revisione C – In treno": [
+    {
+      "sv": "fönster (på tåg, bilar)",
+      "target": "il finestrino"
+    },
+    {
+      "sv": "dörr",
+      "target": "la porta"
+    },
+    {
+      "sv": "jag står kvar",
+      "target": "resto in piedi"
+    },
+    {
+      "sv": "jag ser",
+      "target": "vedo"
+    },
+    {
+      "sv": "slättlandskap utanför Rom",
+      "target": "la campagna romana"
+    },
+    {
+      "sv": "hör du",
+      "target": "senti (av sentire)"
+    },
+    {
+      "sv": "vi byter",
+      "target": "cambiamo (av cambiare)"
+    },
+    {
+      "sv": "jag känner till, jag kan",
+      "target": "conosco (av conoscere)"
+    },
+    {
+      "sv": "redan",
+      "target": "già"
+    },
+    {
+      "sv": "snäll, vänlig",
+      "target": "gentile"
+    },
+    {
+      "sv": "han känner inte till",
+      "target": "non conosce"
+    },
+    {
+      "sv": "tradition",
+      "target": "la tradizione"
+    },
+    {
+      "sv": "romare",
+      "target": "romano"
+    },
+    {
+      "sv": "stadsdel",
+      "target": "il quartiere"
+    },
+    {
+      "sv": "särskild",
+      "target": "particolare"
+    },
+    {
+      "sv": "det hörs",
+      "target": "si sente"
+    },
+    {
+      "sv": "det skulle man nog kunna säga",
+      "target": "insomma..."
+    }
+  ],
+  "Revisione D – A Ostia": [
+    {
+      "sv": "åt vilket håll",
+      "target": "da che parte"
+    },
+    {
+      "sv": "vänta",
+      "target": "aspetta (av aspettare)"
+    },
+    {
+      "sv": "vi frågar",
+      "target": "chiediamo a"
+    },
+    {
+      "sv": "ni går",
+      "target": "andate (av andare)"
+    },
+    {
+      "sv": "till höger",
+      "target": "a destra"
+    },
+    {
+      "sv": "ni svänger",
+      "target": "girate (av girare)"
+    },
+    {
+      "sv": "till vänster",
+      "target": "a sinistra"
+    },
+    {
+      "sv": "ni fortsätter",
+      "target": "continuate (av continuare)"
+    },
+    {
+      "sv": "rakt fram",
+      "target": "dritto"
+    },
+    {
+      "sv": "ni går över",
+      "target": "attraversate (av attraversare)"
+    },
+    {
+      "sv": "torg",
+      "target": "la piazza"
+    },
+    {
+      "sv": "många",
+      "target": "tanti"
+    },
+    {
+      "sv": "turist, turister",
+      "target": "il turista, i turisti"
+    },
+    {
+      "sv": "period",
+      "target": "il periodo"
+    },
+    {
+      "sv": "fortfarande",
+      "target": "ancora"
+    },
+    {
+      "sv": "tidigt",
+      "target": "presto"
+    },
+    {
+      "sv": "sommar",
+      "target": "l’estate (fem.)"
+    },
+    {
+      "sv": "det skulle vara trevligt...",
+      "target": "magari"
+    },
+    {
+      "sv": "strand",
+      "target": "la spiaggia"
+    },
+    {
+      "sv": "på stranden",
+      "target": "sulla spiaggia"
+    },
+    {
+      "sv": "vad är det?",
+      "target": "che c’è?"
+    },
+    {
+      "sv": "jag kan",
+      "target": "posso"
+    },
+    {
+      "sv": "jag kan inte tro det",
+      "target": "non ci posso credere"
+    },
+    {
+      "sv": "fotbollsspelare",
+      "target": "il calciatore"
+    },
+    {
+      "sv": "ibland",
+      "target": "alle volte"
+    },
+    {
+      "sv": "de tränar",
+      "target": "si allenano"
+    },
+    {
+      "sv": "fantastiskt",
+      "target": "fantastico"
+    },
+    {
+      "sv": "här ung: tja",
+      "target": "insomma"
+    },
+    {
+      "sv": "låt oss säga intressant",
+      "target": "diciamo interessante"
+    }
+  ],
+  "Unità 3E – Totti": [
+    {
+      "sv": "han föds",
+      "target": "nasce (av nascere)"
+    },
+    {
+      "sv": "september",
+      "target": "settembre"
+    },
+    {
+      "sv": "spela (om sport och lek)",
+      "target": "giocare"
+    },
+    {
+      "sv": "laget",
+      "target": "la squadra"
+    },
+    {
+      "sv": "han debuterar",
+      "target": "esordisce (av esordire)"
+    },
+    {
+      "sv": "elitlag",
+      "target": "la prima squadra"
+    },
+    {
+      "sv": "mars",
+      "target": "marzo"
+    },
+    {
+      "sv": "landslag",
+      "target": "la (squadra) nazionale"
+    },
+    {
+      "sv": "februari",
+      "target": "febbraio"
+    },
+    {
+      "sv": "nummer",
+      "target": "il numero"
+    },
+    {
+      "sv": "legendarisk",
+      "target": "mitico"
+    },
+    {
+      "sv": "han publicerar",
+      "target": "pubblica (av pubblicare)"
+    },
+    {
+      "sv": "alla roliga historier om Totti",
+      "target": "Tutte le barzellette su Totti"
+    },
+    {
+      "sv": "samlade av mig",
+      "target": "raccolte da me"
+    },
+    {
+      "sv": "han säljer",
+      "target": "vende (av vendere)"
+    },
+    {
+      "sv": "tusentals",
+      "target": "migliaia"
+    },
+    {
+      "sv": "han skänker",
+      "target": "regala (av regalare)"
+    }
+  ],
+  "Unità 4A – In un bar sul treno": [
+    {
+      "sv": "bjuda, inbjuda",
+      "target": "invitare"
+    },
+    {
+      "sv": "var",
+      "target": "dove"
+    },
+    {
+      "sv": "de har",
+      "target": "hanno (av avere)"
+    },
+    {
+      "sv": "hus",
+      "target": "la casa"
+    },
+    {
+      "sv": "från – till",
+      "target": "da – a"
+    },
+    {
+      "sv": "något, någonting",
+      "target": "qualcosa"
+    },
+    {
+      "sv": "vara hungrig",
+      "target": "aver(e) fame"
+    },
+    {
+      "sv": "litet bröd, smörgås",
+      "target": "il panino"
+    },
+    {
+      "sv": "skinka",
+      "target": "il prosciutto"
+    },
+    {
+      "sv": "korv",
+      "target": "il salame"
+    },
+    {
+      "sv": "ost",
+      "target": "il formaggio"
+    },
+    {
+      "sv": "de är dyra",
+      "target": "costano cari"
+    },
+    {
+      "sv": "tålamod, här: det är inget att göra åt",
+      "target": "la pazienza"
+    },
+    {
+      "sv": "jag är alldeles för hungrig",
+      "target": "ho troppa fame"
+    },
+    {
+      "sv": "hur mycket kostar? / vad?",
+      "target": "quanto costa?"
+    },
+    {
+      "sv": "att ta",
+      "target": "prendere"
+    },
+    {
+      "sv": "burk",
+      "target": "la lattina"
+    },
+    {
+      "sv": "vetebulle",
+      "target": "la brioche"
+    },
+    {
+      "sv": "god",
+      "target": "buono, -a"
+    },
+    {
+      "sv": "så snart som",
+      "target": "aspetta"
+    },
+    {
+      "sv": "jag bjuder dig",
+      "target": "ti offro (av offrire)"
+    },
+    {
+      "sv": "platt bröd från Ligurien",
+      "target": "la focaccia"
+    },
+    {
+      "sv": "ligurisk, från Ligurien",
+      "target": "ligure"
+    },
+    {
+      "sv": "tillplattat",
+      "target": "schiacciato, -a"
+    },
+    {
+      "sv": "olja",
+      "target": "l’olio"
+    },
+    {
+      "sv": "ibland",
+      "target": "a volte"
+    },
+    {
+      "sv": "kryddörten rosmarin",
+      "target": "il rosmarino"
+    },
+    {
+      "sv": "lök",
+      "target": "la cipolla"
+    },
+    {
+      "sv": "sardell",
+      "target": "l’acciuga"
+    },
+    {
+      "sv": "doft",
+      "target": "il profumo"
+    },
+    {
+      "sv": "ljuvlig",
+      "target": "delizioso, -a"
+    },
+    {
+      "sv": "det räcker",
+      "target": "basta (av bastare)"
+    },
+    {
+      "sv": "vill du ha",
+      "target": "vuoi (av volere)"
+    },
+    {
+      "sv": "lite (av)",
+      "target": "un po’ di"
+    }
+  ],
+  "Unità 4B – Dal panettiere": [
+    {
+      "sv": "hos",
+      "target": "dal (da+il)"
+    },
+    {
+      "sv": "bagaren",
+      "target": "il panettiere"
+    },
+    {
+      "sv": "välkommen",
+      "target": "ben arrivata"
+    },
+    {
+      "sv": "smaka på",
+      "target": "assaggiare"
+    },
+    {
+      "sv": "här är den",
+      "target": "eccola qua"
+    },
+    {
+      "sv": "enkel",
+      "target": "semplice"
+    },
+    {
+      "sv": "den enkla",
+      "target": "quella semplice"
+    },
+    {
+      "sv": "för mig",
+      "target": "per me"
+    },
+    {
+      "sv": "storslagen",
+      "target": "grandioso, -a"
+    },
+    {
+      "sv": "vår",
+      "target": "il la nostra, nostra"
+    },
+    {
+      "sv": "specialitet",
+      "target": "la specialità"
+    },
+    {
+      "sv": "er mamma tycker om den",
+      "target": "piace alla sua mamma"
+    },
+    {
+      "sv": "vara skyldig",
+      "target": "devo (av dovere)"
+    },
+    {
+      "sv": "Hur mycket blir jag skyldig?",
+      "target": "Quanto le devo?"
+    },
+    {
+      "sv": "femtio",
+      "target": "cinquanta"
+    }
+  ],
+  "Unità 4D – In un bar sul mare": [
+    {
+      "sv": "vid havet",
+      "target": "sul mare (su + il mare)"
+    },
+    {
+      "sv": "vad säger du om det?",
+      "target": "che ne dici?"
+    },
+    {
+      "sv": "tycker du om den/det?",
+      "target": "ti piace?"
+    },
+    {
+      "sv": "jag tycker om den/det",
+      "target": "mi piace"
+    },
+    {
+      "sv": "väldigt mycket",
+      "target": "moltissimo"
+    },
+    {
+      "sv": "vara törstig",
+      "target": "avere sete"
+    },
+    {
+      "sv": "vi dricker",
+      "target": "beviamo (av bere)"
+    },
+    {
+      "sv": "något",
+      "target": "qualcosa"
+    },
+    {
+      "sv": "härligt!",
+      "target": "bello!"
+    },
+    {
+      "sv": "gång",
+      "target": "la volta"
+    },
+    {
+      "sv": "betala",
+      "target": "pagare"
+    },
+    {
+      "sv": "finkrossad is med saft",
+      "target": "la granita"
+    },
+    {
+      "sv": "dryck",
+      "target": "la bevanda"
+    },
+    {
+      "sv": "gjord",
+      "target": "fatto, fatta (av fare)"
+    },
+    {
+      "sv": "is",
+      "target": "il ghiaccio"
+    },
+    {
+      "sv": "hackad, krossad",
+      "target": "tritato, -a"
+    },
+    {
+      "sv": "saft",
+      "target": "lo sciroppo"
+    },
+    {
+      "sv": "ni har",
+      "target": "avete (av avere)"
+    },
+    {
+      "sv": "vi har",
+      "target": "abbiamo"
+    },
+    {
+      "sv": "citron",
+      "target": "il limone"
+    },
+    {
+      "sv": "mint",
+      "target": "la menta"
+    },
+    {
+      "sv": "åtskilliga, flera",
+      "target": "diversi, -e"
+    },
+    {
+      "sv": "andra",
+      "target": "altri"
+    },
+    {
+      "sv": "smak",
+      "target": "il gusto"
+    },
+    {
+      "sv": "vilken smak?",
+      "target": "che gusto?"
+    },
+    {
+      "sv": "önska",
+      "target": "desiderare"
+    },
+    {
+      "sv": "läskande, släcker törsten",
+      "target": "dissetante"
+    },
+    {
+      "sv": "jag gör",
+      "target": "faccio (av fare)"
+    },
+    {
+      "sv": "experiment",
+      "target": "l’esperimento"
+    },
+    {
+      "sv": "det bästa",
+      "target": "la cosa più bella"
+    },
+    {
+      "sv": "utländsk",
+      "target": "straniero, -a"
+    }
+  ],
+  "Unità 5A – La telefonata": [
+    {
+      "sv": "telefonsamtal",
+      "target": "la telefonata"
+    },
+    {
+      "sv": "ringa",
+      "target": "telefonare"
+    },
+    {
+      "sv": "hemma",
+      "target": "a casa"
+    },
+    {
+      "sv": "svara",
+      "target": "rispondere"
+    },
+    {
+      "sv": "telefonsvarare",
+      "target": "la segreteria telefonica"
+    },
+    {
+      "sv": "lämna",
+      "target": "lasciare"
+    },
+    {
+      "sv": "meddelande",
+      "target": "il messaggio"
+    },
+    {
+      "sv": "ljudsignal",
+      "target": "il segnale acustico"
+    },
+    {
+      "sv": "halvtimme",
+      "target": "la mezz’ora"
+    },
+    {
+      "sv": "hallå",
+      "target": "pronto"
+    },
+    {
+      "sv": "pappa",
+      "target": "il papà"
+    },
+    {
+      "sv": "hur är det?",
+      "target": "come va?"
+    },
+    {
+      "sv": "vid fem-tiden",
+      "target": "verso le cinque"
+    },
+    {
+      "sv": "en vän till mig",
+      "target": "un mio amico"
+    },
+    {
+      "sv": "som",
+      "target": "che"
+    },
+    {
+      "sv": "du säger",
+      "target": "dici (av dire)"
+    },
+    {
+      "sv": "han har besökt",
+      "target": "ha visitato"
+    },
+    {
+      "sv": "han kommer",
+      "target": "viene (av venire)"
+    },
+    {
+      "sv": "resten",
+      "target": "il resto"
+    },
+    {
+      "sv": "problem",
+      "target": "il problema, i problemi"
+    },
+    {
+      "sv": "jag vet",
+      "target": "so (av sapere)"
+    },
+    {
+      "sv": "han sover",
+      "target": "dorme (av dormire)"
+    },
+    {
+      "sv": "jag har tänkt",
+      "target": "ho pensato"
+    },
+    {
+      "sv": "hemma hos oss",
+      "target": "casa nostra"
+    },
+    {
+      "sv": "stor",
+      "target": "grande"
+    },
+    {
+      "sv": "rum",
+      "target": "la stanza"
+    },
+    {
+      "sv": "gäst",
+      "target": "l’ospite (mask., fem.)"
+    },
+    {
+      "sv": "du får prata med mamma",
+      "target": "ti passo la mamma"
+    }
+  ],
+  "Unità 5D – L’agenda di Anna": [
+    {
+      "sv": "anteckningsbok",
+      "target": "l’agenda"
+    },
+    {
+      "sv": "veckoslut, helg",
+      "target": "il fine settimana"
+    },
+    {
+      "sv": "har förberett",
+      "target": "ha in programma"
+    },
+    {
+      "sv": "sak",
+      "target": "la cosa"
+    },
+    {
+      "sv": "göra",
+      "target": "fare"
+    },
+    {
+      "sv": "fredag",
+      "target": "il venerdì"
+    },
+    {
+      "sv": "ankomst",
+      "target": "l’arrivo"
+    },
+    {
+      "sv": "lördag",
+      "target": "il sabato"
+    },
+    {
+      "sv": "torghandel, marknad",
+      "target": "il mercato"
+    },
+    {
+      "sv": "marknad, utställning",
+      "target": "la fiera"
+    },
+    {
+      "sv": "kvarter i det gamla Milano",
+      "target": "i Navigli"
+    },
+    {
+      "sv": "söndag",
+      "target": "la domenica"
+    },
+    {
+      "sv": "Hertigfamiljen Sforzas slott",
+      "target": "il Castello Sforzesco"
+    },
+    {
+      "sv": "modekvarter",
+      "target": "il quadrilatero della moda"
+    },
+    {
+      "sv": "avresa",
+      "target": "la partenza"
+    },
+    {
+      "sv": "måndag",
+      "target": "il lunedì"
+    },
+    {
+      "sv": "föreläsning, lektion",
+      "target": "la lezione"
+    },
+    {
+      "sv": "tisdag",
+      "target": "il martedì"
+    },
+    {
+      "sv": "bio",
+      "target": "il cinema"
+    },
+    {
+      "sv": "onsdag",
+      "target": "il mercoledì"
+    },
+    {
+      "sv": "torsdag",
+      "target": "il giovedì"
+    }
+  ],
+  "Unità 5E – La cena a casa Bono": [
+    {
+      "sv": "hemma, hemma hos",
+      "target": "a casa"
+    },
+    {
+      "sv": "även om",
+      "target": "anche se"
+    },
+    {
+      "sv": "lov, semester",
+      "target": "le vacanze"
+    },
+    {
+      "sv": "slutar",
+      "target": "finiscono (av finire)"
+    },
+    {
+      "sv": "tidigt",
+      "target": "presto"
+    },
+    {
+      "sv": "du förstår",
+      "target": "capisci (av capire)"
+    },
+    {
+      "sv": "ganska",
+      "target": "abbastanza"
+    },
+    {
+      "sv": "bekväm",
+      "target": "comodo, -a"
+    },
+    {
+      "sv": "hör du",
+      "target": "senti (av sentire)"
+    },
+    {
+      "sv": "under (om tid)",
+      "target": "durante"
+    },
+    {
+      "sv": "köpa",
+      "target": "comprare"
+    },
+    {
+      "sv": "present",
+      "target": "il regalo"
+    },
+    {
+      "sv": "några presenter",
+      "target": "dei regali"
+    },
+    {
+      "sv": "du har tänkt på",
+      "target": "hai pensato"
+    },
+    {
+      "sv": "vart du ska gå med honom",
+      "target": "dove portarlo"
+    },
+    {
+      "sv": "javisst",
+      "target": "certamente"
+    },
+    {
+      "sv": "absolut inte",
+      "target": "di sicuro non"
+    },
+    {
+      "sv": "affär",
+      "target": "il negozio"
+    },
+    {
+      "sv": "dyr",
+      "target": "costoso, -a"
+    },
+    {
+      "sv": "det kostar en förmögenhet",
+      "target": "costa un capitale"
+    },
+    {
+      "sv": "morgon",
+      "target": "la mattina"
+    },
+    {
+      "sv": "i morgon bitti",
+      "target": "domani mattina"
+    },
+    {
+      "sv": "folk",
+      "target": "la gente"
+    },
+    {
+      "sv": "för mycket folk",
+      "target": "troppa gente"
+    },
+    {
+      "sv": "jag föredrar",
+      "target": "preferisco (av preferire)"
+    },
+    {
+      "sv": "vanlig, normal",
+      "target": "normale"
+    },
+    {
+      "sv": "förra lördagen",
+      "target": "sabato scorso"
+    },
+    {
+      "sv": "jag köpte",
+      "target": "ho comprato"
+    },
+    {
+      "sv": "par",
+      "target": "il paio"
+    },
+    {
+      "sv": "sko",
+      "target": "la scarpa"
+    },
+    {
+      "sv": "elegant",
+      "target": "elegante"
+    },
+    {
+      "sv": "söka",
+      "target": "cercare"
+    },
+    {
+      "sv": "just",
+      "target": "proprio"
+    },
+    {
+      "sv": "väska",
+      "target": "la borsa"
+    }
+  ],
+  "Unità 5F – Il weekend di Mattias e Anna": [
+    {
+      "sv": "ta med sig ut",
+      "target": "portare fuori"
+    },
+    {
+      "sv": "hennes, sina",
+      "target": "i suoi"
+    },
+    {
+      "sv": "de går",
+      "target": "vanno (av andare)"
+    },
+    {
+      "sv": "spela (om musik)",
+      "target": "suonare"
+    },
+    {
+      "sv": "tröja",
+      "target": "la maglietta"
+    },
+    {
+      "sv": "utbud",
+      "target": "la scelta"
+    },
+    {
+      "sv": "kläder",
+      "target": "i vestiti"
+    },
+    {
+      "sv": "hälften",
+      "target": "la metà"
+    },
+    {
+      "sv": "pris",
+      "target": "il prezzo"
+    },
+    {
+      "sv": "de gör ett kort besök",
+      "target": "fanno un salto"
+    },
+    {
+      "sv": "mycket berömd",
+      "target": "famosissimo"
+    },
+    {
+      "sv": "teater",
+      "target": "il teatro"
+    },
+    {
+      "sv": "typisk",
+      "target": "tipico, -a"
+    },
+    {
+      "sv": "han säger",
+      "target": "dice (av dire)"
+    },
+    {
+      "sv": "aperitif, aptitretare",
+      "target": "l’aperitivo"
+    },
+    {
+      "sv": "prova",
+      "target": "provare"
+    },
+    {
+      "sv": "milanesisk, från Milano",
+      "target": "milanese"
+    },
+    {
+      "sv": "välbesökt",
+      "target": "frequentato, -a"
+    },
+    {
+      "sv": "vecka",
+      "target": "la settimana"
+    },
+    {
+      "sv": "mode",
+      "target": "la moda"
+    },
+    {
+      "sv": "modell",
+      "target": "la modella"
+    },
+    {
+      "sv": "världen",
+      "target": "il mondo"
+    },
+    {
+      "sv": "glad, nöjd",
+      "target": "contento, -a"
+    },
+    {
+      "sv": "stängd",
+      "target": "chiuso, -a"
+    },
+    {
+      "sv": "titta på",
+      "target": "guardare"
+    },
+    {
+      "sv": "skyltfönstret",
+      "target": "la vetrina"
+    },
+    {
+      "sv": "originell",
+      "target": "originale"
+    },
+    {
+      "sv": "återvända",
+      "target": "tornare"
+    },
+    {
+      "sv": "sorgsenhet",
+      "target": "la tristezza"
+    },
+    {
+      "sv": "hjärtat",
+      "target": "il cuore"
+    }
+  ],
+  "Unità 5G – La moda": [
+    {
+      "sv": "mode",
+      "target": "la moda"
+    },
+    {
+      "sv": "T-shirt",
+      "target": "la maglietta"
+    },
+    {
+      "sv": "kjol",
+      "target": "la gonna"
+    },
+    {
+      "sv": "blus",
+      "target": "la camicetta"
+    },
+    {
+      "sv": "skjorta",
+      "target": "la camicia"
+    },
+    {
+      "sv": "tröjan",
+      "target": "il golf"
+    },
+    {
+      "sv": "jeans",
+      "target": "i jeans"
+    },
+    {
+      "sv": "byxor",
+      "target": "i pantaloni"
+    },
+    {
+      "sv": "kostym",
+      "target": "il vestito (da uomo)"
+    },
+    {
+      "sv": "klänning",
+      "target": "il vestito (da donna)"
+    },
+    {
+      "sv": "halsduk",
+      "target": "la sciarpa"
+    },
+    {
+      "sv": "sko",
+      "target": "la scarpa"
+    },
+    {
+      "sv": "stövel",
+      "target": "lo stivale"
+    },
+    {
+      "sv": "collegetröja, huvtröja",
+      "target": "la felpa"
+    },
+    {
+      "sv": "kavaj",
+      "target": "la giacca"
+    },
+    {
+      "sv": "väska",
+      "target": "la borsa"
+    },
+    {
+      "sv": "färg",
+      "target": "il colore"
+    },
+    {
+      "sv": "svart",
+      "target": "nero, -a"
+    },
+    {
+      "sv": "grå",
+      "target": "grigio, -a"
+    },
+    {
+      "sv": "vit",
+      "target": "bianco, -a"
+    },
+    {
+      "sv": "gul",
+      "target": "giallo, -a"
+    },
+    {
+      "sv": "orange",
+      "target": "arancione"
+    },
+    {
+      "sv": "röd",
+      "target": "rosso, -a"
+    },
+    {
+      "sv": "rosa",
+      "target": "rosa"
+    },
+    {
+      "sv": "ljusgrön",
+      "target": "verde chiaro"
+    },
+    {
+      "sv": "mörkgrön",
+      "target": "verde scuro"
+    },
+    {
+      "sv": "grön",
+      "target": "verde"
+    },
+    {
+      "sv": "mörkblå",
+      "target": "blu"
+    },
+    {
+      "sv": "ljusblå",
+      "target": "azzurro, -a"
+    },
+    {
+      "sv": "brun",
+      "target": "marrone"
+    },
+    {
+      "sv": "randig",
+      "target": "a righe"
+    },
+    {
+      "sv": "blommig",
+      "target": "a fiori"
+    },
+    {
+      "sv": "rutig",
+      "target": "a quadretti"
+    },
+    {
+      "sv": "enfärgad",
+      "target": "in tinta unita"
+    }
+  ],
+  "Unità 5H – Anna e Mattias fanno lo shopping": [
+    {
+      "sv": "grejer",
+      "target": "la roba"
+    },
+    {
+      "sv": "komma",
+      "target": "venire"
+    },
+    {
+      "sv": "kvinna",
+      "target": "la donna"
+    },
+    {
+      "sv": "hörde du",
+      "target": "hai sentito"
+    },
+    {
+      "sv": "ett riktigt fynd",
+      "target": "un vero affare"
+    },
+    {
+      "sv": "lugn",
+      "target": "la calma"
+    },
+    {
+      "sv": "tappa",
+      "target": "perdere"
+    },
+    {
+      "sv": "huvud",
+      "target": "la testa"
+    },
+    {
+      "sv": "allt är inte guld",
+      "target": "non è tutto oro"
+    },
+    {
+      "sv": "som glimmar guld",
+      "target": "quello che luccica"
+    },
+    {
+      "sv": "jag vet det",
+      "target": "lo so"
+    },
+    {
+      "sv": "verkligen",
+      "target": "davvero"
+    },
+    {
+      "sv": "perfekt",
+      "target": "perfetto, -a"
+    },
+    {
+      "sv": "vilket nummer",
+      "target": "che numero"
+    },
+    {
+      "sv": "behöver Ni",
+      "target": "le serve"
+    },
+    {
+      "sv": "ung man",
+      "target": "il giovanotto"
+    },
+    {
+      "sv": "Ni har tur",
+      "target": "è fortunato, -a"
+    },
+    {
+      "sv": "affär",
+      "target": "il negozio"
+    },
+    {
+      "sv": "kläder",
+      "target": "i vestiti"
+    },
+    {
+      "sv": "hjälpa",
+      "target": "aiutare"
+    },
+    {
+      "sv": "kan jag hjälpa er?",
+      "target": "posso aiutarvi?"
+    },
+    {
+      "sv": "kan jag få titta på",
+      "target": "mi fa vedere"
+    },
+    {
+      "sv": "skyltfönster",
+      "target": "la vetrina"
+    },
+    {
+      "sv": "text",
+      "target": "la scritta"
+    },
+    {
+      "sv": "storlek",
+      "target": "la taglia"
+    },
+    {
+      "sv": "bära, här: ha",
+      "target": "portare"
+    },
+    {
+      "sv": "medium (storlek)",
+      "target": "la media"
+    },
+    {
+      "sv": "mer",
+      "target": "più"
+    },
+    {
+      "sv": "kraftig",
+      "target": "robusto, -a"
+    },
+    {
+      "sv": "än jag",
+      "target": "di me"
+    },
+    {
+      "sv": "större",
+      "target": "più grande"
+    },
+    {
+      "sv": "då",
+      "target": "allora"
+    },
+    {
+      "sv": "säkert",
+      "target": "sicuramente"
+    },
+    {
+      "sv": "storlek L",
+      "target": "la L (uttalas elle)"
+    },
+    {
+      "sv": "klä sig",
+      "target": "vestire"
+    },
+    {
+      "sv": "stil",
+      "target": "lo stile"
+    },
+    {
+      "sv": "rappare",
+      "target": "il rapper"
+    },
+    {
+      "sv": "i så fall",
+      "target": "in quel caso"
+    },
+    {
+      "sv": "bättre",
+      "target": "meglio"
+    },
+    {
+      "sv": "storlek XL",
+      "target": "la XL (uttalas iks elle)"
+    },
+    {
+      "sv": "skulle vara",
+      "target": "sia"
+    },
+    {
+      "sv": "annan",
+      "target": "altro, -a"
+    },
+    {
+      "sv": "kan jag prova den?",
+      "target": "posso provarla?"
+    },
+    {
+      "sv": "jag ser hur den ser ut på",
+      "target": "vedo l’effetto"
+    },
+    {
+      "sv": "javisst",
+      "target": "certamente"
+    },
+    {
+      "sv": "provhytt",
+      "target": "il camerino"
+    },
+    {
+      "sv": "längst bort",
+      "target": "in fondo"
+    },
+    {
+      "sv": "jag tar den",
+      "target": "la prendo"
+    },
+    {
+      "sv": "presentförpackning",
+      "target": "il pacchetto regalo"
+    },
+    {
+      "sv": "klack",
+      "target": "il tacco"
+    },
+    {
+      "sv": "skyhög, jättehög",
+      "target": "altissimo, -a"
+    },
+    {
+      "sv": "typ",
+      "target": "il tipo"
+    },
+    {
+      "sv": "sportig",
+      "target": "sportivo, -a"
+    },
+    {
+      "sv": "gymnastik",
+      "target": "la ginnastica"
+    },
+    {
+      "sv": "form",
+      "target": "la forma"
+    },
+    {
+      "sv": "de passar verkligen bra",
+      "target": "vanno proprio bene"
+    },
+    {
+      "sv": "är kvar",
+      "target": "è rimasto"
+    },
+    {
+      "sv": "par",
+      "target": "il paio"
+    },
+    {
+      "sv": "modell",
+      "target": "il modello"
+    },
+    {
+      "sv": "lik, liknande",
+      "target": "simile"
+    },
+    {
+      "sv": "den är billigare",
+      "target": "costa meno"
+    },
+    {
+      "sv": "rea",
+      "target": "il saldo"
+    }
+  ],
+  "Unità 6A – Alla reception dell’albergo": [
+    {
+      "sv": "hotell",
+      "target": "l’albergo"
+    },
+    {
+      "sv": "reception",
+      "target": "la reception"
+    },
+    {
+      "sv": "bokning",
+      "target": "la prenotazione"
+    },
+    {
+      "sv": "december",
+      "target": "dicembre"
+    },
+    {
+      "sv": "rum",
+      "target": "la camera"
+    },
+    {
+      "sv": "dubbelrum",
+      "target": "la camera doppia"
+    },
+    {
+      "sv": "badrum",
+      "target": "il bagno"
+    },
+    {
+      "sv": "dusch",
+      "target": "la doccia"
+    },
+    {
+      "sv": "eller",
+      "target": "o"
+    },
+    {
+      "sv": "lugn, ostörd",
+      "target": "tranquillo, -a"
+    },
+    {
+      "sv": "särskilt",
+      "target": "in particolare"
+    },
+    {
+      "sv": "ni vet",
+      "target": "sa (av sapere)"
+    },
+    {
+      "sv": "händelsevis",
+      "target": "per caso"
+    },
+    {
+      "sv": "åka skidor",
+      "target": "sciare"
+    },
+    {
+      "sv": "resväska",
+      "target": "la valigia"
+    },
+    {
+      "sv": "jag behöver",
+      "target": "mi serve"
+    },
+    {
+      "sv": "motsvarar eng. please",
+      "target": "per cortesia"
+    },
+    {
+      "sv": "körkort",
+      "target": "la patente"
+    },
+    {
+      "sv": "ni ger mig",
+      "target": "mi dà"
+    },
+    {
+      "sv": "adress",
+      "target": "l’indirizzo"
+    },
+    {
+      "sv": "jag har förstått",
+      "target": "ho capito"
+    },
+    {
+      "sv": "hur dags?",
+      "target": "a che ora?"
+    },
+    {
+      "sv": "klockan halv åtta",
+      "target": "alle sette e mezzo"
+    },
+    {
+      "sv": "hur mycket är klockan",
+      "target": "che ore sono?"
+    },
+    {
+      "sv": "klockan är tre",
+      "target": "sono le tre"
+    },
+    {
+      "sv": "ha tid",
+      "target": "avere tempo"
+    },
+    {
+      "sv": "skidtur",
+      "target": "la sciata"
+    }
+  ],
+  "Unità 6B – Che ore sono?": [
+    {
+      "sv": "timme",
+      "target": "l’ora"
+    },
+    {
+      "sv": "kund",
+      "target": "il, la cliente"
+    },
+    {
+      "sv": "kära/ärade gäst",
+      "target": "gentile cliente"
+    },
+    {
+      "sv": "lista",
+      "target": "la lista"
+    },
+    {
+      "sv": "tider",
+      "target": "gli orari"
+    },
+    {
+      "sv": "tillgänglig",
+      "target": "disponibile"
+    },
+    {
+      "sv": "morgon",
+      "target": "il mattino"
+    },
+    {
+      "sv": "lunch",
+      "target": "il pranzo"
+    },
+    {
+      "sv": "öppna",
+      "target": "aprire"
+    }
+  ],
+  "Unità 6C – Il diario di Anna": [
+    {
+      "sv": "dagbok",
+      "target": "il diario"
+    },
+    {
+      "sv": "resa",
+      "target": "il viaggio"
+    },
+    {
+      "sv": "buss",
+      "target": "il pullman"
+    },
+    {
+      "sv": "berg",
+      "target": "la montagna"
+    },
+    {
+      "sv": "tänka tillbaka",
+      "target": "ripensare"
+    },
+    {
+      "sv": "intensiv",
+      "target": "intenso"
+    },
+    {
+      "sv": "hon har upplevt",
+      "target": "ha passato"
+    },
+    {
+      "sv": "hon har lärt känna",
+      "target": "ha conosciuto"
+    },
+    {
+      "sv": "person",
+      "target": "la persona"
+    },
+    {
+      "sv": "läsa",
+      "target": "leggere"
+    },
+    {
+      "sv": "kära",
+      "target": "caro, -a"
+    },
+    {
+      "sv": "jag kände",
+      "target": "ho sentito"
+    },
+    {
+      "sv": "genast",
+      "target": "subito"
+    },
+    {
+      "sv": "han var (imperfekt)",
+      "target": "era"
+    },
+    {
+      "sv": "vi promenerade",
+      "target": "abbiamo passeggiato"
+    },
+    {
+      "sv": "vi besökte",
+      "target": "abbiamo visitato"
+    },
+    {
+      "sv": "Vatikanstaten",
+      "target": "il Vaticano"
+    },
+    {
+      "sv": "vi tillbringade",
+      "target": "abbiamo passato"
+    },
+    {
+      "sv": "vi åt",
+      "target": "abbiamo mangiato"
+    },
+    {
+      "sv": "till och med",
+      "target": "addirittura"
+    },
+    {
+      "sv": "vi badade",
+      "target": "abbiamo fatto il bagno"
+    },
+    {
+      "sv": "han tog",
+      "target": "ha preso"
+    },
+    {
+      "sv": "vid det laget, då",
+      "target": "a quel punto"
+    },
+    {
+      "sv": "jag förstod",
+      "target": "ho capito"
+    },
+    {
+      "sv": "ung. på senare tid",
+      "target": "in questi giorni"
+    },
+    {
+      "sv": "han har ringt",
+      "target": "ha telefonato"
+    },
+    {
+      "sv": "bara en gång",
+      "target": "una volta sola"
+    },
+    {
+      "sv": "i går",
+      "target": "ieri"
+    },
+    {
+      "sv": "jag fick en överraskning",
+      "target": "ho avuto una sorpresa"
+    },
+    {
+      "sv": "det fanns (imperfekt)",
+      "target": "c’era"
+    },
+    {
+      "sv": "England",
+      "target": "l’Inghilterra"
+    },
+    {
+      "sv": "jul",
+      "target": "il Natale"
+    },
+    {
+      "sv": "han kommer",
+      "target": "viene (av venire)"
+    },
+    {
+      "sv": "om (om tid)",
+      "target": "tra"
+    },
+    {
+      "sv": "månad",
+      "target": "il mese"
+    },
+    {
+      "sv": "han har bjudit mig",
+      "target": "mi ha invitato"
+    },
+    {
+      "sv": "acceptera",
+      "target": "accettare"
+    }
+  ],
+  "Unità 6D – I mesi e le stagioni dell’anno": [
+    {
+      "sv": "årstid",
+      "target": "la stagione"
+    },
+    {
+      "sv": "januari",
+      "target": "gennaio"
+    },
+    {
+      "sv": "februari",
+      "target": "febbraio"
+    },
+    {
+      "sv": "mars",
+      "target": "marzo"
+    },
+    {
+      "sv": "april",
+      "target": "aprile"
+    },
+    {
+      "sv": "maj",
+      "target": "maggio"
+    },
+    {
+      "sv": "juni",
+      "target": "giugno"
+    },
+    {
+      "sv": "juli",
+      "target": "luglio"
+    },
+    {
+      "sv": "augusti",
+      "target": "agosto"
+    },
+    {
+      "sv": "september",
+      "target": "settembre"
+    },
+    {
+      "sv": "oktober",
+      "target": "ottobre"
+    },
+    {
+      "sv": "november",
+      "target": "novembre"
+    },
+    {
+      "sv": "december",
+      "target": "dicembre"
+    },
+    {
+      "sv": "vinter",
+      "target": "l’inverno"
+    },
+    {
+      "sv": "vår",
+      "target": "la primavera"
+    },
+    {
+      "sv": "sommar",
+      "target": "l’estate (fem.)"
+    },
+    {
+      "sv": "höst",
+      "target": "l’autunno"
+    }
+  ],
+  "Unità 6F – In pista": [
+    {
+      "sv": "i backen",
+      "target": "in pista"
+    },
+    {
+      "sv": "jag är här, jag har kommit",
+      "target": "sono arrivata"
+    },
+    {
+      "sv": "äntligen",
+      "target": "finalmente"
+    },
+    {
+      "sv": "snart, genast",
+      "target": "presto"
+    },
+    {
+      "sv": "jättemycket",
+      "target": "tantissimo"
+    },
+    {
+      "sv": "i morse",
+      "target": "stamattina"
+    },
+    {
+      "sv": "lyckliga du",
+      "target": "beata te"
+    },
+    {
+      "sv": "snö",
+      "target": "la neve"
+    },
+    {
+      "sv": "jag vet",
+      "target": "so (av sapere)"
+    },
+    {
+      "sv": "jag vet inte",
+      "target": "non lo so"
+    },
+    {
+      "sv": "jag har annat att tänka på",
+      "target": "ho altro a cui pensare"
+    },
+    {
+      "sv": "har du blivit galen?",
+      "target": "sei impazzita?"
+    },
+    {
+      "sv": "rättare sagt",
+      "target": "anzi"
+    },
+    {
+      "sv": "ny",
+      "target": "nuovo, -a"
+    },
+    {
+      "sv": "de kommer",
+      "target": "vengono (av venire)"
+    },
+    {
+      "sv": "just",
+      "target": "appena"
+    },
+    {
+      "sv": "stipendieresa",
+      "target": "il viaggio premio"
+    },
+    {
+      "sv": "de står (stilla)",
+      "target": "sono fermi"
+    },
+    {
+      "sv": "skidlift",
+      "target": "lo ski-lift"
+    },
+    {
+      "sv": "tråkig, tröttsam",
+      "target": "noioso, -a"
+    },
+    {
+      "sv": "vindjacka",
+      "target": "la giacca a vento"
+    },
+    {
+      "sv": "de där snygga killarna",
+      "target": "quei bei ragazzi"
+    },
+    {
+      "sv": "inte illa",
+      "target": "mica male"
+    },
+    {
+      "sv": "enligt min uppfattning",
+      "target": "secondo me"
+    },
+    {
+      "sv": "är född i fiskarnas tecken",
+      "target": "è dei pesci"
+    },
+    {
+      "sv": "ung: vad nu då",
+      "target": "questa è bella!"
+    },
+    {
+      "sv": "hur kan du säga det?",
+      "target": "come fai a dirlo?"
+    },
+    {
+      "sv": "intrycket",
+      "target": "l’impressione (fem.)"
+    },
+    {
+      "sv": "vet du det",
+      "target": "lo sai"
+    },
+    {
+      "sv": "att",
+      "target": "che"
+    },
+    {
+      "sv": "träff, möte",
+      "target": "l’appuntamento"
+    },
+    {
+      "sv": "dem",
+      "target": "loro"
+    },
+    {
+      "sv": "de kommer",
+      "target": "vengono (av venire)"
+    },
+    {
+      "sv": "vara överens, vara med på något",
+      "target": "essere d’accordo"
+    },
+    {
+      "sv": "naturligtvis",
+      "target": "naturalmente"
+    },
+    {
+      "sv": "här: när allt kommer omkring",
+      "target": "poi"
+    },
+    {
+      "sv": "de ser inte så tokiga ut",
+      "target": "non sembrano così male"
+    }
+  ],
+  "Unità finale A – Un addio o un arrivederci?": [
+    {
+      "sv": "farväl",
+      "target": "addio"
+    },
+    {
+      "sv": "på återseende",
+      "target": "arrivederci"
+    },
+    {
+      "sv": "det har blivit dags att",
+      "target": "è arrivata l’ora di"
+    },
+    {
+      "sv": "fylld av",
+      "target": "carico di"
+    },
+    {
+      "sv": "upplevelsen, sinnesrörelsen",
+      "target": "l’emozione (fem.)"
+    },
+    {
+      "sv": "plan",
+      "target": "il progetto"
+    },
+    {
+      "sv": "han måste",
+      "target": "deve (av dovere)"
+    },
+    {
+      "sv": "flygplan",
+      "target": "l’aereo"
+    },
+    {
+      "sv": "flygplats",
+      "target": "l’aeroporto"
+    },
+    {
+      "sv": "50 minuter från",
+      "target": "a 50 minuti da"
+    },
+    {
+      "sv": "säga hej till, hälsa på",
+      "target": "salutare"
+    },
+    {
+      "sv": "äta frukost",
+      "target": "fare colazione"
+    },
+    {
+      "sv": "giffel",
+      "target": "il cornetto"
+    },
+    {
+      "sv": "honom",
+      "target": "lo"
+    },
+    {
+      "sv": "följa med",
+      "target": "accompagnare"
+    },
+    {
+      "sv": "anslutningståg till flygplatsen",
+      "target": "la navetta"
+    },
+    {
+      "sv": "avgå",
+      "target": "partire"
+    },
+    {
+      "sv": "spår",
+      "target": "il binario"
+    },
+    {
+      "sv": "fattas",
+      "target": "mancare"
+    },
+    {
+      "sv": "för att inte tala om",
+      "target": "per non parlare di"
+    },
+    {
+      "sv": "ingen orsak",
+      "target": "figurati"
+    },
+    {
+      "sv": "bättre, bäst",
+      "target": "migliore"
+    },
+    {
+      "sv": "det är soligt",
+      "target": "c’è il sole"
+    },
+    {
+      "sv": "solen går ner",
+      "target": "il sole tramonta"
+    },
+    {
+      "sv": "aldrig",
+      "target": "non - mai"
+    },
+    {
+      "sv": "natt",
+      "target": "la notte"
+    },
+    {
+      "sv": "jag skulle tycka om att",
+      "target": "mi piacerebbe"
+    },
+    {
+      "sv": "komma och hälsa på dig",
+      "target": "venire a trovarti"
+    },
+    {
+      "sv": "här får du",
+      "target": "tieni"
+    },
+    {
+      "sv": "bok",
+      "target": "il libro"
+    },
+    {
+      "sv": "om Sverige",
+      "target": "sulla Svezia"
+    },
+    {
+      "sv": "du måste",
+      "target": "devi (av dovere)"
+    },
+    {
+      "sv": "stiga på",
+      "target": "salire"
+    },
+    {
+      "sv": "kom igen nu, sätt i gång",
+      "target": "dai"
+    },
+    {
+      "sv": "skynda dig",
+      "target": "sbrigati"
+    },
+    {
+      "sv": "jag ringer dig",
+      "target": "è il treno"
+    },
+    {
+      "sv": "vi ses snart",
+      "target": "a presto"
+    },
+    {
+      "sv": "ja",
+      "target": "sì"
+    },
+    {
+      "sv": "skratt",
+      "target": "la risata"
+    },
+    {
+      "sv": "vem vet",
+      "target": "chissà"
+    },
+    {
+      "sv": "ung. vad härligt livet måste vara",
+      "target": "chissà com’è bella la vita"
+    },
+    {
+      "sv": "om",
+      "target": "se"
+    }
+  ],
+  "Unità finale B – La Svezia": [
+    {
+      "sv": "ledsen",
+      "target": "dispiaciuto"
+    },
+    {
+      "sv": "i själva verket, faktiskt",
+      "target": "in effetti"
+    },
+    {
+      "sv": "få, fåtaliga",
+      "target": "pochi"
+    },
+    {
+      "sv": "invånare",
+      "target": "l’abitante (mask.)"
+    },
+    {
+      "sv": "kallas",
+      "target": "è chiamato"
+    },
+    {
+      "sv": "hon kommer att tänka på",
+      "target": "le viene in mente"
+    },
+    {
+      "sv": "säng",
+      "target": "il letto"
+    },
+    {
+      "sv": "också, även",
+      "target": "pure"
+    },
+    {
+      "sv": "bokhylla",
+      "target": "la libreria"
+    },
+    {
+      "sv": "skrivbord",
+      "target": "la scrivania"
+    },
+    {
+      "sv": "erövra",
+      "target": "conquistare"
+    },
+    {
+      "sv": "regissör",
+      "target": "il regista"
+    },
+    {
+      "sv": "musikgrupp",
+      "target": "il gruppo musicale"
+    },
+    {
+      "sv": "med blå ögon",
+      "target": "dagli occhi azzurri"
+    },
+    {
+      "sv": "träna",
+      "target": "allenare"
+    },
+    {
+      "sv": "fotboll",
+      "target": "il calcio"
+    },
+    {
+      "sv": "långt bort",
+      "target": "lontano"
+    },
+    {
+      "sv": "öppnat",
+      "target": "aperto, -a (av aprire)"
+    },
+    {
+      "sv": "likadan som",
+      "target": "uguale a"
+    },
+    {
+      "sv": "motsvarighet",
+      "target": "l’equivalente"
+    }
+  ],
+  "Unità finale D – Italiani famosi": [
+    {
+      "sv": "poet",
+      "target": "il poeta"
+    },
+    {
+      "sv": "målare",
+      "target": "il pittore"
+    },
+    {
+      "sv": "skulptör",
+      "target": "lo scultore"
+    },
+    {
+      "sv": "vetenskapsman",
+      "target": "lo scienziato"
+    },
+    {
+      "sv": "arkitekt",
+      "target": "l’architetto"
+    },
+    {
+      "sv": "skådespelerska",
+      "target": "l’attrice"
+    },
+    {
+      "sv": "sångare, sångerska",
+      "target": "il, la cantante"
+    },
+    {
+      "sv": "författarinna",
+      "target": "la scrittrice"
+    },
+    {
+      "sv": "författare",
+      "target": "lo scrittore"
+    },
+    {
+      "sv": "skådespelare",
+      "target": "l’attore (mask.)"
+    },
+    {
+      "sv": "modeskapare",
+      "target": "lo stilista"
+    },
+    {
+      "sv": "tenorsångare",
+      "target": "il tenore"
+    }
+  ]
+};
+
+  const VERBS={
+    stare:`STARE = att må
+(io) sto = jag mår
+(tu) stai = du mår
+(lui/lei) sta = han/hon mår
+(noi) stiamo = vi mår
+(voi) state = ni mår
+(loro) stanno = de mår`,
+    essere:`ESSERE = att vara
+(io) sono – jag är
+(tu) sei – du är
+(lui/lei) è – han/hon är
+(noi) siamo – vi är
+(voi) siete – ni är
+(loro) sono – de är`,
+    parlare:`REGELBUNDET VERB PÅ -ARE
+PARLARE = tala
+(io) parlo
+(tu) parli
+(lui/lei) parla
+(noi) parliamo
+(voi) parlate
+(loro) parlano`,
+    credere:`REGELBUNDET VERB PÅ -ERE
+CREDERE = tro
+(io) credo
+(tu) credi
+(lui/lei) crede
+(noi) crediamo
+(voi) credete
+(loro) credono`,
+    dormire:`REGELBUNDET VERB PÅ -IRE
+DORMIRE = sova
+(io) dormo
+(tu) dormi
+(lui/lei) dorme
+(noi) dormiamo
+(voi) dormite
+(loro) dormono`,
+    capire:`-IRE-VERB MED -ISC-
+CAPIRE = förstå
+(io) capisco
+(tu) capisci
+(lui/lei) capisce
+(noi) capiamo
+(voi) capite
+(loro) capiscono`,
+    finire:`FINIRE = sluta
+(io) finisco
+(tu) finisci
+(lui/lei) finisce
+(noi) finiamo
+(voi) finite
+(loro) finiscono`,
+    preferire:`PREFERIRE = föredra
+(io) preferisco
+(tu) preferisci
+(lui/lei) preferisce
+(noi) preferiamo
+(voi) preferite
+(loro) preferiscono`
+  };
+
+  const VERB_DATA={
+    stare:{label:'STARE',meaning:'att må',forms:[['io','sto','jag mår'],['tu','stai','du mår'],['lui/lei','sta','han / hon mår'],['noi','stiamo','vi mår'],['voi','state','ni mår'],['loro','stanno','de mår']]},
+    essere:{label:'ESSERE',meaning:'att vara',forms:[['io','sono','jag är'],['tu','sei','du är'],['lui/lei','è','han / hon är'],['noi','siamo','vi är'],['voi','siete','ni är'],['loro','sono','de är']]},
+    parlare:{label:'PARLARE',meaning:'att tala',forms:[['io','parlo','jag talar'],['tu','parli','du talar'],['lui/lei','parla','han / hon talar'],['noi','parliamo','vi talar'],['voi','parlate','ni talar'],['loro','parlano','de talar']]},
+    credere:{label:'CREDERE',meaning:'att tro',forms:[['io','credo','jag tror'],['tu','credi','du tror'],['lui/lei','crede','han / hon tror'],['noi','crediamo','vi tror'],['voi','credete','ni tror'],['loro','credono','de tror']]},
+    dormire:{label:'DORMIRE',meaning:'att sova',forms:[['io','dormo','jag sover'],['tu','dormi','du sover'],['lui/lei','dorme','han / hon sover'],['noi','dormiamo','vi sover'],['voi','dormite','ni sover'],['loro','dormono','de sover']]},
+    capire:{label:'CAPIRE',meaning:'att förstå',forms:[['io','capisco','jag förstår'],['tu','capisci','du förstår'],['lui/lei','capisce','han / hon förstår'],['noi','capiamo','vi förstår'],['voi','capite','ni förstår'],['loro','capiscono','de förstår']]},
+    finire:{label:'FINIRE',meaning:'att sluta',forms:[['io','finisco','jag slutar'],['tu','finisci','du slutar'],['lui/lei','finisce','han / hon slutar'],['noi','finiamo','vi slutar'],['voi','finite','ni slutar'],['loro','finiscono','de slutar']]},
+    preferire:{label:'PREFERIRE',meaning:'att föredra',forms:[['io','preferisco','jag föredrar'],['tu','preferisci','du föredrar'],['lui/lei','preferisce','han / hon föredrar'],['noi','preferiamo','vi föredrar'],['voi','preferite','ni föredrar'],['loro','preferiscono','de föredrar']]}
+  };
+
+  const state={words:[],queue:[],index:0,level:1,mode:'write',answered:false,right:0,near:0,wrong:0,source:'',shootLives:3,targets:[],animId:null,lastTime:0,roundLocked:false,helpCount:0,results:[],currentHadMistake:false,verbMode:'learn',verbKey:'',verbQueue:[],verbIndex:0,verbAnswered:false,verbRight:0,verbWrong:0,matchPairs:[],matchRemaining:0,matchDrag:null};
+  const dropZone=$('dropZone'),pdfInput=$('pdfInput'),imageZone=$('imageZone'),imageInput=$('imageInput'),manualInput=$('manualInput'),answerInput=$('answerInput');
+
+
+  // Italienskt uttal med webbläsarens inbyggda Text-to-Speech.
+  state.ttsEnabled=localStorage.getItem('glostranaren_tts')!=='off';
+  let italianVoice=null;
+  function pickItalianVoice(){
+    if(!('speechSynthesis' in window))return null;
+    const voices=speechSynthesis.getVoices();
+    italianVoice=voices.find(v=>/^it[-_]/i.test(v.lang))||voices.find(v=>/ital/i.test(v.name))||null;
+    return italianVoice;
+  }
+  function speakItalian(text,force=false){
+    if(!text||!('speechSynthesis' in window)||(!state.ttsEnabled&&!force))return;
+    const u=new SpeechSynthesisUtterance(String(text));
+    u.lang='it-IT';u.rate=.82;u.pitch=1;
+    const v=italianVoice||pickItalianVoice();if(v)u.voice=v;
+    speechSynthesis.cancel();speechSynthesis.speak(u);
+  }
+  function refreshTtsButton(){
+    const b=$('ttsToggle');if(!b)return;
+    const supported='speechSynthesis' in window;
+    if(!supported){b.textContent='🔇 Uttal stöds inte';b.disabled=true;b.classList.remove('on');return}
+    b.disabled=false;b.classList.toggle('on',state.ttsEnabled);b.textContent=state.ttsEnabled?'🔊 Uttal: PÅ':'🔇 Uttal: AV';
+  }
+  if('speechSynthesis' in window){pickItalianVoice();speechSynthesis.addEventListener?.('voiceschanged',pickItalianVoice);}
+
+  function esc(s){return String(s).replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]))}
+  function norm(s){return String(s).trim().toLocaleLowerCase('sv-SE').normalize('NFC').replace(/[’‘`]/g,"'").replace(/\s+/g,' ')}
+  function cmp(s){return norm(s).normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[.,!?;:"'’‘`()\[\]{}]/g,'').trim()}
+  function lev(a,b){a=cmp(a);b=cmp(b);const m=a.length,n=b.length,d=Array.from({length:m+1},()=>Array(n+1).fill(0));for(let i=0;i<=m;i++)d[i][0]=i;for(let j=0;j<=n;j++)d[0][j]=j;for(let i=1;i<=m;i++)for(let j=1;j<=n;j++)d[i][j]=Math.min(d[i-1][j]+1,d[i][j-1]+1,d[i-1][j-1]+(a[i-1]===b[j-1]?0:1));return d[m][n]}
+  function classify(a,c){if(cmp(a)===cmp(c))return'right';const max=Math.max(cmp(a).length,cmp(c).length);return lev(a,c)<=(max<=5?1:2)?'near':'wrong'}
+  function shuffle(a){a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+  function dedupe(arr){const seen=new Set();return arr.filter(w=>{const k=norm(w.sv)+'|'+norm(w.target);if(seen.has(k))return false;seen.add(k);return true})}
+  function cleanPair(a,b){const l=String(a).replace(/^[-•\d.)\s]+/,'').trim(),r=String(b).replace(/^[-•\d.)\s]+/,'').trim();if(!l||!r||l.length>100||r.length>100)return null;return{sv:l,target:r}}
+  function parseLines(text){const lines=text.replace(/\r/g,'').split('\n').map(x=>x.trim()).filter(Boolean),out=[];for(const line of lines){let parts=null;for(const re of [/\s*=\s*/,/\s+[-–—]\s+/,/\s*:\s*/,/\t+/]){const p=line.split(re);if(p.length===2&&p[0].trim()&&p[1].trim()){parts=p;break}}if(parts){const pair=cleanPair(parts[0],parts[1]);if(pair)out.push(pair)}}return dedupe(out)}
+
+  function buildUnits(){const sel=$('unitSelect');for(const [name,words] of Object.entries(ITALIAN_UNITS)){const o=document.createElement('option');o.value=name;o.textContent=name;sel.appendChild(o)}sel.addEventListener('change',()=>{const name=sel.value;$('materialStatus').textContent='';if(!name){$('selectedMaterial').textContent='Ingen vald';setWords([],'',false);$('unitWordsBtn').disabled=true;return}const words=ITALIAN_UNITS[name]||[];$('selectedMaterial').textContent=name;if(!words.length){setWords([],'',false);$('materialStatus').textContent=`${name}: glosorna är ännu inte färdigkontrollerade från den skannade PDF-sidan.`;return}setWords(words,name,false);$('unitWordsBtn').disabled=false;$('materialStatus').textContent=`✓ ${words.length} glosor klara – välj träningssätt och starta.`})}
+
+  function setWords(words,source='',persist=true){state.words=dedupe(words);state.source=source;$('wordCount').textContent=state.words.length;$('startBtn').disabled=!state.words.length;$('clearBtn').disabled=!state.words.length;$('toggleWords').disabled=!state.words.length;renderTable();if(persist)localStorage.setItem('glostranaren_words',JSON.stringify(state.words));}
+  function renderTable(){
+    $('wordTableBody').innerHTML=state.words.map((w,i)=>`<tr><td>${i+1}</td><td>${esc(w.sv)}</td><td><div class="word-audio-cell"><span>${esc(w.target)}</span><button class="speak-btn" type="button" data-speak="${esc(w.target)}" title="Lyssna på uttalet" aria-label="Lyssna på ${esc(w.target)}">🔊</button></div></td></tr>`).join('');
+    $('wordTableBody').querySelectorAll('[data-speak]').forEach(b=>b.addEventListener('click',()=>speakItalian(b.dataset.speak,true)));
+  }
+
+  async function readPdf(file){$('pdfStatus').textContent='Läser PDF…';const pdf=await pdfjsLib.getDocument({data:await file.arrayBuffer()}).promise;const lines=[];for(let p=1;p<=pdf.numPages;p++){const page=await pdf.getPage(p),content=await page.getTextContent(),rows=new Map();for(const item of content.items){const y=Math.round(item.transform[5]/3)*3;if(!rows.has(y))rows.set(y,[]);rows.get(y).push({x:item.transform[4],str:item.str})}for(const[,items]of[...rows.entries()].sort((a,b)=>b[0]-a[0])){items.sort((a,b)=>a.x-b.x);const row=items.map(i=>i.str.trim()).filter(Boolean);if(row.length)lines.push(row.join('\t'))}}let words=parseLines(lines.join('\n'));if(words.length<2){const alt=[];for(const line of lines){const p=line.split('\t').map(x=>x.trim()).filter(Boolean);if(p.length>=2){const pair=cleanPair(p[0],p.slice(1).join(' '));if(pair)alt.push(pair)}}words=dedupe(alt)}return words}
+  async function readImage(file){const url=URL.createObjectURL(file);$('imagePreview').src=url;$('imagePreview').style.display='block';$('imageStatus').textContent='Läser text i bilden…';const result=await Tesseract.recognize(file,'swe+ita+eng',{logger:m=>{if(m.status==='recognizing text')$('imageStatus').textContent=`Läser text i bilden… ${Math.round((m.progress||0)*100)}%`}});const text=result.data?.text||'';manualInput.value=text.trim();let words=parseLines(text);if(words.length<2){const alt=[];for(const raw of text.split(/\r?\n/)){const p=raw.trim().split(/\s{2,}|\t+/).filter(Boolean);if(p.length>=2){const pair=cleanPair(p[0],p.slice(1).join(' '));if(pair)alt.push(pair)}}words=dedupe(alt)}return words}
+  async function handleImage(file){try{imageZone.classList.add('active');const words=await readImage(file);if(words.length){setWords(words,`${words.length} glosor från bild`);$('imageStatus').textContent=`✓ ${words.length} glosor hittades.`}else $('imageStatus').textContent='Texten lästes men inga tydliga glospar hittades. Kontrollera texten nedanför.'}catch(e){console.error(e);$('imageStatus').textContent='Bilden kunde inte läsas.'}finally{imageZone.classList.remove('active')}}
+
+  function clueFor(word,l){
+    // Frågetecken/punkt m.m. i slutet ska inte behöva skrivas och räknas inte som bokstäver.
+    const clean=String(word).trim().replace(/[?!.,;:]+$/g,'').trim();
+    const parts=clean.split(/\s+/).filter(Boolean);
+    const lettersIn=p=>[...p].filter(ch=>/[^'’\-]/.test(ch));
+    const total=parts.reduce((sum,p)=>sum+lettersIn(p).length,0);
+    const wordInfo=parts.length>1?` · ${parts.length} ord`:'';
+    const shape=(p,mode)=>{
+      const chars=[...p];
+      const letterIdx=chars.map((c,i)=>/[^'’\-]/.test(c)?i:-1).filter(i=>i>=0);
+      if(!letterIdx.length)return p;
+      const first=letterIdx[0],last=letterIdx[letterIdx.length-1];
+      return chars.map((c,i)=>{
+        if(c==="'"||c==='’'||c==='-')return c;
+        if(mode===1&&(i===first||i===last))return c;
+        if(mode===2&&i===first)return c;
+        return '_';
+      }).join(' ');
+    };
+    if(l===1)return`${parts.map(p=>shape(p,1)).join('     ')} · ${total} ${total===1?'bokstav':'bokstäver'}${wordInfo}`;
+    if(l===2)return`${parts.map(p=>shape(p,2)).join('     ')} · ${total} ${total===1?'bokstav':'bokstäver'}${wordInfo}`;
+    if(l===3)return`Börjar på ${lettersIn(parts[0]||'')[0]||''}${wordInfo}`;
+    if(l===4){const per=parts.map(p=>lettersIn(p).length);return`${total} ${total===1?'bokstav':'bokstäver'}${wordInfo}${parts.length>1?` (${per.join(' + ')})`:''}`;}
+    if(l===5&&parts.length>1)return`Svaret består av ${parts.length} ord`;
+    return'';
+  }
+  function hideAll(){for(const id of['emptyState','practice','verbPractice','shootout','clickPractice','matchPractice','summary'])$(id).style.display='none'}
+  function resetStats(){state.right=state.near=state.wrong=0;state.results=[];state.currentHadMistake=false;$('rightCount').textContent=0;$('nearCount').textContent=0}
+  function start(){if(!state.words.length)return;stopAnimation();resetStats();state.queue=shuffle(state.words);state.index=0;hideAll();if(state.mode==='shootout')startShootout();else if(state.mode==='click')startClickPractice();else if(state.mode==='match')startMatchPractice();else startWrite()}
+
+  function startWrite(){state.level=Number(document.querySelector('.level-item.active')?.dataset.level||1);$('practice').style.display='block';showWord()}
+  function showWord(){state.answered=false;state.helpCount=0;const w=state.queue[state.index];$('swedishWord').textContent=w.sv;const clueText=clueFor(w.target,state.level);$('clue').textContent=clueText;$('clue').style.visibility=clueText?'visible':'hidden';answerInput.value='';answerInput.disabled=false;$('checkBtn').disabled=false;$('helpBtn').disabled=false;$('helpNote').textContent='';$('verbPanel').classList.remove('open');$('feedback').className='feedback';$('feedback').innerHTML='';$('nextBtn').style.display='none';$('counter').textContent=`${state.index+1} / ${state.queue.length}`;$('progress').style.width=`${state.index/state.queue.length*100}%`;setTimeout(()=>answerInput.focus(),20)}
+  function checkAnswer(){if(state.answered||!answerInput.value.trim())return;const w=state.queue[state.index],r=classify(answerInput.value,w.target);state.answered=true;answerInput.disabled=true;$('checkBtn').disabled=true;$('helpBtn').disabled=true;const fb=$('feedback');fb.className=`feedback ${r}`;if(r==='right'){state.right++;fb.innerHTML='<div class="result">RÄTT!</div>'}else if(r==='near'){state.near++;fb.innerHTML=`<div class="result">NÄRA!</div><div class="correct-word">Rätt svar: <b>${esc(w.target)}</b></div>`}else{state.wrong++;fb.innerHTML=`<div class="result">FEL</div><div class="correct-word">Rätt svar: <b>${esc(w.target)}</b></div>`}state.results.push({sv:w.sv,target:w.target,status:r,answer:answerInput.value});speakItalian(w.target);updateStats();$('nextBtn').textContent=state.index===state.queue.length-1?'Visa resultat':'Nästa glosa →';$('nextBtn').style.display='inline-block';$('nextBtn').focus()}
+  function nextWord(){if(state.index<state.queue.length-1){state.index++;showWord()}else finish(false)}
+
+  function giveHelp(){
+    if(state.answered||!state.queue[state.index])return;
+    const target=state.queue[state.index].target.replace(/[?!.,;:]+$/g,'').trim();
+    let typed=answerInput.value;
+    let i=0;
+    while(i<typed.length&&i<target.length&&norm(typed[i])===norm(target[i]))i++;
+    while(i<target.length&&target[i]===' ')i++;
+    if(i>=target.length){$('helpNote').textContent='Hela ordet är redan ifyllt.';return}
+    answerInput.value=target.slice(0,i+1);
+    state.helpCount++;
+    $('helpNote').textContent=`Hjälp använd: ${state.helpCount} ${state.helpCount===1?'bokstav':'bokstäver'}`;
+    answerInput.focus();answerInput.setSelectionRange(answerInput.value.length,answerInput.value.length);
+  }
+  function renderVerb(){const key=$('verbSelect').value;$('verbContent').textContent=VERBS[key]||''}
+  function toggleVerbs(){$('verbPanel').classList.toggle('open');if($('verbPanel').classList.contains('open'))renderVerb()}
+  function renderMaterialVerb(){const key=$('materialVerbSelect').value;state.verbKey=key;$('materialVerbPanel').classList.toggle('open',!!key);$('materialVerbContent').textContent=key?(VERBS[key]||''):'Välj ett verb för att se alla böjningar.';$('verbStartBtn').disabled=!key;}
+  function setVerbMode(mode){state.verbMode=mode;document.querySelectorAll('.verb-study-mode').forEach(b=>b.classList.toggle('active',b.dataset.verbMode===mode));$('materialVerbContent').style.display=mode==='learn'?'block':'none';$('verbStartBtn').textContent=mode==='learn'?'Öppna Se och lär':mode==='choice'?'Starta Välj rätt':'Starta Skriv själv';}
+  function startVerbPractice(){const key=$('materialVerbSelect').value;if(!key||!VERB_DATA[key])return;state.verbKey=key;state.verbRight=0;state.verbWrong=0;state.verbIndex=0;state.verbAnswered=false;state.verbQueue=shuffle(VERB_DATA[key].forms.map(([person,form,sv])=>({person,form,sv})));hideAll();$('verbPractice').style.display='flex';showVerbQuestion();}
+  function showVerbQuestion(){const data=VERB_DATA[state.verbKey],mode=state.verbMode;$('verbFeedback').textContent='';$('verbFeedback').className='verb-feedback';$('verbNextBtn').style.display='none';$('verbOptions').innerHTML='';$('verbLearnArea').innerHTML='';$('verbWriteRow').style.display='none';$('verbCounter').textContent=mode==='learn'?'Översikt':`${state.verbIndex+1} / ${state.verbQueue.length}`;$('verbProgress').style.width=mode==='learn'?'100%':`${state.verbIndex/state.verbQueue.length*100}%`;$('verbPracticeModeLabel').textContent=mode==='learn'?'SE OCH LÄR':mode==='choice'?'VÄLJ RÄTT':'SKRIV SJÄLV';$('verbMeaning').textContent=`${data.label} = ${data.meaning}`;
+    if(mode==='learn'){$('verbPrompt').textContent=data.label;$('verbLearnArea').innerHTML=`<div class="verb-learn-table">${data.forms.map(([p,f,sv])=>`<div class="verb-learn-row"><b>(${esc(p)})</b><span>${esc(f)}<small style="display:block;color:#b7a78e;margin-top:2px">${esc(sv||'')}</small></span></div>`).join('')}</div><div class="verb-learn-actions"><button class="secondary" type="button" id="learnChoiceBtn">Träna: Välj rätt</button><button class="primary" type="button" id="learnWriteBtn">Träna: Skriv själv</button></div>`;$('learnChoiceBtn').onclick=()=>{state.verbMode='choice';state.verbQueue=shuffle(data.forms.map(([person,form,sv])=>({person,form,sv})));state.verbIndex=0;showVerbQuestion()};$('learnWriteBtn').onclick=()=>{state.verbMode='write';state.verbQueue=shuffle(data.forms.map(([person,form,sv])=>({person,form,sv})));state.verbIndex=0;showVerbQuestion()};return;}
+    const q=state.verbQueue[state.verbIndex];state.verbAnswered=false;$('verbPrompt').textContent=mode==='choice'?(q.sv||`(${q.person})`):`(${q.person})`;$('verbMeaning').textContent=mode==='choice'?'Välj rätt italienska form':'Skriv rätt italiensk verbform';
+    if(mode==='choice'){const unique=[...new Set(data.forms.map(x=>x[1]))].filter(x=>x!==q.form);const opts=shuffle([q.form,...shuffle(unique).slice(0,3)]);$('verbOptions').innerHTML=opts.map(o=>`<button class="verb-option" type="button" data-answer="${esc(o)}">${esc(q.person)} ${esc(o)}</button>`).join('');$('verbOptions').querySelectorAll('.verb-option').forEach(b=>b.onclick=()=>answerVerbChoice(b,q.form));}
+    else{$('verbWriteRow').style.display='flex';$('verbAnswerInput').value='';$('verbAnswerInput').disabled=false;$('verbCheckBtn').disabled=false;setTimeout(()=>$('verbAnswerInput').focus(),20);}}
+  function answerVerbChoice(btn,correct){if(state.verbAnswered)return;state.verbAnswered=true;const ok=cmp(btn.dataset.answer)===cmp(correct);state[ok?'verbRight':'verbWrong']++;btn.classList.add(ok?'correct':'wrong');$('verbOptions').querySelectorAll('.verb-option').forEach(b=>{b.disabled=true;if(cmp(b.dataset.answer)===cmp(correct))b.classList.add('correct')});$('verbFeedback').textContent=ok?'RÄTT':'FEL';$('verbFeedback').className=`verb-feedback ${ok?'good':'bad'}`;const q=state.verbQueue[state.verbIndex];$('verbLearnArea').innerHTML=`<div class="verb-full-form"><div class="verb-full-form-title">Rätt verbform</div><div class="verb-learn-table"><div class="verb-learn-row current"><b>(${esc(q.person)})</b><span><strong style="font-size:1.15rem">${esc(correct)}</strong><small style="display:block;color:#d9c7aa;margin-top:4px">${esc(q.sv||'')}</small></span></div></div></div>`;speakItalian(`${q.person} ${correct}`);$('verbNextBtn').style.display='inline-block';}
+  function answerVerbWrite(){if(state.verbAnswered)return;const q=state.verbQueue[state.verbIndex],ans=$('verbAnswerInput').value.trim();if(!ans)return;state.verbAnswered=true;const ok=cmp(ans)===cmp(q.form);state[ok?'verbRight':'verbWrong']++;$('verbAnswerInput').disabled=true;$('verbCheckBtn').disabled=true;$('verbFeedback').textContent=ok?'RÄTT!':`Rätt svar: ${q.form}`;$('verbFeedback').className=`verb-feedback ${ok?'good':'bad'}`;speakItalian(`${q.person} ${q.form}`);$('verbNextBtn').style.display='inline-block';}
+  function nextVerbQuestion(){if(state.verbIndex<state.verbQueue.length-1){state.verbIndex++;showVerbQuestion()}else finishVerbPractice()}
+  function finishVerbPractice(){const data=VERB_DATA[state.verbKey],total=state.verbQueue.length;$('verbPrompt').textContent='Klart!';$('verbMeaning').textContent=`${data.label}: ${state.verbRight} av ${total} rätt`;$('verbOptions').innerHTML='';$('verbWriteRow').style.display='none';$('verbLearnArea').innerHTML=`<div class="verb-learn-actions"><button class="primary" type="button" id="verbAgainInner">Träna igen</button><button class="secondary" type="button" id="verbLearnInner">Se alla böjningar</button></div>`;$('verbFeedback').textContent=state.verbRight===total?'Perfekt – alla rätt!':`${state.verbWrong} behöver tränas mer.`;$('verbFeedback').className=`verb-feedback ${state.verbRight===total?'good':'bad'}`;$('verbCounter').textContent=`${state.verbRight}/${total}`;$('verbProgress').style.width='100%';$('verbNextBtn').style.display='none';$('verbAgainInner').onclick=()=>startVerbPractice();$('verbLearnInner').onclick=()=>{state.verbMode='learn';showVerbQuestion()};}
+  function exitVerbPractice(){hideAll();$('emptyState').style.display='grid';}
+  function exitShootout(){stopAnimation();state.roundLocked=true;hideAll();$('emptyState').style.display='grid';$('emptyState').innerHTML='<div><div class="icon">🎯</div><h2 style="font-size:1.5rem">Shootout avslutad</h2><p>Dina glosor är kvar. Välj träningssätt och starta igen när du vill.</p></div>'}
+
+  function startClickPractice(){
+    if(state.words.length<4){$('emptyState').style.display='grid';$('emptyState').innerHTML='<div><div class="icon">👆</div><h2>Klicka behöver minst 4 glosor</h2><p>Lägg in minst fyra glosor för att få fyra olika svarsalternativ.</p></div>';return}
+    $('clickPractice').style.display='block';
+    showClickWord();
+  }
+  function clickOptionsFor(correct){
+    const others=shuffle(state.words.filter(w=>w!==correct&&cmp(w.target)!==cmp(correct.target))).slice(0,3);
+    return shuffle([correct,...others]);
+  }
+  function showClickWord(){
+    state.answered=false;
+    const w=state.queue[state.index];
+    $('clickSwedish').textContent=w.sv;
+    $('clickCounter').textContent=`${state.index+1} / ${state.queue.length}`;
+    $('clickProgress').style.width=`${state.index/state.queue.length*100}%`;
+    $('clickFeedback').textContent='';
+    $('clickFeedback').className='click-feedback';
+    $('clickNextBtn').style.display='none';
+    const opts=clickOptionsFor(w);
+    $('clickOptions').innerHTML=opts.map(o=>`<button class="click-option" type="button" data-answer="${esc(o.target)}">${esc(o.target)}</button>`).join('');
+    $('clickOptions').querySelectorAll('.click-option').forEach(b=>b.addEventListener('click',()=>answerClick(b,w)));
+  }
+  function answerClick(btn,w){
+    if(state.answered)return;
+    state.answered=true;
+    const ok=cmp(btn.dataset.answer)===cmp(w.target);
+    if(ok)state.right++;else state.wrong++;
+    $('clickOptions').querySelectorAll('.click-option').forEach(b=>{b.disabled=true;if(cmp(b.dataset.answer)===cmp(w.target))b.classList.add('correct')});
+    if(!ok)btn.classList.add('wrong');
+    $('clickFeedback').innerHTML=ok?'RÄTT!':`FEL<span class="click-correct">Rätt svar: <b>${esc(w.target)}</b></span>`;
+    $('clickFeedback').className=`click-feedback ${ok?'good':'bad'}`;
+    state.results.push({sv:w.sv,target:w.target,status:ok?'right':'wrong',answer:btn.dataset.answer});
+    speakItalian(w.target);
+    updateStats();
+    $('clickNextBtn').textContent=state.index===state.queue.length-1?'Visa resultat':'Nästa glosa →';
+    $('clickNextBtn').style.display='inline-block';
+    $('clickNextBtn').focus();
+  }
+  function nextClickWord(){
+    if(state.index<state.queue.length-1){state.index++;showClickWord()}else finish(false,false,'click');
+  }
+
+  function startMatchPractice(){
+    state.matchPairs=state.words.map((w,i)=>({id:String(i),sv:w.sv,target:w.target,done:false}));
+    state.matchRemaining=state.matchPairs.length;
+    state.matchDrag=null;
+    state.results=[];
+    $('matchPractice').style.display='block';
+    renderMatchBoard();
+  }
+  function renderMatchBoard(){
+    const total=state.matchPairs.length,done=total-state.matchRemaining;
+    $('matchCounter').textContent=`${done} / ${total} klara`;
+    $('matchProgress').style.width=`${total?done/total*100:0}%`;
+    $('matchFeedback').textContent='';$('matchFeedback').className='match-feedback';
+    const active=state.matchPairs.filter(p=>!p.done);
+    const left=shuffle(active.slice()),right=shuffle(active.slice());
+    $('matchSwedish').innerHTML='';$('matchItalian').innerHTML='';
+    const make=(p,side)=>{
+      const el=document.createElement('div');
+      el.className='match-word';el.draggable=true;el.dataset.id=p.id;el.dataset.side=side;
+      el.textContent=side==='sv'?p.sv:p.target;
+      el.addEventListener('dragstart',e=>{state.matchDrag={id:p.id,side};el.classList.add('dragging');e.dataTransfer.effectAllowed='move';e.dataTransfer.setData('text/plain',p.id+'|'+side)});
+      el.addEventListener('dragend',()=>el.classList.remove('dragging'));
+      el.addEventListener('dragover',e=>{if(state.matchDrag&&state.matchDrag.side!==side){e.preventDefault();el.classList.add('drag-over')}});
+      el.addEventListener('dragleave',()=>el.classList.remove('drag-over'));
+      el.addEventListener('drop',e=>{e.preventDefault();el.classList.remove('drag-over');handleMatchDrop(el,p.id,side)});
+      // Click-pair fallback for touchpads/touch screens: select one, then the opposite side.
+      el.addEventListener('click',()=>handleMatchClick(el,p.id,side));
+      return el;
+    };
+    left.forEach(p=>$('matchSwedish').appendChild(make(p,'sv')));
+    right.forEach(p=>$('matchItalian').appendChild(make(p,'it')));
+  }
+  function handleMatchClick(el,id,side){
+    const selected=document.querySelector('.match-word.match-selected');
+    if(!selected){el.classList.add('match-selected');el.style.borderColor='#f4d08a';return}
+    if(selected===el){selected.classList.remove('match-selected');selected.style.borderColor='';return}
+    if(selected.dataset.side===side){selected.classList.remove('match-selected');selected.style.borderColor='';el.classList.add('match-selected');el.style.borderColor='#f4d08a';return}
+    state.matchDrag={id:selected.dataset.id,side:selected.dataset.side};
+    selected.classList.remove('match-selected');selected.style.borderColor='';
+    handleMatchDrop(el,id,side,selected);
+  }
+  function handleMatchDrop(targetEl,targetId,targetSide,sourceEl=null){
+    if(!state.matchDrag||state.matchDrag.side===targetSide)return;
+    const sourceId=state.matchDrag.id;
+    if(!sourceEl)sourceEl=document.querySelector(`.match-word[data-id="${sourceId}"][data-side="${state.matchDrag.side}"]`);
+    const ok=sourceId===String(targetId);
+    if(ok){
+      const pair=state.matchPairs.find(p=>p.id===String(targetId));if(!pair||pair.done)return;
+      pair.done=true;state.matchRemaining--;state.right++;
+      state.results.push({sv:pair.sv,target:pair.target,status:'right',answer:''});speakItalian(pair.target);updateStats();
+      targetEl.classList.add('match-right');if(sourceEl)sourceEl.classList.add('match-right');
+      $('matchFeedback').textContent='RÄTT!';$('matchFeedback').className='match-feedback good';
+      state.matchDrag=null;
+      setTimeout(()=>{if(state.matchRemaining===0)finish(false,false,'match');else renderMatchBoard()},260);
+    }else{
+      state.wrong++;updateStats();
+      targetEl.classList.add('match-wrong');if(sourceEl)sourceEl.classList.add('match-wrong');
+      $('matchFeedback').textContent='FEL – försök igen';$('matchFeedback').className='match-feedback bad';
+      state.matchDrag=null;
+      setTimeout(()=>{targetEl.classList.remove('match-wrong');if(sourceEl)sourceEl.classList.remove('match-wrong')},350);
+    }
+  }
+
+  function startShootout(){if(state.words.length<5){$('emptyState').style.display='grid';$('emptyState').innerHTML='<div><div class="icon">🎯</div><h2>Shootout behöver minst 5 glosor</h2><p>Lägg in minst fem glosor för att få fem olika svarsalternativ.</p></div>';return}state.shootLives=3;state.roundLocked=false;$('shootout').style.display='block';updateLives();newShootRound();state.lastTime=performance.now();state.animId=requestAnimationFrame(animateTargets)}
+  function updateLives(){$('lives').textContent='❤️ '.repeat(state.shootLives).trim()+' 🖤 '.repeat(Math.max(0,3-state.shootLives)).trim()}
+  function makeOptions(correct){const others=shuffle(state.words.filter(w=>w!==correct&&cmp(w.target)!==cmp(correct.target))).slice(0,4);return shuffle([correct,...others])}
+  function newShootRound(){state.roundLocked=false;state.currentHadMistake=false;const current=state.queue[state.index];$('shootSwedish').textContent=current.sv;$('shootCounter').textContent=`${state.index+1} / ${state.queue.length}`;$('shootProgress').style.width=`${state.index/state.queue.length*100}%`;const area=$('shootArea');area.querySelectorAll('.target').forEach(x=>x.remove());state.targets=[];const opts=makeOptions(current);const r=area.getBoundingClientRect(),W=Math.max(300,r.width),H=Math.max(300,r.height);opts.forEach((w,i)=>{const el=document.createElement('div');el.className='target';el.textContent=w.target;el.dataset.correct=w===current?'1':'0';const tw=150,th=48;let x=25+Math.random()*Math.max(10,W-tw-50),y=25+Math.random()*Math.max(10,H-th-50);const angle=Math.random()*Math.PI*2,speed=55+Math.random()*45;const t={el,x,y,vx:Math.cos(angle)*speed,vy:Math.sin(angle)*speed,w:tw,h:th};state.targets.push(t);el.style.transform=`translate(${x}px,${y}px)`;el.addEventListener('click',e=>{e.stopPropagation();shootTarget(t)});area.appendChild(el)})}
+  function animateTargets(now){const dt=Math.min(.035,(now-state.lastTime)/1000||0);state.lastTime=now;const area=$('shootArea'),rect=area.getBoundingClientRect();for(const t of state.targets){if(!t.el.isConnected)continue;const er=t.el.getBoundingClientRect();t.w=er.width;t.h=er.height;t.x+=t.vx*dt;t.y+=t.vy*dt;if(t.x<6){t.x=6;t.vx=Math.abs(t.vx)}if(t.x+t.w>rect.width-6){t.x=rect.width-t.w-6;t.vx=-Math.abs(t.vx)}if(t.y<6){t.y=6;t.vy=Math.abs(t.vy)}if(t.y+t.h>rect.height-6){t.y=rect.height-t.h-6;t.vy=-Math.abs(t.vy)}t.el.style.transform=`translate(${t.x}px,${t.y}px)`}state.animId=requestAnimationFrame(animateTargets)}
+  function flashShoot(text,good){const m=$('shootMessage');m.textContent=text;m.className=`shootMessage ${good?'good':'bad'}`;void m.offsetWidth;m.classList.add('show')}
+  function shootTarget(t){if(state.roundLocked)return;if(t.el.dataset.correct==='1'){state.roundLocked=true;t.el.classList.add('hit');state.right++;const cw=state.queue[state.index];state.results.push({sv:cw.sv,target:cw.target,status:state.currentHadMistake?'wrong':'right',answer:''});speakItalian(cw.target);updateStats();flashShoot('TRÄFF!',true);setTimeout(()=>{if(state.index<state.queue.length-1){state.index++;newShootRound()}else finish(true)},500)}else{state.currentHadMistake=true;t.el.classList.add('miss');state.wrong++;state.shootLives--;updateStats();updateLives();flashShoot('MISS!',false);setTimeout(()=>t.el.classList.remove('miss'),300);if(state.shootLives<=0){state.roundLocked=true;setTimeout(()=>finish(true,true),650)}}}
+  function stopAnimation(){if(state.animId)cancelAnimationFrame(state.animId);state.animId=null}
+  function renderResultLists(){
+    const seen=new Map();
+    for(const r of state.results) seen.set(norm(r.sv)+'|'+norm(r.target),r);
+    const rows=state.queue.map(w=>seen.get(norm(w.sv)+'|'+norm(w.target))||{sv:w.sv,target:w.target,status:'none',answer:''});
+    const passed=rows.filter(r=>r.status==='right');
+    const failed=rows.filter(r=>r.status!=='right');
+    const table=(arr,good)=>arr.length?`<table class="result-table"><thead><tr><th>Svenska</th><th>Italienska</th><th>Resultat</th></tr></thead><tbody>${arr.map(r=>{const label=r.status==='right'?'RÄTT':r.status==='near'?'NÄRA':r.status==='wrong'?'FEL':'EJ TESTAD';const cls=r.status==='right'?'ok':r.status==='near'?'near':r.status==='wrong'?'bad':'none';return `<tr><td>${esc(r.sv)}</td><td>${esc(r.target)}</td><td><span class="result-badge ${cls}">${label}</span></td></tr>`}).join('')}</tbody></table>`:`<div class="empty-result">${good?'Inga ord ännu.':'Inga ord här – bra jobbat!'}</div>`;
+    $('passedResults').innerHTML=table(passed,true);
+    $('failedResults').innerHTML=table(failed,false);
+  }
+  function finish(shootout,gameOver=false,mode=state.mode){stopAnimation();hideAll();$('summary').style.display='block';$('summaryRight').textContent=state.right;$('summaryNear').textContent=state.near;$('summaryWrong').textContent=state.wrong;if(shootout){$('summaryTitle').textContent=gameOver?'Game over!':'Shootout klar!';$('summaryText').textContent=gameOver?`Du fick ${state.right} rätt innan liven tog slut.`:`Du klarade alla ${state.queue.length} glosor och hade ${state.shootLives} liv kvar.`}else{const score=Math.round((state.right+state.near*.5)/state.queue.length*100);$('summaryTitle').textContent=mode==='click'?'Klicka klar!':mode==='match'?'Matchningen är klar!':'Träningen är klar!';$('summaryText').textContent=mode==='click'?`Resultat: ${score}% – ${state.right} av ${state.queue.length} rätt.`:mode==='match'?`Alla ${state.words.length} glospar är matchade. Felaktiga försök: ${state.wrong}.`:`Resultat: ${score}% på nivå ${state.level}.`}renderResultLists()}
+  function updateStats(){$('rightCount').textContent=state.right;$('nearCount').textContent=state.near}
+
+  buildUnits();
+  refreshTtsButton();
+  $('ttsToggle').addEventListener('click',()=>{state.ttsEnabled=!state.ttsEnabled;localStorage.setItem('glostranaren_tts',state.ttsEnabled?'on':'off');if(!state.ttsEnabled&&'speechSynthesis' in window)speechSynthesis.cancel();refreshTtsButton();});
+  document.querySelectorAll('.mode-btn').forEach(b=>b.addEventListener('click',()=>{state.mode=b.dataset.mode;document.querySelectorAll('.mode-btn').forEach(x=>x.classList.toggle('active',x===b));$('levelBox').classList.toggle('hidden',state.mode!=='write');$('startBtn').textContent=state.mode==='shootout'?'Starta Shootout':state.mode==='click'?'Starta Klicka':state.mode==='match'?'Starta Matcha':'Starta träningen'}));
+  const helps={1:'Första + sista bokstaven och antal bokstäver',2:'Första bokstaven och antal bokstäver',3:'Bara första bokstaven',4:'Bara antal bokstäver',5:'Ingen hjälp – bara det svenska ordet'};
+  document.querySelectorAll('.level-item').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('.level-item').forEach(x=>x.classList.toggle('active',x===b));$('levelHelp').innerHTML=helps[b.dataset.level]}));
+
+  pdfInput.addEventListener('change',async e=>{const f=e.target.files[0];if(!f)return;try{const w=await readPdf(f);w.length?setWords(w,f.name):$('pdfStatus').textContent='Kunde inte hitta tydliga glospar.'}catch(err){console.error(err);$('pdfStatus').textContent='PDF:en kunde inte läsas.'}pdfInput.value=''});
+  ['dragenter','dragover'].forEach(ev=>dropZone.addEventListener(ev,e=>{e.preventDefault();dropZone.classList.add('drag')}));['dragleave','drop'].forEach(ev=>dropZone.addEventListener(ev,e=>{e.preventDefault();dropZone.classList.remove('drag')}));dropZone.addEventListener('drop',async e=>{const f=e.dataTransfer.files[0];if(f?.type==='application/pdf'){const w=await readPdf(f);if(w.length)setWords(w,f.name)}});
+  imageInput.addEventListener('change',async e=>{if(e.target.files[0])await handleImage(e.target.files[0]);imageInput.value=''});document.addEventListener('paste',async e=>{const item=[...(e.clipboardData?.items||[])].find(i=>i.type.startsWith('image/'));if(!item)return;if(e.target===answerInput)return;const f=item.getAsFile();if(f){e.preventDefault();await handleImage(f)}});
+  $('parseManual').addEventListener('click',()=>{const w=parseLines(manualInput.value);w.length?setWords(w,'inklistrad text'):$('pdfStatus').textContent='Inga tydliga glospar hittades.'});
+  $('startBtn').addEventListener('click',start);$('checkBtn').addEventListener('click',checkAnswer);$('nextBtn').addEventListener('click',nextWord);$('clickNextBtn').addEventListener('click',nextClickWord);$('againBtn').addEventListener('click',start);$('helpBtn').addEventListener('click',giveHelp);$('verbBtn').addEventListener('click',toggleVerbs);$('verbSelect').addEventListener('change',renderVerb);$('exitShootout').addEventListener('click',exitShootout);answerInput.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();state.answered?nextWord():checkAnswer()}});document.addEventListener('keydown',e=>{if(e.key==='Escape'&&$('shootout').style.display==='block')exitShootout()});
+  $('unitWordsBtn').addEventListener('click',()=>{if(!state.words.length)return;const v=$('wordList').style.display==='block';$('wordList').style.display=v?'none':'block';$('unitWordsBtn').textContent=v?'Visa alla glosor':'Dölj glosorna';});
+  $('materialVerbSelect').addEventListener('change',renderMaterialVerb);
+  document.querySelectorAll('.verb-study-mode').forEach(b=>b.addEventListener('click',()=>setVerbMode(b.dataset.verbMode)));
+  $('verbStartBtn').addEventListener('click',startVerbPractice);
+  $('verbExitBtn').addEventListener('click',exitVerbPractice);
+  $('verbCheckBtn').addEventListener('click',answerVerbWrite);
+  $('verbNextBtn').addEventListener('click',nextVerbQuestion);
+  $('verbAnswerInput').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();state.verbAnswered?nextVerbQuestion():answerVerbWrite()}});
+  $('wordListClose').addEventListener('click',()=>{$('wordList').style.display='none';$('unitWordsBtn').textContent='Visa alla glosor';$('toggleWords').textContent='Visa glosor';});
+  $('wordList').addEventListener('click',e=>{if(e.target===$('wordList')){$('wordList').style.display='none';$('unitWordsBtn').textContent='Visa alla glosor';$('toggleWords').textContent='Visa glosor';}});
+  document.addEventListener('keydown',e=>{if(e.key==='Escape' && $('wordList').style.display==='block'){$('wordList').style.display='none';$('unitWordsBtn').textContent='Visa alla glosor';$('toggleWords').textContent='Visa glosor';}});
+  $('clearBtn').addEventListener('click',()=>{stopAnimation();state.words=[];localStorage.removeItem('glostranaren_words');setWords([],'',false);manualInput.value='';$('selectedMaterial').textContent='Ingen vald';$('unitSelect').value='';$('unitWordsBtn').disabled=true;$('unitWordsBtn').textContent='Visa alla glosor';$('imagePreview').style.display='none';$('imageStatus').textContent='';$('pdfStatus').textContent='';$('wordList').style.display='none';hideAll();$('emptyState').style.display='grid'});
+  $('toggleWords').addEventListener('click',()=>{const v=$('wordList').style.display==='block';$('wordList').style.display=v?'none':'block';$('toggleWords').textContent=v?'Visa glosor':'Dölj glosor'});
+  const area=$('shootArea'),cross=$('crosshair');area.addEventListener('mousemove',e=>{const r=area.getBoundingClientRect();cross.style.left=`${e.clientX-r.left}px`;cross.style.top=`${e.clientY-r.top}px`});area.addEventListener('click',e=>{if(e.target===area&&!state.roundLocked){state.currentHadMistake=true;state.wrong++;state.shootLives--;updateStats();updateLives();flashShoot('MISS!',false);if(state.shootLives<=0){state.roundLocked=true;setTimeout(()=>finish(true,true),650)}}});
+
+  try{const saved=JSON.parse(localStorage.getItem('glostranaren_words')||'[]');if(Array.isArray(saved)&&saved.length)setWords(saved,'sparade egna glosor',false)}catch{}
+</script>
+</body>
+</html>
