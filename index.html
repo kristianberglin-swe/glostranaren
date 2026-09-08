@@ -232,10 +232,69 @@ html,body{height:100%;}
 .mode-btn b{font-size:.86rem!important;line-height:1.15!important}.mode-btn span{font-size:.66rem!important;line-height:1.2!important}
 @media(max-width:620px){.mode-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
 </style>
+
+<style id="italian-brand-refresh">
+:root{--bg:#0b0806;--panel:#17100c;--panel2:#21170f;--line:#6a4a30;--text:#f7ecd8;--muted:#c4b49b;--accent:#d6a85f;--green:#15934a;--yellow:#d9a64b;--red:#d64235;--violet:#d6a85f;--shadow:0 20px 60px rgba(0,0,0,.42)}
+body{background:radial-gradient(circle at 18% 0%,rgba(21,147,74,.10),transparent 25%),radial-gradient(circle at 88% 6%,rgba(214,66,53,.09),transparent 22%),linear-gradient(145deg,#080604,#120c08 58%,#0b0806)!important;color:var(--text)!important}
+.brand-header{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:18px!important;padding:10px 16px!important;background:linear-gradient(180deg,#1b120c,#0d0906)!important;border:1px solid #5d4028!important}
+.brand-lockup{display:flex;align-items:center;gap:14px;min-width:0}.brand-mark{width:78px;flex:0 0 78px;filter:drop-shadow(0 8px 18px rgba(0,0,0,.4))}.brand-mark svg{display:block;width:100%;height:auto}.brand-copy{min-width:0}
+.brand-copy h1{display:flex;align-items:baseline;gap:0;margin:0!important;font-family:Impact,Haettenschweiler,'Arial Narrow Bold',sans-serif!important;font-size:clamp(2rem,4.5vw,4.5rem)!important;line-height:.82!important;letter-spacing:-.035em!important;text-shadow:0 3px 0 rgba(0,0,0,.6),0 0 22px rgba(255,255,255,.05)!important;white-space:nowrap}
+.brand-green{color:#138d48}.brand-cream{color:#f7ecd8}.brand-red{color:#d63d32}.brand-copy p{margin:8px 0 0!important;color:#d8c7ac!important;font-family:Georgia,'Times New Roman',serif!important;font-size:.78rem!important;font-weight:700;letter-spacing:.24em;white-space:nowrap}
+.brand-slogan{color:#eadcc7;font-family:'Brush Script MT','Segoe Script',cursive;font-size:1.25rem;line-height:1.05;text-align:center;transform:rotate(-4deg);padding:0 10px;white-space:nowrap}.flag-line{display:block;width:92px;height:4px;margin:10px auto 0;border-radius:999px;background:linear-gradient(90deg,#15934a 0 33.33%,#f5ead7 33.33% 66.66%,#d64235 66.66%)}
+.panel{background:linear-gradient(180deg,rgba(28,18,12,.98),rgba(12,9,6,.98))!important;border-color:#5b3c27!important}.library,.card,.wordTable,.verb-panel,.click-card,.match-card,.verb-practice-card{background:linear-gradient(180deg,#18100b,#0f0b08)!important;border-color:#5b3c27!important}
+.primary,.mode-btn.active{background:linear-gradient(180deg,#d9b06e,#ad7d45)!important;color:#130c07!important;border-color:#efca8e!important;box-shadow:0 4px 0 #62411f,0 10px 24px rgba(0,0,0,.24)!important}.mode-btn{background:#140e0a!important;border:1px solid #69482f!important;color:#f1e2cc!important}.mode-btn:hover{background:#1f150e!important;border-color:#d0a461!important}.mode-btn b{font-size:1rem!important}.mode-btn span{color:#c5b49b!important}.mode-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+.level-item.active{background:linear-gradient(180deg,#3a2818,#25180f)!important;border-color:#d0a461!important}.level-item.active .level-no{background:#d3a35e!important;color:#120b07!important}.progress{background:linear-gradient(90deg,#15934a 0 33%,#f5ead7 33% 66%,#d64235 66% 100%)!important}.click-option.correct,.verb-option.correct{border-color:#15934a!important;background:rgba(21,147,74,.16)!important}.click-option.wrong,.verb-option.wrong{border-color:#d64235!important;background:rgba(214,66,53,.16)!important}
+.empty{background:radial-gradient(circle at 50% 30%,rgba(214,168,95,.06),transparent 35%);color:#c9b79d!important}.empty h2{color:#f4e7d1!important}.empty-motto{margin-top:22px;font-family:Georgia,'Times New Roman',serif;font-size:clamp(1.3rem,2.5vw,2.3rem);font-style:italic;color:#d9b06e}
+#helpBtn::first-letter,#verbBtn::first-letter{font-size:0}.practice-tools .tool-btn{font-weight:800}
+@media(max-width:880px){.brand-slogan{display:none}.brand-mark{width:58px;flex-basis:58px}.brand-copy h1{font-size:clamp(1.65rem,8vw,2.7rem)!important}.brand-copy p{font-size:.58rem!important;letter-spacing:.13em;white-space:normal}}
+@media(max-width:520px){.brand-mark{width:50px;flex-basis:50px}.brand-copy h1{font-size:clamp(1.45rem,10vw,2.2rem)!important}.brand-copy p{display:none}}
+
+/* Bannerlogotyp */
+.brand-header-image{display:flex!important;align-items:center!important;justify-content:flex-start!important;padding:0!important;overflow:hidden;background:#0c0704!important;border:1px solid #5d4028!important;border-radius:12px!important;min-height:0!important}
+.brand-logo-image{display:block;width:100%;height:auto;max-height:142px;object-fit:cover;object-position:left center}
+@media(max-width:880px){.brand-logo-image{max-height:108px}}
+@media(max-width:520px){.brand-header-image{border-radius:9px!important}.brand-logo-image{max-height:78px}}
+</style>
+
+<style id="compact-logo-fix">
+.compact-brand-header{min-height:96px!important;padding:8px 18px!important;overflow:visible!important;border-radius:12px!important}
+.compact-brand-header .brand-lockup{display:flex!important;align-items:center!important;gap:14px!important}
+.compact-brand-header .clean-mark{width:66px!important;flex:0 0 66px!important;filter:drop-shadow(0 5px 10px rgba(0,0,0,.45))!important}
+.compact-brand-header .clean-mark svg{display:block;width:100%!important;height:auto!important}
+.compact-brand-header .brand-copy h1{font-size:clamp(2rem,4.1vw,4rem)!important;line-height:.82!important}
+.compact-brand-header .brand-copy p{margin-top:7px!important;font-size:.68rem!important;letter-spacing:.22em!important}
+.compact-brand-header .brand-slogan{font-size:1.12rem!important;margin-left:auto!important}
+@media(max-width:880px){.compact-brand-header{min-height:78px!important;padding:7px 12px!important}.compact-brand-header .clean-mark{width:52px!important;flex-basis:52px!important}.compact-brand-header .brand-copy h1{font-size:clamp(1.65rem,7vw,2.7rem)!important}.compact-brand-header .brand-copy p{font-size:.55rem!important;letter-spacing:.12em!important}}
+@media(max-width:520px){.compact-brand-header{min-height:66px!important}.compact-brand-header .clean-mark{width:44px!important;flex-basis:44px!important}.compact-brand-header .brand-copy h1{font-size:clamp(1.45rem,9vw,2.1rem)!important}.compact-brand-header .brand-copy p{display:none!important}}
+</style>
 </head>
 <body>
 <div class="app">
-  <header><div class="brand"><h1>Glostränaren</h1><p>Välj ett färdigt italienskt glosmaterial eller lägg in egna glosor. Träna med fem hjälpnivåer eller spela Shootout.</p></div><div class="badge">Träning + Shootout</div></header>
+  <header class="brand-header compact-brand-header">
+    <div class="brand-lockup">
+      <div class="brand-mark clean-mark" aria-hidden="true">
+        <svg viewBox="0 0 92 116" role="img" aria-label="Glostränaren symbol">
+          <defs><linearGradient id="itbg" x1="0" x2="1"><stop offset="0" stop-color="#0b8f45"/><stop offset=".5" stop-color="#0b8f45"/><stop offset=".5" stop-color="#d82f32"/><stop offset="1" stop-color="#d82f32"/></linearGradient></defs>
+          <rect x="2" y="2" width="88" height="112" rx="17" fill="url(#itbg)" stroke="#f7ecd8" stroke-width="4"/>
+          <!-- Helvit, förenklad överkroppssiluett som läser -->
+          <circle cx="42" cy="29" r="10" fill="#fff"/>
+          <path d="M31 39c5-5 16-5 21 0 4 4 6 10 6 18v28H24V59c0-9 2-15 7-20Z" fill="#fff"/>
+          <path d="M27 48 15 66c-2 3-1 7 2 9l4 2 16-22Z" fill="#fff"/>
+          <path d="M52 49 64 58 60 65 48 57Z" fill="#fff"/>
+          <path d="M59 54 80 46v25L59 66Z" fill="#fff"/>
+          <path d="M61 56 79 50M61 61l18-7" stroke="#d82f32" stroke-width="1.6" opacity=".65"/>
+          <!-- lagerkrans -->
+          <path d="M32 20c7-7 16-8 24-3" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/>
+          <g fill="#fff"><ellipse cx="34" cy="19" rx="4" ry="2" transform="rotate(-35 34 19)"/><ellipse cx="40" cy="16" rx="4" ry="2" transform="rotate(-20 40 16)"/><ellipse cx="47" cy="15" rx="4" ry="2"/><ellipse cx="54" cy="17" rx="4" ry="2" transform="rotate(25 54 17)"/></g>
+        </svg>
+      </div>
+      <div class="brand-copy">
+        <h1><span class="brand-green">GLOS</span><span class="brand-cream">TRÄN</span><span class="brand-red">AREN</span></h1>
+        <p>TRÄNA ITALIENSKA – ENKELT OCH EFFEKTIVT</p>
+      </div>
+    </div>
+    <div class="brand-slogan">La pratica<br>rende perfetti<span class="flag-line"></span></div>
+  </header>
   <div class="grid">
     <aside class="panel sidebar">
       <h2>1. Färdigt material – Italienska 🇮🇹</h2>
@@ -273,10 +332,10 @@ html,body{height:100%;}
 
       <h2 class="section-title">2. Välj träningssätt</h2>
       <div class="mode-grid">
-        <button class="mode-btn" data-mode="match"><b>🧩 Matcha</b><span>Dra glosor till rätt översättning</span></button>
-        <button class="mode-btn" data-mode="click"><b>👆 Klicka</b><span>Välj rätt av fyra</span></button>
-        <button class="mode-btn active" data-mode="write"><b>⌨️ Skriv</b><span>Fem hjälpnivåer</span></button>
-        <button class="mode-btn" data-mode="shootout"><b>🎯 Shootout</b><span>Skjut rätt ord</span></button>
+        <button class="mode-btn" data-mode="match"><b>Matcha</b><span>Dra glosor till rätt översättning</span></button>
+        <button class="mode-btn" data-mode="click"><b>Klicka</b><span>Välj rätt av fyra</span></button>
+        <button class="mode-btn active" data-mode="write"><b>Skriv</b><span>Fem hjälpnivåer</span></button>
+        <button class="mode-btn" data-mode="shootout"><b>Shootout</b><span>Skjut rätt ord</span></button>
       </div>
       <div class="tts-control"><button class="tts-toggle on" id="ttsToggle" type="button" title="Slå av eller på italienskt uttal">🔊 Uttal: PÅ</button></div>
 
@@ -308,7 +367,7 @@ html,body{height:100%;}
     </aside>
 
     <main class="panel main">
-      <div class="empty" id="emptyState"><div><div class="icon">🧠</div><h2 style="font-size:1.5rem">Välj glosor och börja</h2><p>Välj en italiensk Unità eller lägg in egna glosor. Välj sedan Skriv, Shootout, Klicka eller Matcha.</p></div></div>
+      <div class="empty" id="emptyState"><div><h2 style="font-size:1.7rem">Välj glosor och börja</h2><p>Välj en italiensk Unità eller lägg in egna glosor. Välj sedan Skriv, Shootout, Klicka eller Matcha.</p><div class="empty-motto">Piccole parole, grandi possibilità.</div></div></div>
 
       <section class="practice" id="practice">
         <div class="topline"><div class="progressWrap"><div class="progress" id="progress"></div></div><div class="counter" id="counter"></div></div>
