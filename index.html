@@ -267,33 +267,31 @@ body{background:radial-gradient(circle at 18% 0%,rgba(21,147,74,.10),transparent
 @media(max-width:880px){.compact-brand-header{min-height:78px!important;padding:7px 12px!important}.compact-brand-header .clean-mark{width:52px!important;flex-basis:52px!important}.compact-brand-header .brand-copy h1{font-size:clamp(1.65rem,7vw,2.7rem)!important}.compact-brand-header .brand-copy p{font-size:.55rem!important;letter-spacing:.12em!important}}
 @media(max-width:520px){.compact-brand-header{min-height:66px!important}.compact-brand-header .clean-mark{width:44px!important;flex-basis:44px!important}.compact-brand-header .brand-copy h1{font-size:clamp(1.45rem,9vw,2.1rem)!important}.compact-brand-header .brand-copy p{display:none!important}}
 </style>
+
+<style id="text-only-polished-logo">
+/* Textbaserad logotyp – utan figur och utan dekorativ italiensk text */
+.compact-brand-header{min-height:82px!important;padding:8px 18px!important;justify-content:center!important;background:linear-gradient(180deg,#160d08 0%,#0b0705 100%)!important;overflow:hidden!important}
+.compact-brand-header .brand-lockup{width:100%!important;justify-content:center!important;gap:0!important}
+.compact-brand-header .brand-copy{text-align:center!important;width:100%!important}
+.compact-brand-header .brand-copy h1{position:relative;display:inline-block;margin:0!important;font-family:Impact,'Arial Narrow',sans-serif!important;font-size:clamp(2.5rem,5.4vw,5rem)!important;line-height:.86!important;letter-spacing:-.025em!important;font-weight:900!important;filter:drop-shadow(0 5px 5px rgba(0,0,0,.65))!important}
+.compact-brand-header .brand-copy h1::after{content:'';position:absolute;left:1%;right:1%;top:5%;height:28%;border-radius:50%;background:linear-gradient(180deg,rgba(255,255,255,.42),rgba(255,255,255,.08) 55%,transparent);mix-blend-mode:screen;pointer-events:none}
+.compact-brand-header .brand-green{background:linear-gradient(180deg,#39d878 0%,#079346 38%,#045a2d 100%);-webkit-background-clip:text;background-clip:text;color:transparent!important;-webkit-text-stroke:1px rgba(96,255,163,.35);text-shadow:0 1px 0 #6ef1a5,0 4px 0 #033b1e,0 7px 12px rgba(0,0,0,.75)}
+.compact-brand-header .brand-cream{background:linear-gradient(180deg,#fffdf5 0%,#f5ead6 48%,#c9ae82 100%);-webkit-background-clip:text;background-clip:text;color:transparent!important;-webkit-text-stroke:1px rgba(255,255,255,.28);text-shadow:0 1px 0 #fff,0 4px 0 #8a7658,0 7px 12px rgba(0,0,0,.75)}
+.compact-brand-header .brand-red{background:linear-gradient(180deg,#ff5a57 0%,#dc2828 40%,#8f1115 100%);-webkit-background-clip:text;background-clip:text;color:transparent!important;-webkit-text-stroke:1px rgba(255,115,110,.3);text-shadow:0 1px 0 #ff7770,0 4px 0 #680b0e,0 7px 12px rgba(0,0,0,.75)}
+.compact-brand-header .brand-copy p{margin:9px 0 0!important;color:#f4e7d1!important;font-size:.68rem!important;letter-spacing:.28em!important;text-shadow:0 2px 4px #000!important}
+.brand-slogan,.empty-motto,.clean-mark{display:none!important}
+@media(max-width:520px){.compact-brand-header{min-height:58px!important;padding:7px 8px!important}.compact-brand-header .brand-copy h1{font-size:clamp(2rem,12vw,3rem)!important}.compact-brand-header .brand-copy p{display:none!important}}
+</style>
 </head>
 <body>
 <div class="app">
   <header class="brand-header compact-brand-header">
     <div class="brand-lockup">
-      <div class="brand-mark clean-mark" aria-hidden="true">
-        <svg viewBox="0 0 92 116" role="img" aria-label="Glostränaren symbol">
-          <defs><linearGradient id="itbg" x1="0" x2="1"><stop offset="0" stop-color="#0b8f45"/><stop offset=".5" stop-color="#0b8f45"/><stop offset=".5" stop-color="#d82f32"/><stop offset="1" stop-color="#d82f32"/></linearGradient></defs>
-          <rect x="2" y="2" width="88" height="112" rx="17" fill="url(#itbg)" stroke="#f7ecd8" stroke-width="4"/>
-          <!-- Helvit, förenklad överkroppssiluett som läser -->
-          <circle cx="42" cy="29" r="10" fill="#fff"/>
-          <path d="M31 39c5-5 16-5 21 0 4 4 6 10 6 18v28H24V59c0-9 2-15 7-20Z" fill="#fff"/>
-          <path d="M27 48 15 66c-2 3-1 7 2 9l4 2 16-22Z" fill="#fff"/>
-          <path d="M52 49 64 58 60 65 48 57Z" fill="#fff"/>
-          <path d="M59 54 80 46v25L59 66Z" fill="#fff"/>
-          <path d="M61 56 79 50M61 61l18-7" stroke="#d82f32" stroke-width="1.6" opacity=".65"/>
-          <!-- lagerkrans -->
-          <path d="M32 20c7-7 16-8 24-3" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/>
-          <g fill="#fff"><ellipse cx="34" cy="19" rx="4" ry="2" transform="rotate(-35 34 19)"/><ellipse cx="40" cy="16" rx="4" ry="2" transform="rotate(-20 40 16)"/><ellipse cx="47" cy="15" rx="4" ry="2"/><ellipse cx="54" cy="17" rx="4" ry="2" transform="rotate(25 54 17)"/></g>
-        </svg>
-      </div>
       <div class="brand-copy">
         <h1><span class="brand-green">GLOS</span><span class="brand-cream">TRÄN</span><span class="brand-red">AREN</span></h1>
         <p>TRÄNA ITALIENSKA – ENKELT OCH EFFEKTIVT</p>
       </div>
     </div>
-    <div class="brand-slogan">La pratica<br>rende perfetti<span class="flag-line"></span></div>
   </header>
   <div class="grid">
     <aside class="panel sidebar">
@@ -367,7 +365,7 @@ body{background:radial-gradient(circle at 18% 0%,rgba(21,147,74,.10),transparent
     </aside>
 
     <main class="panel main">
-      <div class="empty" id="emptyState"><div><h2 style="font-size:1.7rem">Välj glosor och börja</h2><p>Välj en italiensk Unità eller lägg in egna glosor. Välj sedan Skriv, Shootout, Klicka eller Matcha.</p><div class="empty-motto">Piccole parole, grandi possibilità.</div></div></div>
+      <div class="empty" id="emptyState"><div><h2 style="font-size:1.7rem">Välj glosor och börja</h2><p>Välj en italiensk Unità eller lägg in egna glosor. Välj sedan Skriv, Shootout, Klicka eller Matcha.</p></div></div>
 
       <section class="practice" id="practice">
         <div class="topline"><div class="progressWrap"><div class="progress" id="progress"></div></div><div class="counter" id="counter"></div></div>
