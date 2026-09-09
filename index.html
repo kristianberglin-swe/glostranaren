@@ -46,7 +46,7 @@
 /* XP och framsteg */
 .xp-panel{margin-top:8px;padding:9px 10px;border:1px solid #6b4b32;border-radius:7px;background:linear-gradient(180deg,#17100b,#0d0907);box-shadow:inset 0 1px rgba(255,255,255,.03)}
 .xp-head{display:flex;align-items:center;justify-content:space-between;gap:8px;font-weight:900;color:#f3e5cf;font-size:.78rem}.xp-total{color:#efc676;font-size:.9rem}.xp-bar{height:7px;margin-top:6px;border-radius:999px;overflow:hidden;background:#2a1b12;border:1px solid #4f3524}.xp-fill{height:100%;width:0;background:linear-gradient(90deg,#168c48,#f2e6cf 52%,#d43c32);transition:width .35s ease}.xp-sub{display:flex;justify-content:space-between;margin-top:4px;font-size:.58rem;color:#aa967b}.xp-gain{display:none;margin-top:5px;text-align:center;font-weight:900;font-size:.68rem;color:#f2c66f}.xp-gain.show{display:block;animation:xpPop .65s ease}@keyframes xpPop{0%{transform:scale(.86);opacity:0}40%{transform:scale(1.08);opacity:1}100%{transform:scale(1);opacity:1}}
-.mode-btn[data-complete="1"],.level-item[data-complete="1"]{position:relative}.mode-btn[data-complete="1"]::after,.level-item[data-complete="1"]::after{content:'★';position:absolute;top:4px;right:6px;color:#f4c75b;text-shadow:0 0 8px rgba(244,199,91,.65);font-size:.82rem;line-height:1}.level-item[data-complete="1"]::after{top:2px;right:3px;font-size:.68rem}.progress-note{margin-top:5px;font-size:.57rem;line-height:1.2;color:#9f8c72;text-align:center}
+.mode-btn[data-rank],.level-item[data-rank]{position:relative}.mode-btn[data-rank]::after,.level-item[data-rank]::after{content:'★';position:absolute;top:4px;right:6px;font-size:.82rem;line-height:1;text-shadow:0 0 8px currentColor}.mode-btn[data-rank="1"]::after,.level-item[data-rank="1"]::after{color:#42d66b}.mode-btn[data-rank="2"]::after,.level-item[data-rank="2"]::after{color:#f2c94c}.mode-btn[data-rank="3"]::after,.level-item[data-rank="3"]::after{color:#ef5148}.level-item[data-rank]::after{top:2px;right:3px;font-size:.68rem}.progress-note{margin-top:5px;font-size:.57rem;line-height:1.25;color:#9f8c72;text-align:center}.xp-goal-line{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:5px}.xp-goal-btn{border:0;background:transparent;color:#d7b57d;font-size:.58rem;padding:0;cursor:pointer;text-decoration:underline}.goal-modal{position:fixed;inset:0;z-index:9999;background:rgba(5,3,2,.82);backdrop-filter:blur(5px);display:none;align-items:center;justify-content:center;padding:18px}.goal-modal.open{display:flex}.goal-card{width:min(430px,94vw);background:linear-gradient(180deg,#20150e,#0d0907);border:1px solid #8a643f;border-radius:16px;padding:22px;box-shadow:0 20px 70px rgba(0,0,0,.65);text-align:center}.goal-card h2{font-size:1.35rem;margin:0 0 8px;color:#f4ead7}.goal-card p{margin:0 0 16px;color:#bda98b;font-size:.85rem}.goal-input{width:100%;box-sizing:border-box;text-align:center;font-size:1.35rem;font-weight:900;background:#0d0907;color:#f6e8d2;border:1px solid #7b5839;border-radius:10px;padding:11px}.goal-presets{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0}.goal-preset{padding:8px;border-radius:9px;border:1px solid #6b4b32;background:#1b120d;color:#ead7bb;font-weight:800;cursor:pointer}.goal-save{width:100%;padding:11px;border-radius:10px;border:1px solid #d4a25f;background:linear-gradient(180deg,#d7ad6d,#a8793f);color:#140c07;font-weight:950;cursor:pointer}
 </style>
 
 <style id="godfather-theme">
@@ -415,11 +415,11 @@ body{background:radial-gradient(circle at 18% 0%,rgba(21,147,74,.10),transparent
       <div class="controls"><button class="primary" id="startBtn" disabled>Starta träningen</button><button class="danger" id="clearBtn" disabled>Rensa valda glosor</button></div>
       <div class="stats"><div class="stat"><b id="wordCount">0</b><span>glosor</span></div><div class="stat"><b id="rightCount">0</b><span>rätt</span></div><div class="stat"><b id="nearCount">0</b><span>nära</span></div></div>
       <div class="xp-panel" id="xpPanel">
-        <div class="xp-head"><span>XP · nivå <span id="xpLevel">1</span></span><span class="xp-total"><span id="xpTotal">0</span> XP</span></div>
+        <div class="xp-head"><span>Dagens XP</span><span class="xp-total"><span id="xpTotal">0</span> XP</span></div>
         <div class="xp-bar"><div class="xp-fill" id="xpFill"></div></div>
-        <div class="xp-sub"><span id="xpCurrent">0 / 250 XP</span><span>Nästa nivå</span></div>
+        <div class="xp-goal-line"><span class="xp-sub" id="xpCurrent">0 / 250 XP</span><button class="xp-goal-btn" id="changeGoalBtn" type="button">Ändra dagens mål</button></div>
         <div class="xp-gain" id="xpGain"></div>
-        <div class="progress-note">★ visar träningssätt och skrivnivåer du har genomfört för vald Unità.</div>
+        <div class="progress-note">★ Grön = klar 1 gång · Gul = 2 gånger · Röd = 3+ gånger.</div>
       </div>
 
       <details class="own-words" style="margin-top:24px">
@@ -4200,18 +4200,25 @@ CAPIRE = förstå
   function cleanPair(a,b){const l=String(a).replace(/^[-•\d.)\s]+/,'').trim(),r=String(b).replace(/^[-•\d.)\s]+/,'').trim();if(!l||!r||l.length>100||r.length>100)return null;return{sv:l,target:r}}
   function parseLines(text){const lines=text.replace(/\r/g,'').split('\n').map(x=>x.trim()).filter(Boolean),out=[];for(const line of lines){let parts=null;for(const re of [/\s*=\s*/,/\s+[-–—]\s+/,/\s*:\s*/,/\t+/]){const p=line.split(re);if(p.length===2&&p[0].trim()&&p[1].trim()){parts=p;break}}if(parts){const pair=cleanPair(parts[0],parts[1]);if(pair)out.push(pair)}}return dedupe(out)}
 
-  const XP_KEY='glostranaren_xp_v1', PROGRESS_KEY='glostranaren_progress_v1';
-  function loadXp(){const n=Number(localStorage.getItem(XP_KEY)||0);return Number.isFinite(n)&&n>0?Math.floor(n):0}
-  function saveXp(n){localStorage.setItem(XP_KEY,String(Math.max(0,Math.floor(n))))}
+  const DAILY_XP_KEY='glostranaren_daily_xp_v2', PROGRESS_KEY='glostranaren_progress_v1';
+  function todayKey(){const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`}
+  function loadDaily(){try{const x=JSON.parse(localStorage.getItem(DAILY_XP_KEY)||'null');if(x&&x.date===todayKey())return {date:x.date,xp:Math.max(0,Math.floor(Number(x.xp)||0)),goal:Math.max(0,Math.floor(Number(x.goal)||0))}}catch{}return {date:todayKey(),xp:0,goal:0}}
+  function saveDaily(d){localStorage.setItem(DAILY_XP_KEY,JSON.stringify({date:todayKey(),xp:Math.max(0,Math.floor(Number(d.xp)||0)),goal:Math.max(0,Math.floor(Number(d.goal)||0))}))}
+  function loadXp(){return loadDaily().xp}
+  function saveXp(n){const d=loadDaily();d.xp=Math.max(0,Math.floor(Number(n)||0));saveDaily(d)}
   function loadProgress(){try{const p=JSON.parse(localStorage.getItem(PROGRESS_KEY)||'{}');return p&&typeof p==='object'?p:{}}catch{return{}}}
   function saveProgress(p){localStorage.setItem(PROGRESS_KEY,JSON.stringify(p))}
   function isBuiltInUnit(){return !!state.source && Object.prototype.hasOwnProperty.call(ITALIAN_UNITS,state.source)}
   function progressKey(mode=state.mode,level=state.level){return mode==='write'?`${state.source}||write||${level}`:`${state.source}||${mode}`}
-  function markCompleted(mode=state.mode,level=state.level){if(!isBuiltInUnit())return;const p=loadProgress();p[progressKey(mode,level)]={done:true,at:Date.now()};saveProgress(p);updateProgressMarks()}
-  function updateProgressMarks(){const p=loadProgress(),unit=$('unitSelect')?.value||state.source||'';document.querySelectorAll('.mode-btn').forEach(b=>{const mode=b.dataset.mode;const key=mode==='write'?null:`${unit}||${mode}`;b.dataset.complete=key&&p[key]?.done?'1':'0'});document.querySelectorAll('.level-item').forEach(b=>{const key=`${unit}||write||${b.dataset.level}`;b.dataset.complete=p[key]?.done?'1':'0'});if($('unitSelect')){[...$('unitSelect').options].forEach(o=>{if(!o.value)return;const any=Object.keys(p).some(k=>k.startsWith(o.value+'||')&&p[k]?.done);const base=o.dataset.baseLabel||o.textContent.replace(/^★\s*/, '');o.dataset.baseLabel=base;o.textContent=(any?'★ ':'')+base})}}
-  function updateXpDisplay(gain=0){const xp=loadXp(),per=250,level=Math.floor(xp/per)+1,inLevel=xp%per;$('xpTotal').textContent=xp;$('xpLevel').textContent=level;$('xpCurrent').textContent=`${inLevel} / ${per} XP`;$('xpFill').style.width=`${Math.min(100,inLevel/per*100)}%`;const g=$('xpGain');if(gain>0){g.textContent=`+${gain} XP`;g.classList.remove('show');void g.offsetWidth;g.classList.add('show');setTimeout(()=>g.classList.remove('show'),1800)}}
+  function completionCount(entry){if(!entry)return 0;if(typeof entry.count==='number')return Math.max(0,Math.floor(entry.count));return entry.done?1:0}
+  function rankForCount(n){return n>=3?3:n>=2?2:n>=1?1:0}
+  function markCompleted(mode=state.mode,level=state.level){if(!isBuiltInUnit())return;const p=loadProgress(),key=progressKey(mode,level),old=p[key],count=completionCount(old)+1;p[key]={done:true,count,at:Date.now()};saveProgress(p);updateProgressMarks()}
+  function updateProgressMarks(){const p=loadProgress(),unit=$('unitSelect')?.value||state.source||'';document.querySelectorAll('.mode-btn').forEach(b=>{const mode=b.dataset.mode,key=mode==='write'?null:`${unit}||${mode}`,rank=key?rankForCount(completionCount(p[key])):0;if(rank)b.dataset.rank=String(rank);else delete b.dataset.rank});document.querySelectorAll('.level-item').forEach(b=>{const key=`${unit}||write||${b.dataset.level}`,rank=rankForCount(completionCount(p[key]));if(rank)b.dataset.rank=String(rank);else delete b.dataset.rank});if($('unitSelect')){[...$('unitSelect').options].forEach(o=>{if(!o.value)return;const counts=Object.keys(p).filter(k=>k.startsWith(o.value+'||')).map(k=>completionCount(p[k]));const rank=rankForCount(counts.length?Math.max(...counts):0);const base=o.dataset.baseLabel||o.textContent.replace(/^★\s*/, '');o.dataset.baseLabel=base;o.textContent=(rank?'★ ':'')+base;o.style.color=rank===1?'#42d66b':rank===2?'#f2c94c':rank===3?'#ef5148':''})}}
+  function updateXpDisplay(gain=0){const d=loadDaily(),xp=d.xp,goal=d.goal||250;$('xpTotal').textContent=xp;$('xpCurrent').textContent=`${xp} / ${goal} XP`;$('xpFill').style.width=`${Math.min(100,xp/goal*100)}%`;const g=$('xpGain');if(gain>0){g.textContent=`+${gain} XP`;g.classList.remove('show');void g.offsetWidth;g.classList.add('show');setTimeout(()=>g.classList.remove('show'),1800)}}
   function awardXp(gain){gain=Math.max(0,Math.floor(Number(gain)||0));if(!gain)return 0;saveXp(loadXp()+gain);updateXpDisplay(gain);return gain}
   function awardSessionXp(completed=true,gameOver=false,mode=state.mode){let gain=0;if(completed&&!gameOver)gain+=50;if(completed&&!gameOver&&state.wrong===0&&state.near===0)gain+=50;return awardXp(gain)}
+  function openGoalModal(force=false){const d=loadDaily();if(!force&&d.goal>0)return;$('goalInput').value=d.goal||250;$('goalModal').classList.add('open');setTimeout(()=>$('goalInput').focus(),50)}
+  function saveGoal(){const goal=Math.max(10,Math.min(10000,Math.floor(Number($('goalInput').value)||250)));const d=loadDaily();d.goal=goal;saveDaily(d);$('goalModal').classList.remove('open');updateXpDisplay()}
 
   function buildUnits(){const sel=$('unitSelect');for(const [name,words] of Object.entries(ITALIAN_UNITS)){const o=document.createElement('option');o.value=name;o.textContent=name;sel.appendChild(o)}sel.addEventListener('change',()=>{const name=sel.value;$('materialStatus').textContent='';if(!name){$('selectedMaterial').textContent='Ingen vald';setWords([],'',false);$('unitWordsBtn').disabled=true;return}const words=ITALIAN_UNITS[name]||[];$('selectedMaterial').textContent=name;if(!words.length){setWords([],'',false);$('materialStatus').textContent=`${name}: glosorna är ännu inte färdigkontrollerade från den skannade PDF-sidan.`;return}setWords(words,name,false);$('unitWordsBtn').disabled=false;$('materialStatus').textContent=`✓ ${words.length} glosor klara – välj träningssätt och starta.`;updateProgressMarks()})}
 
@@ -4420,6 +4427,11 @@ CAPIRE = förstå
   updateXpDisplay();
   updateProgressMarks();
   refreshTtsButton();
+  document.querySelectorAll('.goal-preset').forEach(b=>b.addEventListener('click',()=>{$('goalInput').value=b.dataset.goal}));
+  $('goalSaveBtn').addEventListener('click',saveGoal);
+  $('goalInput').addEventListener('keydown',e=>{if(e.key==='Enter')saveGoal()});
+  $('changeGoalBtn').addEventListener('click',()=>openGoalModal(true));
+  openGoalModal(false);
   $('ttsToggle').addEventListener('click',()=>{state.ttsEnabled=!state.ttsEnabled;localStorage.setItem('glostranaren_tts',state.ttsEnabled?'on':'off');if(!state.ttsEnabled&&'speechSynthesis' in window)speechSynthesis.cancel();refreshTtsButton();});
   document.querySelectorAll('.mode-btn').forEach(b=>b.addEventListener('click',()=>{state.mode=b.dataset.mode;document.querySelectorAll('.mode-btn').forEach(x=>x.classList.toggle('active',x===b));$('levelBox').classList.toggle('hidden',state.mode!=='write');$('startBtn').textContent=state.mode==='shootout'?'Starta Shootout':state.mode==='click'?'Starta Klicka':state.mode==='match'?'Starta Matcha':'Starta träningen';updateProgressMarks()}));
   const helps={1:'Första + sista bokstaven och antal bokstäver',2:'Första bokstaven och antal bokstäver',3:'Bara första bokstaven',4:'Bara antal bokstäver',5:'Ingen hjälp – bara det svenska ordet'};
@@ -4447,5 +4459,15 @@ CAPIRE = förstå
 
   try{const saved=JSON.parse(localStorage.getItem('glostranaren_words')||'[]');if(Array.isArray(saved)&&saved.length)setWords(saved,'sparade egna glosor',false)}catch{}
 </script>
+
+<div class="goal-modal" id="goalModal" role="dialog" aria-modal="true" aria-labelledby="goalTitle">
+  <div class="goal-card">
+    <h2 id="goalTitle">Hur många XP har du som mål att klara idag?</h2>
+    <p>XP nollställs automatiskt när en ny dag börjar.</p>
+    <input class="goal-input" id="goalInput" type="number" min="10" max="10000" step="10" value="250" inputmode="numeric">
+    <div class="goal-presets"><button class="goal-preset" type="button" data-goal="100">100 XP</button><button class="goal-preset" type="button" data-goal="250">250 XP</button><button class="goal-preset" type="button" data-goal="500">500 XP</button></div>
+    <button class="goal-save" id="goalSaveBtn" type="button">Sätt dagens mål</button>
+  </div>
+</div>
 </body>
 </html>
