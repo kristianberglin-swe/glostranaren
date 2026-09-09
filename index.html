@@ -43,7 +43,10 @@
 .speak-btn:hover{border-color:#b58a52;background:#2a1d14}
 .word-audio-cell{display:flex;align-items:center;justify-content:space-between;gap:8px}
 
-/* Förbättrade serier för Unità 1A–3B */
+/* XP och framsteg */
+.xp-panel{margin-top:8px;padding:9px 10px;border:1px solid #6b4b32;border-radius:7px;background:linear-gradient(180deg,#17100b,#0d0907);box-shadow:inset 0 1px rgba(255,255,255,.03)}
+.xp-head{display:flex;align-items:center;justify-content:space-between;gap:8px;font-weight:900;color:#f3e5cf;font-size:.78rem}.xp-total{color:#efc676;font-size:.9rem}.xp-bar{height:7px;margin-top:6px;border-radius:999px;overflow:hidden;background:#2a1b12;border:1px solid #4f3524}.xp-fill{height:100%;width:0;background:linear-gradient(90deg,#168c48,#f2e6cf 52%,#d43c32);transition:width .35s ease}.xp-sub{display:flex;justify-content:space-between;margin-top:4px;font-size:.58rem;color:#aa967b}.xp-gain{display:none;margin-top:5px;text-align:center;font-weight:900;font-size:.68rem;color:#f2c66f}.xp-gain.show{display:block;animation:xpPop .65s ease}@keyframes xpPop{0%{transform:scale(.86);opacity:0}40%{transform:scale(1.08);opacity:1}100%{transform:scale(1);opacity:1}}
+.mode-btn[data-complete="1"],.level-item[data-complete="1"]{position:relative}.mode-btn[data-complete="1"]::after,.level-item[data-complete="1"]::after{content:'★';position:absolute;top:4px;right:6px;color:#f4c75b;text-shadow:0 0 8px rgba(244,199,91,.65);font-size:.82rem;line-height:1}.level-item[data-complete="1"]::after{top:2px;right:3px;font-size:.68rem}.progress-note{margin-top:5px;font-size:.57rem;line-height:1.2;color:#9f8c72;text-align:center}
 </style>
 
 <style id="godfather-theme">
@@ -320,24 +323,27 @@ body{background:radial-gradient(circle at 18% 0%,rgba(21,147,74,.10),transparent
 }
 </style>
 
-<style id="fill-mode-styles">
-.fill-mode-btn{text-align:center!important}
-.fill-practice{display:none;height:100%;min-height:0}
-.fill-card{background:linear-gradient(180deg,#1c130d,#100b08);border:1px solid #69482f;border-radius:20px;padding:clamp(18px,3vw,34px);text-align:center;min-height:390px;display:flex;flex-direction:column;justify-content:center}
-.fill-label{color:#c8a879;font-size:.72rem;font-weight:900;letter-spacing:.16em;margin-bottom:12px}
-.fill-sentence{font-size:clamp(1.8rem,4vw,3.4rem);font-weight:900;color:#f5ead9;margin:6px 0 8px;line-height:1.15}
-.fill-sentence::first-letter{color:inherit}
-.fill-translation{font-size:clamp(1rem,2vw,1.3rem);color:#cdbb9f;margin-bottom:22px;font-style:italic}
-.fill-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;max-width:720px;width:100%;margin:0 auto}
-.fill-option{padding:16px 12px;border-radius:13px;border:1px solid #775231;background:#160f0a;color:#f5ead9;font-size:1.02rem;font-weight:900;cursor:pointer;transition:.15s}
-.fill-option:hover{transform:translateY(-1px);border-color:#d8ad67;background:#21160e}
-.fill-option.correct{border-color:#2f9e62;background:rgba(47,158,98,.16)}
-.fill-option.wrong{border-color:#c84b45;background:rgba(200,75,69,.16)}
-.fill-option:disabled{cursor:default;opacity:.9}
-.fill-feedback{min-height:52px;margin-top:15px;font-size:1.35rem;font-weight:1000;letter-spacing:.05em}
-.fill-feedback.good{color:#5fd08b}.fill-feedback.bad{color:#ff7c73}.fill-correct{display:block;margin-top:4px;font-size:.94rem;letter-spacing:0;color:#eadbc5}
-.fill-next{display:none;margin:6px auto 0;min-width:170px}
-@media(max-width:620px){.fill-options{grid-template-columns:1fr}.fill-card{min-height:0;padding:14px}}
+<style id="header-space-fix">
+/* Mer luft för logotypen utan att påverka resten av appens layout. */
+@media (min-width:881px){
+  .compact-brand-header{
+    min-height:88px!important;
+    height:88px!important;
+    padding:8px 14px!important;
+    display:flex!important;
+    align-items:center!important;
+    overflow:visible!important;
+  }
+  .compact-brand-header .brand-lockup{height:100%!important;display:flex!important;align-items:center!important;}
+  .compact-brand-header .brand-copy{display:flex!important;flex-direction:column!important;justify-content:center!important;}
+  .compact-brand-header .brand-copy h1{font-size:clamp(2.35rem,4vw,3.55rem)!important;line-height:.92!important;margin:0!important;}
+  .compact-brand-header .brand-copy p{display:block!important;font-size:.66rem!important;line-height:1.15!important;margin:5px 0 0!important;letter-spacing:.22em!important;}
+}
+@media (min-width:881px) and (max-height:700px){
+  .compact-brand-header{min-height:76px!important;height:76px!important;padding:6px 12px!important;}
+  .compact-brand-header .brand-copy h1{font-size:2.45rem!important;}
+  .compact-brand-header .brand-copy p{display:block!important;font-size:.56rem!important;margin-top:3px!important;}
+}
 </style>
 </head>
 <body>
@@ -391,7 +397,6 @@ body{background:radial-gradient(circle at 18% 0%,rgba(21,147,74,.10),transparent
         <button class="mode-btn" data-mode="click"><b>Klicka</b><span>Välj rätt av fyra</span></button>
         <button class="mode-btn active" data-mode="write"><b>Skriv</b><span>Fem hjälpnivåer</span></button>
         <button class="mode-btn" data-mode="shootout"><b>Shootout</b><span>Skjut rätt ord</span></button>
-        <button class="mode-btn fill-mode-btn" data-mode="fill"><b>Fyll i</b><span>Välj ordet som passar i meningen</span></button>
       </div>
       <div class="tts-control"><button class="tts-toggle on" id="ttsToggle" type="button" title="Slå av eller på italienskt uttal">🔊 Uttal: PÅ</button></div>
 
@@ -409,6 +414,13 @@ body{background:radial-gradient(circle at 18% 0%,rgba(21,147,74,.10),transparent
 
       <div class="controls"><button class="primary" id="startBtn" disabled>Starta träningen</button><button class="danger" id="clearBtn" disabled>Rensa valda glosor</button></div>
       <div class="stats"><div class="stat"><b id="wordCount">0</b><span>glosor</span></div><div class="stat"><b id="rightCount">0</b><span>rätt</span></div><div class="stat"><b id="nearCount">0</b><span>nära</span></div></div>
+      <div class="xp-panel" id="xpPanel">
+        <div class="xp-head"><span>XP · nivå <span id="xpLevel">1</span></span><span class="xp-total"><span id="xpTotal">0</span> XP</span></div>
+        <div class="xp-bar"><div class="xp-fill" id="xpFill"></div></div>
+        <div class="xp-sub"><span id="xpCurrent">0 / 250 XP</span><span>Nästa nivå</span></div>
+        <div class="xp-gain" id="xpGain"></div>
+        <div class="progress-note">★ visar träningssätt och skrivnivåer du har genomfört för vald Unità.</div>
+      </div>
 
       <details class="own-words" style="margin-top:24px">
         <summary style="cursor:pointer;font-weight:800;color:#e2e8f0;padding:10px 0">4. Lägg in egna glosor</summary>
@@ -423,7 +435,7 @@ body{background:radial-gradient(circle at 18% 0%,rgba(21,147,74,.10),transparent
     </aside>
 
     <main class="panel main">
-      <div class="empty" id="emptyState"><div><h2 style="font-size:1.7rem">Välj glosor och börja</h2><p>Välj en italiensk Unità eller lägg in egna glosor. Välj sedan Skriv, Shootout, Klicka, Matcha eller Fyll i.</p></div></div>
+      <div class="empty" id="emptyState"><div><h2 style="font-size:1.7rem">Välj glosor och börja</h2><p>Välj en italiensk Unità eller lägg in egna glosor. Välj sedan Skriv, Shootout, Klicka eller Matcha.</p></div></div>
 
       <section class="practice" id="practice">
         <div class="topline"><div class="progressWrap"><div class="progress" id="progress"></div></div><div class="counter" id="counter"></div></div>
@@ -452,18 +464,6 @@ body{background:radial-gradient(circle at 18% 0%,rgba(21,147,74,.10),transparent
           <div class="click-options" id="clickOptions"></div>
           <div class="click-feedback" id="clickFeedback"></div>
           <button class="secondary click-next" id="clickNextBtn" type="button">Nästa glosa →</button>
-        </div>
-      </section>
-
-      <section class="fill-practice" id="fillPractice">
-        <div class="topline"><div class="progressWrap"><div class="progress" id="fillProgress"></div></div><div class="counter" id="fillCounter"></div></div>
-        <div class="fill-card">
-          <div class="fill-label">FYLL I RÄTT GLOSA</div>
-          <div class="fill-sentence" id="fillSentence"></div>
-          <div class="fill-translation" id="fillTranslation"></div>
-          <div class="fill-options" id="fillOptions"></div>
-          <div class="fill-feedback" id="fillFeedback"></div>
-          <button class="secondary fill-next" id="fillNextBtn" type="button">Nästa glosa →</button>
         </div>
       </section>
 
@@ -4162,7 +4162,7 @@ CAPIRE = förstå
     preferire:{label:'PREFERIRE',meaning:'att föredra',forms:[['io','preferisco','jag föredrar'],['tu','preferisci','du föredrar'],['lui/lei','preferisce','han / hon föredrar'],['noi','preferiamo','vi föredrar'],['voi','preferite','ni föredrar'],['loro','preferiscono','de föredrar']]}
   };
 
-  const state={words:[],queue:[],index:0,level:1,mode:'write',answered:false,right:0,near:0,wrong:0,source:'',shootLives:3,targets:[],animId:null,lastTime:0,roundLocked:false,helpCount:0,results:[],currentHadMistake:false,verbMode:'learn',verbKey:'',verbQueue:[],verbIndex:0,verbAnswered:false,verbRight:0,verbWrong:0,matchPairs:[],matchRemaining:0,matchDrag:null};
+  const state={words:[],queue:[],index:0,level:1,mode:'write',answered:false,right:0,near:0,wrong:0,source:'',shootLives:3,targets:[],animId:null,lastTime:0,roundLocked:false,helpCount:0,results:[],currentHadMistake:false,verbMode:'learn',verbKey:'',verbQueue:[],verbIndex:0,verbAnswered:false,verbRight:0,verbWrong:0,matchPairs:[],matchRemaining:0,matchDrag:null,sessionXpStart:0};
   const dropZone=$('dropZone'),pdfInput=$('pdfInput'),imageZone=$('imageZone'),imageInput=$('imageInput'),manualInput=$('manualInput'),answerInput=$('answerInput');
 
 
@@ -4200,7 +4200,20 @@ CAPIRE = förstå
   function cleanPair(a,b){const l=String(a).replace(/^[-•\d.)\s]+/,'').trim(),r=String(b).replace(/^[-•\d.)\s]+/,'').trim();if(!l||!r||l.length>100||r.length>100)return null;return{sv:l,target:r}}
   function parseLines(text){const lines=text.replace(/\r/g,'').split('\n').map(x=>x.trim()).filter(Boolean),out=[];for(const line of lines){let parts=null;for(const re of [/\s*=\s*/,/\s+[-–—]\s+/,/\s*:\s*/,/\t+/]){const p=line.split(re);if(p.length===2&&p[0].trim()&&p[1].trim()){parts=p;break}}if(parts){const pair=cleanPair(parts[0],parts[1]);if(pair)out.push(pair)}}return dedupe(out)}
 
-  function buildUnits(){const sel=$('unitSelect');for(const [name,words] of Object.entries(ITALIAN_UNITS)){const o=document.createElement('option');o.value=name;o.textContent=name;sel.appendChild(o)}sel.addEventListener('change',()=>{const name=sel.value;$('materialStatus').textContent='';if(!name){$('selectedMaterial').textContent='Ingen vald';setWords([],'',false);$('unitWordsBtn').disabled=true;return}const words=ITALIAN_UNITS[name]||[];$('selectedMaterial').textContent=name;if(!words.length){setWords([],'',false);$('materialStatus').textContent=`${name}: glosorna är ännu inte färdigkontrollerade från den skannade PDF-sidan.`;return}setWords(words,name,false);$('unitWordsBtn').disabled=false;$('materialStatus').textContent=`✓ ${words.length} glosor klara – välj träningssätt och starta.`})}
+  const XP_KEY='glostranaren_xp_v1', PROGRESS_KEY='glostranaren_progress_v1';
+  function loadXp(){const n=Number(localStorage.getItem(XP_KEY)||0);return Number.isFinite(n)&&n>0?Math.floor(n):0}
+  function saveXp(n){localStorage.setItem(XP_KEY,String(Math.max(0,Math.floor(n))))}
+  function loadProgress(){try{const p=JSON.parse(localStorage.getItem(PROGRESS_KEY)||'{}');return p&&typeof p==='object'?p:{}}catch{return{}}}
+  function saveProgress(p){localStorage.setItem(PROGRESS_KEY,JSON.stringify(p))}
+  function isBuiltInUnit(){return !!state.source && Object.prototype.hasOwnProperty.call(ITALIAN_UNITS,state.source)}
+  function progressKey(mode=state.mode,level=state.level){return mode==='write'?`${state.source}||write||${level}`:`${state.source}||${mode}`}
+  function markCompleted(mode=state.mode,level=state.level){if(!isBuiltInUnit())return;const p=loadProgress();p[progressKey(mode,level)]={done:true,at:Date.now()};saveProgress(p);updateProgressMarks()}
+  function updateProgressMarks(){const p=loadProgress(),unit=$('unitSelect')?.value||state.source||'';document.querySelectorAll('.mode-btn').forEach(b=>{const mode=b.dataset.mode;const key=mode==='write'?null:`${unit}||${mode}`;b.dataset.complete=key&&p[key]?.done?'1':'0'});document.querySelectorAll('.level-item').forEach(b=>{const key=`${unit}||write||${b.dataset.level}`;b.dataset.complete=p[key]?.done?'1':'0'});if($('unitSelect')){[...$('unitSelect').options].forEach(o=>{if(!o.value)return;const any=Object.keys(p).some(k=>k.startsWith(o.value+'||')&&p[k]?.done);const base=o.dataset.baseLabel||o.textContent.replace(/^★\s*/, '');o.dataset.baseLabel=base;o.textContent=(any?'★ ':'')+base})}}
+  function updateXpDisplay(gain=0){const xp=loadXp(),per=250,level=Math.floor(xp/per)+1,inLevel=xp%per;$('xpTotal').textContent=xp;$('xpLevel').textContent=level;$('xpCurrent').textContent=`${inLevel} / ${per} XP`;$('xpFill').style.width=`${Math.min(100,inLevel/per*100)}%`;const g=$('xpGain');if(gain>0){g.textContent=`+${gain} XP`;g.classList.remove('show');void g.offsetWidth;g.classList.add('show');setTimeout(()=>g.classList.remove('show'),1800)}}
+  function awardXp(gain){gain=Math.max(0,Math.floor(Number(gain)||0));if(!gain)return 0;saveXp(loadXp()+gain);updateXpDisplay(gain);return gain}
+  function awardSessionXp(completed=true,gameOver=false,mode=state.mode){let gain=0;if(completed&&!gameOver)gain+=50;if(completed&&!gameOver&&state.wrong===0&&state.near===0)gain+=50;return awardXp(gain)}
+
+  function buildUnits(){const sel=$('unitSelect');for(const [name,words] of Object.entries(ITALIAN_UNITS)){const o=document.createElement('option');o.value=name;o.textContent=name;sel.appendChild(o)}sel.addEventListener('change',()=>{const name=sel.value;$('materialStatus').textContent='';if(!name){$('selectedMaterial').textContent='Ingen vald';setWords([],'',false);$('unitWordsBtn').disabled=true;return}const words=ITALIAN_UNITS[name]||[];$('selectedMaterial').textContent=name;if(!words.length){setWords([],'',false);$('materialStatus').textContent=`${name}: glosorna är ännu inte färdigkontrollerade från den skannade PDF-sidan.`;return}setWords(words,name,false);$('unitWordsBtn').disabled=false;$('materialStatus').textContent=`✓ ${words.length} glosor klara – välj träningssätt och starta.`;updateProgressMarks()})}
 
   function setWords(words,source='',persist=true){state.words=dedupe(words);state.source=source;$('wordCount').textContent=state.words.length;$('startBtn').disabled=!state.words.length;$('clearBtn').disabled=!state.words.length;$('toggleWords').disabled=!state.words.length;renderTable();if(persist)localStorage.setItem('glostranaren_words',JSON.stringify(state.words));}
   function renderTable(){
@@ -4238,13 +4251,13 @@ CAPIRE = förstå
     if(l===5&&parts.length>1)return`Svaret består av ${parts.length} ord`;
     return'';
   }
-  function hideAll(){for(const id of['emptyState','practice','verbPractice','shootout','clickPractice','fillPractice','matchPractice','summary'])$(id).style.display='none'}
+  function hideAll(){for(const id of['emptyState','practice','verbPractice','shootout','clickPractice','matchPractice','summary'])$(id).style.display='none'}
   function resetStats(){state.right=state.near=state.wrong=0;state.results=[];state.currentHadMistake=false;$('rightCount').textContent=0;$('nearCount').textContent=0}
-  function start(){if(!state.words.length)return;stopAnimation();resetStats();state.queue=shuffle(state.words);state.index=0;hideAll();if(state.mode==='shootout')startShootout();else if(state.mode==='click')startClickPractice();else if(state.mode==='fill')startFillPractice();else if(state.mode==='match')startMatchPractice();else startWrite()}
+  function start(){if(!state.words.length)return;stopAnimation();resetStats();state.sessionXpStart=loadXp();state.queue=shuffle(state.words);state.index=0;hideAll();if(state.mode==='shootout')startShootout();else if(state.mode==='click')startClickPractice();else if(state.mode==='match')startMatchPractice();else startWrite()}
 
   function startWrite(){state.level=Number(document.querySelector('.level-item.active')?.dataset.level||1);$('practice').style.display='block';showWord()}
   function showWord(){state.answered=false;state.helpCount=0;const w=state.queue[state.index];$('swedishWord').textContent=w.sv;const clueText=clueFor(w.target,state.level);$('clue').textContent=clueText;$('clue').style.visibility=clueText?'visible':'hidden';answerInput.value='';answerInput.disabled=false;$('checkBtn').disabled=false;$('helpBtn').disabled=false;$('helpNote').textContent='';$('verbPanel').classList.remove('open');$('feedback').className='feedback';$('feedback').innerHTML='';$('nextBtn').style.display='none';$('counter').textContent=`${state.index+1} / ${state.queue.length}`;$('progress').style.width=`${state.index/state.queue.length*100}%`;setTimeout(()=>answerInput.focus(),20)}
-  function checkAnswer(){if(state.answered||!answerInput.value.trim())return;const w=state.queue[state.index],r=classify(answerInput.value,w.target);state.answered=true;answerInput.disabled=true;$('checkBtn').disabled=true;$('helpBtn').disabled=true;const fb=$('feedback');fb.className=`feedback ${r}`;if(r==='right'){state.right++;fb.innerHTML='<div class="result">RÄTT!</div>'}else if(r==='near'){state.near++;fb.innerHTML=`<div class="result">NÄRA!</div><div class="correct-word">Rätt svar: <b>${esc(w.target)}</b></div>`}else{state.wrong++;fb.innerHTML=`<div class="result">FEL</div><div class="correct-word">Rätt svar: <b>${esc(w.target)}</b></div>`}state.results.push({sv:w.sv,target:w.target,status:r,answer:answerInput.value});speakItalian(w.target);updateStats();$('nextBtn').textContent=state.index===state.queue.length-1?'Visa resultat':'Nästa glosa →';$('nextBtn').style.display='inline-block';$('nextBtn').focus()}
+  function checkAnswer(){if(state.answered||!answerInput.value.trim())return;const w=state.queue[state.index],r=classify(answerInput.value,w.target);state.answered=true;answerInput.disabled=true;$('checkBtn').disabled=true;$('helpBtn').disabled=true;const fb=$('feedback');fb.className=`feedback ${r}`;if(r==='right'){state.right++;awardXp(10);fb.innerHTML='<div class="result">RÄTT! <span style="font-size:.7em;color:#f2c66f">+10 XP</span></div>'}else if(r==='near'){state.near++;awardXp(5);fb.innerHTML=`<div class="result">NÄRA! <span style="font-size:.7em;color:#f2c66f">+5 XP</span></div><div class="correct-word">Rätt svar: <b>${esc(w.target)}</b></div>`}else{state.wrong++;fb.innerHTML=`<div class="result">FEL</div><div class="correct-word">Rätt svar: <b>${esc(w.target)}</b></div>`}state.results.push({sv:w.sv,target:w.target,status:r,answer:answerInput.value});speakItalian(w.target);updateStats();$('nextBtn').textContent=state.index===state.queue.length-1?'Visa resultat':'Nästa glosa →';$('nextBtn').style.display='inline-block';$('nextBtn').focus()}
   function nextWord(){if(state.index<state.queue.length-1){state.index++;showWord()}else finish(false)}
 
   function giveHelp(){
@@ -4270,10 +4283,10 @@ CAPIRE = förstå
     const q=state.verbQueue[state.verbIndex];state.verbAnswered=false;$('verbPrompt').textContent=mode==='choice'?(q.sv||`(${q.person})`):`(${q.person})`;$('verbMeaning').textContent=mode==='choice'?'Välj rätt italienska form':'Skriv rätt italiensk verbform';
     if(mode==='choice'){const unique=[...new Set(data.forms.map(x=>x[1]))].filter(x=>x!==q.form);const opts=shuffle([q.form,...shuffle(unique).slice(0,3)]);$('verbOptions').innerHTML=opts.map(o=>`<button class="verb-option" type="button" data-answer="${esc(o)}">${esc(q.person)} ${esc(o)}</button>`).join('');$('verbOptions').querySelectorAll('.verb-option').forEach(b=>b.onclick=()=>answerVerbChoice(b,q.form));}
     else{$('verbWriteRow').style.display='flex';$('verbAnswerInput').value='';$('verbAnswerInput').disabled=false;$('verbCheckBtn').disabled=false;setTimeout(()=>$('verbAnswerInput').focus(),20);}}
-  function answerVerbChoice(btn,correct){if(state.verbAnswered)return;state.verbAnswered=true;const ok=cmp(btn.dataset.answer)===cmp(correct);state[ok?'verbRight':'verbWrong']++;btn.classList.add(ok?'correct':'wrong');$('verbOptions').querySelectorAll('.verb-option').forEach(b=>{b.disabled=true;if(cmp(b.dataset.answer)===cmp(correct))b.classList.add('correct')});$('verbFeedback').textContent=ok?'RÄTT':'FEL';$('verbFeedback').className=`verb-feedback ${ok?'good':'bad'}`;const q=state.verbQueue[state.verbIndex];$('verbLearnArea').innerHTML=`<div class="verb-full-form"><div class="verb-full-form-title">Rätt verbform</div><div class="verb-learn-table"><div class="verb-learn-row current"><b>(${esc(q.person)})</b><span><strong style="font-size:1.15rem">${esc(correct)}</strong><small style="display:block;color:#d9c7aa;margin-top:4px">${esc(q.sv||'')}</small></span></div></div></div>`;speakItalian(`${q.person} ${correct}`);$('verbNextBtn').style.display='inline-block';}
-  function answerVerbWrite(){if(state.verbAnswered)return;const q=state.verbQueue[state.verbIndex],ans=$('verbAnswerInput').value.trim();if(!ans)return;state.verbAnswered=true;const ok=cmp(ans)===cmp(q.form);state[ok?'verbRight':'verbWrong']++;$('verbAnswerInput').disabled=true;$('verbCheckBtn').disabled=true;$('verbFeedback').textContent=ok?'RÄTT!':`Rätt svar: ${q.form}`;$('verbFeedback').className=`verb-feedback ${ok?'good':'bad'}`;speakItalian(`${q.person} ${q.form}`);$('verbNextBtn').style.display='inline-block';}
+  function answerVerbChoice(btn,correct){if(state.verbAnswered)return;state.verbAnswered=true;const ok=cmp(btn.dataset.answer)===cmp(correct);state[ok?'verbRight':'verbWrong']++;if(ok)awardXp(10);btn.classList.add(ok?'correct':'wrong');$('verbOptions').querySelectorAll('.verb-option').forEach(b=>{b.disabled=true;if(cmp(b.dataset.answer)===cmp(correct))b.classList.add('correct')});$('verbFeedback').textContent=ok?'RÄTT  +10 XP':'FEL';$('verbFeedback').className=`verb-feedback ${ok?'good':'bad'}`;const q=state.verbQueue[state.verbIndex];$('verbLearnArea').innerHTML=`<div class="verb-full-form"><div class="verb-full-form-title">Rätt verbform</div><div class="verb-learn-table"><div class="verb-learn-row current"><b>(${esc(q.person)})</b><span><strong style="font-size:1.15rem">${esc(correct)}</strong><small style="display:block;color:#d9c7aa;margin-top:4px">${esc(q.sv||'')}</small></span></div></div></div>`;speakItalian(`${q.person} ${correct}`);$('verbNextBtn').style.display='inline-block';}
+  function answerVerbWrite(){if(state.verbAnswered)return;const q=state.verbQueue[state.verbIndex],ans=$('verbAnswerInput').value.trim();if(!ans)return;state.verbAnswered=true;const ok=cmp(ans)===cmp(q.form);state[ok?'verbRight':'verbWrong']++;if(ok)awardXp(10);$('verbAnswerInput').disabled=true;$('verbCheckBtn').disabled=true;$('verbFeedback').textContent=ok?'RÄTT!  +10 XP':`Rätt svar: ${q.form}`;$('verbFeedback').className=`verb-feedback ${ok?'good':'bad'}`;speakItalian(`${q.person} ${q.form}`);$('verbNextBtn').style.display='inline-block';}
   function nextVerbQuestion(){if(state.verbIndex<state.verbQueue.length-1){state.verbIndex++;showVerbQuestion()}else finishVerbPractice()}
-  function finishVerbPractice(){const data=VERB_DATA[state.verbKey],total=state.verbQueue.length;$('verbPrompt').textContent='Klart!';$('verbMeaning').textContent=`${data.label}: ${state.verbRight} av ${total} rätt`;$('verbOptions').innerHTML='';$('verbWriteRow').style.display='none';$('verbLearnArea').innerHTML=`<div class="verb-learn-actions"><button class="primary" type="button" id="verbAgainInner">Träna igen</button><button class="secondary" type="button" id="verbLearnInner">Se alla böjningar</button></div>`;$('verbFeedback').textContent=state.verbRight===total?'Perfekt – alla rätt!':`${state.verbWrong} behöver tränas mer.`;$('verbFeedback').className=`verb-feedback ${state.verbRight===total?'good':'bad'}`;$('verbCounter').textContent=`${state.verbRight}/${total}`;$('verbProgress').style.width='100%';$('verbNextBtn').style.display='none';$('verbAgainInner').onclick=()=>startVerbPractice();$('verbLearnInner').onclick=()=>{state.verbMode='learn';showVerbQuestion()};}
+  function finishVerbPractice(){const data=VERB_DATA[state.verbKey],total=state.verbQueue.length;const verbBonus=awardXp(50+(state.verbRight===total?50:0));$('verbPrompt').textContent='Klart!';$('verbMeaning').textContent=`${data.label}: ${state.verbRight} av ${total} rätt · +${verbBonus} XP bonus`;$('verbOptions').innerHTML='';$('verbWriteRow').style.display='none';$('verbLearnArea').innerHTML=`<div class="verb-learn-actions"><button class="primary" type="button" id="verbAgainInner">Träna igen</button><button class="secondary" type="button" id="verbLearnInner">Se alla böjningar</button></div>`;$('verbFeedback').textContent=state.verbRight===total?'Perfekt – alla rätt!':`${state.verbWrong} behöver tränas mer.`;$('verbFeedback').className=`verb-feedback ${state.verbRight===total?'good':'bad'}`;$('verbCounter').textContent=`${state.verbRight}/${total}`;$('verbProgress').style.width='100%';$('verbNextBtn').style.display='none';$('verbAgainInner').onclick=()=>startVerbPractice();$('verbLearnInner').onclick=()=>{state.verbMode='learn';showVerbQuestion()};}
   function exitVerbPractice(){hideAll();$('emptyState').style.display='grid';}
   function exitShootout(){stopAnimation();state.roundLocked=true;hideAll();$('emptyState').style.display='grid';$('emptyState').innerHTML='<div><div class="icon">🎯</div><h2 style="font-size:1.5rem">Shootout avslutad</h2><p>Dina glosor är kvar. Välj träningssätt och starta igen när du vill.</p></div>'}
 
@@ -4303,10 +4316,10 @@ CAPIRE = förstå
     if(state.answered)return;
     state.answered=true;
     const ok=cmp(btn.dataset.answer)===cmp(w.target);
-    if(ok)state.right++;else state.wrong++;
+    if(ok){state.right++;awardXp(10)}else state.wrong++;
     $('clickOptions').querySelectorAll('.click-option').forEach(b=>{b.disabled=true;if(cmp(b.dataset.answer)===cmp(w.target))b.classList.add('correct')});
     if(!ok)btn.classList.add('wrong');
-    $('clickFeedback').innerHTML=ok?'RÄTT!':`FEL<span class="click-correct">Rätt svar: <b>${esc(w.target)}</b></span>`;
+    $('clickFeedback').innerHTML=ok?'RÄTT! <span style="color:#f2c66f;font-size:.75em">+10 XP</span>':`FEL<span class="click-correct">Rätt svar: <b>${esc(w.target)}</b></span>`;
     $('clickFeedback').className=`click-feedback ${ok?'good':'bad'}`;
     state.results.push({sv:w.sv,target:w.target,status:ok?'right':'wrong',answer:btn.dataset.answer});
     speakItalian(w.target);
@@ -4317,87 +4330,6 @@ CAPIRE = förstå
   }
   function nextClickWord(){
     if(state.index<state.queue.length-1){state.index++;showClickWord()}else finish(false,false,'click');
-  }
-
-  function startFillPractice(){
-    if(state.words.length<4){$('emptyState').style.display='grid';$('emptyState').innerHTML='<div><h2>Fyll i behöver minst 4 glosor</h2><p>Lägg in minst fyra glosor för att få fyra olika svarsalternativ.</p></div>';return}
-    $('fillPractice').style.display='block';
-    showFillWord();
-  }
-  function fillOptionsFor(correct){
-    const others=shuffle(state.words.filter(w=>w!==correct&&cmp(w.target)!==cmp(correct.target))).slice(0,3);
-    return shuffle([correct,...others]);
-  }
-  const FILL_SENTENCES={
-    'ciao':{it:'Quando incontro un amico dico: “___!”',sv:'När jag träffar en vän säger jag: ”Hej!”'},
-    'buon giorno':{it:'La mattina saluto il professore: “___!”',sv:'På morgonen hälsar jag på läraren: ”God dag!”'},
-    'buona sera':{it:'Quando arrivo al ristorante la sera dico: “___!”',sv:'När jag kommer till restaurangen på kvällen säger jag: ”God kväll!”'},
-    'buona notte':{it:'Prima di dormire dico: “___!”',sv:'Innan jag somnar säger jag: ”God natt!”'},
-    'benvenuto/benvenuta':{it:'Quando arriva il mio ospite dico: “___!”',sv:'När min gäst kommer säger jag: ”Välkommen!”'},
-    'arrivederci':{it:'Quando lascio la scuola dico: “___!”',sv:'När jag lämnar skolan säger jag: ”Adjö!”'},
-    'si':{it:'“Vuoi un gelato?” “___, grazie!”',sv:'”Vill du ha en glass?” ”Ja, tack!”'},
-    'no':{it:'“Hai fame?” “___, grazie.”',sv:'”Är du hungrig?” ”Nej, tack.”'},
-    'grazie':{it:'Mi dai il libro. Io dico: “___!”',sv:'Du ger mig boken. Jag säger: ”Tack!”'},
-    'mille grazie':{it:'Mi hai aiutato molto: “___!”',sv:'Du har hjälpt mig mycket: ”Tack så mycket!”'},
-    'prego':{it:'“Grazie!” “___!”',sv:'”Tack!” ”Varsågod!”'},
-    'per favore':{it:'Un caffè, ___!',sv:'En kaffe, snälla!'},
-    'come stai':{it:'Incontro Luca e gli chiedo: “___?”',sv:'Jag träffar Luca och frågar: ”Hur mår du?”'},
-    'io sto bene/male':{it:'“Come stai?” “___.”',sv:'”Hur mår du?” ”Jag mår bra/dåligt.”'},
-    'scusi/scusa':{it:'___, dov’è la stazione?',sv:'Ursäkta, var ligger stationen?'},
-    'permesso':{it:'Devo passare tra due persone e dico: “___.”',sv:'Jag behöver gå förbi två personer och säger: ”Ursäkta mig.”'},
-    'di dove sei':{it:'Conosco una persona nuova e chiedo: “___?”',sv:'Jag träffar en ny person och frågar: ”Var kommer du ifrån?”'},
-    'sono svedese':{it:'Vengo dalla Svezia. ___ .',sv:'Jag kommer från Sverige. Jag är svensk.'},
-    'svezia':{it:'Stoccolma è in ___.',sv:'Stockholm ligger i Sverige.'},
-    'come ti chiami':{it:'Conosco una persona nuova e chiedo: “___?”',sv:'Jag träffar en ny person och frågar: ”Vad heter du?”'},
-    'mi chiamo':{it:'___ Anna. Piacere!',sv:'Jag heter Anna. Trevligt att träffas!'},
-    'salve':{it:'Entro in un negozio e dico: “___!”',sv:'Jag går in i en butik och säger: ”Hej!”'},
-    'entrata':{it:'Ci vediamo davanti all’___.',sv:'Vi ses framför ingången.'},
-    'all entrata':{it:'Aspetto Marco ___ dell’università.',sv:'Jag väntar på Marco vid ingången till universitetet.'},
-    'universita':{it:'Anna studia all’___.',sv:'Anna studerar på universitetet.'}
-  };
-  function fillKey(t){return cmp(t).replace(/[.!?]/g,'').replace(/[’']/g,' ').replace(/\s+/g,' ').trim()}
-  function fillSentenceFor(w){
-    const key=fillKey(w.target), curated=FILL_SENTENCES[key];
-    if(curated)return curated;
-    const raw=w.target.trim();
-    // För fraser och frågor används en kort dialogsituation så att uttrycket får ett naturligt sammanhang.
-    if(/[?]$/.test(raw))return {it:'Durante la conversazione Anna chiede: “___”',sv:`Under samtalet frågar Anna: ”${w.sv}”`};
-    if(raw.includes(' ')||/[!]$/.test(raw))return {it:'Durante la conversazione Marco risponde: “___”',sv:`Under samtalet svarar Marco: ”${w.sv}”`};
-    // Enstaka ord får en neutral men grammatisk kontext i stället för den gamla ”Io dico”-meningen.
-    return {it:'Nel testo manca la parola: ___.',sv:`I texten saknas ordet: ${w.sv}.`};
-  }
-  function showFillWord(){
-    state.answered=false;
-    const w=state.queue[state.index],sentence=fillSentenceFor(w);
-    $('fillSentence').textContent=sentence.it;
-    $('fillTranslation').textContent=sentence.sv;
-    $('fillCounter').textContent=`${state.index+1} / ${state.queue.length}`;
-    $('fillProgress').style.width=`${state.index/state.queue.length*100}%`;
-    $('fillFeedback').textContent='';$('fillFeedback').className='fill-feedback';
-    $('fillNextBtn').style.display='none';
-    const opts=fillOptionsFor(w);
-    $('fillOptions').innerHTML=opts.map(o=>`<button class="fill-option" type="button" data-answer="${esc(o.target)}">${esc(o.target)}</button>`).join('');
-    $('fillOptions').querySelectorAll('.fill-option').forEach(b=>b.addEventListener('click',()=>answerFill(b,w)));
-  }
-  function answerFill(btn,w){
-    if(state.answered)return;
-    state.answered=true;
-    const ok=cmp(btn.dataset.answer)===cmp(w.target);
-    if(ok)state.right++;else state.wrong++;
-    $('fillOptions').querySelectorAll('.fill-option').forEach(b=>{b.disabled=true;if(cmp(b.dataset.answer)===cmp(w.target))b.classList.add('correct')});
-    if(!ok)btn.classList.add('wrong');
-    $('fillFeedback').innerHTML=ok?'RÄTT!':`FEL<span class="fill-correct">Rätt svar: <b>${esc(w.target)}</b></span>`;
-    $('fillFeedback').className=`fill-feedback ${ok?'good':'bad'}`;
-    const completed=fillSentenceFor(w).it.replace('___',w.target);
-    $('fillSentence').textContent=completed;
-    state.results.push({sv:w.sv,target:w.target,status:ok?'right':'wrong',answer:btn.dataset.answer});
-    speakItalian(completed.replace(/[“”]/g,''));
-    updateStats();
-    $('fillNextBtn').textContent=state.index===state.queue.length-1?'Visa resultat':'Nästa glosa →';
-    $('fillNextBtn').style.display='inline-block';$('fillNextBtn').focus();
-  }
-  function nextFillWord(){
-    if(state.index<state.queue.length-1){state.index++;showFillWord()}else finish(false,false,'fill');
   }
 
   function startMatchPractice(){
@@ -4448,10 +4380,10 @@ CAPIRE = förstå
     const ok=sourceId===String(targetId);
     if(ok){
       const pair=state.matchPairs.find(p=>p.id===String(targetId));if(!pair||pair.done)return;
-      pair.done=true;state.matchRemaining--;state.right++;
+      pair.done=true;state.matchRemaining--;state.right++;awardXp(10);
       state.results.push({sv:pair.sv,target:pair.target,status:'right',answer:''});speakItalian(pair.target);updateStats();
       targetEl.classList.add('match-right');if(sourceEl)sourceEl.classList.add('match-right');
-      $('matchFeedback').textContent='RÄTT!';$('matchFeedback').className='match-feedback good';
+      $('matchFeedback').textContent='RÄTT!  +10 XP';$('matchFeedback').className='match-feedback good';
       state.matchDrag=null;
       setTimeout(()=>{if(state.matchRemaining===0)finish(false,false,'match');else renderMatchBoard()},260);
     }else{
@@ -4469,7 +4401,7 @@ CAPIRE = förstå
   function newShootRound(){state.roundLocked=false;state.currentHadMistake=false;const current=state.queue[state.index];$('shootSwedish').textContent=current.sv;$('shootCounter').textContent=`${state.index+1} / ${state.queue.length}`;$('shootProgress').style.width=`${state.index/state.queue.length*100}%`;const area=$('shootArea');area.querySelectorAll('.target').forEach(x=>x.remove());state.targets=[];const opts=makeOptions(current);const r=area.getBoundingClientRect(),W=Math.max(300,r.width),H=Math.max(300,r.height);opts.forEach((w,i)=>{const el=document.createElement('div');el.className='target';el.textContent=w.target;el.dataset.correct=w===current?'1':'0';const tw=150,th=48;let x=25+Math.random()*Math.max(10,W-tw-50),y=25+Math.random()*Math.max(10,H-th-50);const angle=Math.random()*Math.PI*2,speed=55+Math.random()*45;const t={el,x,y,vx:Math.cos(angle)*speed,vy:Math.sin(angle)*speed,w:tw,h:th};state.targets.push(t);el.style.transform=`translate(${x}px,${y}px)`;el.addEventListener('click',e=>{e.stopPropagation();shootTarget(t)});area.appendChild(el)})}
   function animateTargets(now){const dt=Math.min(.035,(now-state.lastTime)/1000||0);state.lastTime=now;const area=$('shootArea'),rect=area.getBoundingClientRect();for(const t of state.targets){if(!t.el.isConnected)continue;const er=t.el.getBoundingClientRect();t.w=er.width;t.h=er.height;t.x+=t.vx*dt;t.y+=t.vy*dt;if(t.x<6){t.x=6;t.vx=Math.abs(t.vx)}if(t.x+t.w>rect.width-6){t.x=rect.width-t.w-6;t.vx=-Math.abs(t.vx)}if(t.y<6){t.y=6;t.vy=Math.abs(t.vy)}if(t.y+t.h>rect.height-6){t.y=rect.height-t.h-6;t.vy=-Math.abs(t.vy)}t.el.style.transform=`translate(${t.x}px,${t.y}px)`}state.animId=requestAnimationFrame(animateTargets)}
   function flashShoot(text,good){const m=$('shootMessage');m.textContent=text;m.className=`shootMessage ${good?'good':'bad'}`;void m.offsetWidth;m.classList.add('show')}
-  function shootTarget(t){if(state.roundLocked)return;if(t.el.dataset.correct==='1'){state.roundLocked=true;t.el.classList.add('hit');state.right++;const cw=state.queue[state.index];state.results.push({sv:cw.sv,target:cw.target,status:state.currentHadMistake?'wrong':'right',answer:''});speakItalian(cw.target);updateStats();flashShoot('TRÄFF!',true);setTimeout(()=>{if(state.index<state.queue.length-1){state.index++;newShootRound()}else finish(true)},500)}else{state.currentHadMistake=true;t.el.classList.add('miss');state.wrong++;state.shootLives--;updateStats();updateLives();flashShoot('MISS!',false);setTimeout(()=>t.el.classList.remove('miss'),300);if(state.shootLives<=0){state.roundLocked=true;setTimeout(()=>finish(true,true),650)}}}
+  function shootTarget(t){if(state.roundLocked)return;if(t.el.dataset.correct==='1'){state.roundLocked=true;t.el.classList.add('hit');state.right++;awardXp(10);const cw=state.queue[state.index];state.results.push({sv:cw.sv,target:cw.target,status:state.currentHadMistake?'wrong':'right',answer:''});speakItalian(cw.target);updateStats();flashShoot('TRÄFF!  +10 XP',true);setTimeout(()=>{if(state.index<state.queue.length-1){state.index++;newShootRound()}else finish(true)},500)}else{state.currentHadMistake=true;t.el.classList.add('miss');state.wrong++;state.shootLives--;updateStats();updateLives();flashShoot('MISS!',false);setTimeout(()=>t.el.classList.remove('miss'),300);if(state.shootLives<=0){state.roundLocked=true;setTimeout(()=>finish(true,true),650)}}}
   function stopAnimation(){if(state.animId)cancelAnimationFrame(state.animId);state.animId=null}
   function renderResultLists(){
     const seen=new Map();
@@ -4481,21 +4413,23 @@ CAPIRE = förstå
     $('passedResults').innerHTML=table(passed,true);
     $('failedResults').innerHTML=table(failed,false);
   }
-  function finish(shootout,gameOver=false,mode=state.mode){stopAnimation();hideAll();$('summary').style.display='block';$('summaryRight').textContent=state.right;$('summaryNear').textContent=state.near;$('summaryWrong').textContent=state.wrong;if(shootout){$('summaryTitle').textContent=gameOver?'Game over!':'Shootout klar!';$('summaryText').textContent=gameOver?`Du fick ${state.right} rätt innan liven tog slut.`:`Du klarade alla ${state.queue.length} glosor och hade ${state.shootLives} liv kvar.`}else{const score=Math.round((state.right+state.near*.5)/state.queue.length*100);$('summaryTitle').textContent=mode==='click'?'Klicka klar!':mode==='fill'?'Fyll i klar!':mode==='match'?'Matchningen är klar!':'Träningen är klar!';$('summaryText').textContent=(mode==='click'||mode==='fill')?`Resultat: ${score}% – ${state.right} av ${state.queue.length} rätt.`:mode==='match'?`Alla ${state.words.length} glospar är matchade. Felaktiga försök: ${state.wrong}.`:`Resultat: ${score}% på nivå ${state.level}.`}renderResultLists()}
+  function finish(shootout,gameOver=false,mode=state.mode){stopAnimation();const completed=!gameOver;const gained=awardSessionXp(completed,gameOver,mode);if(completed)markCompleted(mode,state.level);hideAll();$('summary').style.display='block';$('summaryRight').textContent=state.right;$('summaryNear').textContent=state.near;$('summaryWrong').textContent=state.wrong;if(shootout){$('summaryTitle').textContent=gameOver?'Game over!':'Shootout klar!';$('summaryText').textContent=(gameOver?`Du fick ${state.right} rätt innan liven tog slut.`:`Du klarade alla ${state.queue.length} glosor och hade ${state.shootLives} liv kvar.`)+` +${gained} XP`}else{const score=Math.round((state.right+state.near*.5)/state.queue.length*100);$('summaryTitle').textContent=mode==='click'?'Klicka klar!':mode==='match'?'Matchningen är klar!':'Träningen är klar!';const base=mode==='click'?`Resultat: ${score}% – ${state.right} av ${state.queue.length} rätt.`:mode==='match'?`Alla ${state.words.length} glospar är matchade. Felaktiga försök: ${state.wrong}.`:`Resultat: ${score}% på nivå ${state.level}.`;$('summaryText').textContent=base+` +${gained} XP`}renderResultLists();updateProgressMarks()}
   function updateStats(){$('rightCount').textContent=state.right;$('nearCount').textContent=state.near}
 
   buildUnits();
+  updateXpDisplay();
+  updateProgressMarks();
   refreshTtsButton();
   $('ttsToggle').addEventListener('click',()=>{state.ttsEnabled=!state.ttsEnabled;localStorage.setItem('glostranaren_tts',state.ttsEnabled?'on':'off');if(!state.ttsEnabled&&'speechSynthesis' in window)speechSynthesis.cancel();refreshTtsButton();});
-  document.querySelectorAll('.mode-btn').forEach(b=>b.addEventListener('click',()=>{state.mode=b.dataset.mode;document.querySelectorAll('.mode-btn').forEach(x=>x.classList.toggle('active',x===b));$('levelBox').classList.toggle('hidden',state.mode!=='write');$('startBtn').textContent=state.mode==='shootout'?'Starta Shootout':state.mode==='click'?'Starta Klicka':state.mode==='fill'?'Starta Fyll i':state.mode==='match'?'Starta Matcha':'Starta träningen'}));
+  document.querySelectorAll('.mode-btn').forEach(b=>b.addEventListener('click',()=>{state.mode=b.dataset.mode;document.querySelectorAll('.mode-btn').forEach(x=>x.classList.toggle('active',x===b));$('levelBox').classList.toggle('hidden',state.mode!=='write');$('startBtn').textContent=state.mode==='shootout'?'Starta Shootout':state.mode==='click'?'Starta Klicka':state.mode==='match'?'Starta Matcha':'Starta träningen';updateProgressMarks()}));
   const helps={1:'Första + sista bokstaven och antal bokstäver',2:'Första bokstaven och antal bokstäver',3:'Bara första bokstaven',4:'Bara antal bokstäver',5:'Ingen hjälp – bara det svenska ordet'};
-  document.querySelectorAll('.level-item').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('.level-item').forEach(x=>x.classList.toggle('active',x===b));$('levelHelp').innerHTML=helps[b.dataset.level]}));
+  document.querySelectorAll('.level-item').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('.level-item').forEach(x=>x.classList.toggle('active',x===b));$('levelHelp').innerHTML=helps[b.dataset.level];state.level=Number(b.dataset.level);updateProgressMarks()}));
 
   pdfInput.addEventListener('change',async e=>{const f=e.target.files[0];if(!f)return;try{const w=await readPdf(f);w.length?setWords(w,f.name):$('pdfStatus').textContent='Kunde inte hitta tydliga glospar.'}catch(err){console.error(err);$('pdfStatus').textContent='PDF:en kunde inte läsas.'}pdfInput.value=''});
   ['dragenter','dragover'].forEach(ev=>dropZone.addEventListener(ev,e=>{e.preventDefault();dropZone.classList.add('drag')}));['dragleave','drop'].forEach(ev=>dropZone.addEventListener(ev,e=>{e.preventDefault();dropZone.classList.remove('drag')}));dropZone.addEventListener('drop',async e=>{const f=e.dataTransfer.files[0];if(f?.type==='application/pdf'){const w=await readPdf(f);if(w.length)setWords(w,f.name)}});
   imageInput.addEventListener('change',async e=>{if(e.target.files[0])await handleImage(e.target.files[0]);imageInput.value=''});document.addEventListener('paste',async e=>{const item=[...(e.clipboardData?.items||[])].find(i=>i.type.startsWith('image/'));if(!item)return;if(e.target===answerInput)return;const f=item.getAsFile();if(f){e.preventDefault();await handleImage(f)}});
   $('parseManual').addEventListener('click',()=>{const w=parseLines(manualInput.value);w.length?setWords(w,'inklistrad text'):$('pdfStatus').textContent='Inga tydliga glospar hittades.'});
-  $('startBtn').addEventListener('click',start);$('checkBtn').addEventListener('click',checkAnswer);$('nextBtn').addEventListener('click',nextWord);$('clickNextBtn').addEventListener('click',nextClickWord);$('fillNextBtn').addEventListener('click',nextFillWord);$('againBtn').addEventListener('click',start);$('helpBtn').addEventListener('click',giveHelp);$('verbBtn').addEventListener('click',toggleVerbs);$('verbSelect').addEventListener('change',renderVerb);$('exitShootout').addEventListener('click',exitShootout);answerInput.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();state.answered?nextWord():checkAnswer()}});document.addEventListener('keydown',e=>{if(e.key==='Escape'&&$('shootout').style.display==='block')exitShootout()});
+  $('startBtn').addEventListener('click',start);$('checkBtn').addEventListener('click',checkAnswer);$('nextBtn').addEventListener('click',nextWord);$('clickNextBtn').addEventListener('click',nextClickWord);$('againBtn').addEventListener('click',start);$('helpBtn').addEventListener('click',giveHelp);$('verbBtn').addEventListener('click',toggleVerbs);$('verbSelect').addEventListener('change',renderVerb);$('exitShootout').addEventListener('click',exitShootout);answerInput.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();state.answered?nextWord():checkAnswer()}});document.addEventListener('keydown',e=>{if(e.key==='Escape'&&$('shootout').style.display==='block')exitShootout()});
   $('unitWordsBtn').addEventListener('click',()=>{if(!state.words.length)return;const v=$('wordList').style.display==='block';$('wordList').style.display=v?'none':'block';$('unitWordsBtn').textContent=v?'Visa alla glosor':'Dölj glosorna';});
   $('materialVerbSelect').addEventListener('change',renderMaterialVerb);
   document.querySelectorAll('.verb-study-mode').forEach(b=>b.addEventListener('click',()=>setVerbMode(b.dataset.verbMode)));
