@@ -371,7 +371,7 @@ body{background:radial-gradient(circle at 18% 0%,rgba(21,147,74,.10),transparent
         <select class="unit-select" id="unitSelect" aria-label="Välj Unità"><option value="">Välj Unità…</option></select>
         <div class="unit-actions"><button class="secondary" id="unitWordsBtn" disabled>Visa alla glosor</button></div>
         <div class="library-verb">
-          <div class="library-head verb-head"><small>Välj verb</small></div>
+          <div class="library-head verb-head"><small>Välj verb</small><small id="selectedVerb"></small></div>
           <select class="unit-select" id="materialVerbSelect" aria-label="Välj italienskt verb">
             <option value="">Välj verb…</option>
             <option value="stare">STARE – att må</option>
@@ -383,17 +383,8 @@ body{background:radial-gradient(circle at 18% 0%,rgba(21,147,74,.10),transparent
             <option value="finire">FINIRE – sluta</option>
             <option value="preferire">PREFERIRE – föredra</option>
           </select>
-          <div class="library-verb-panel" id="materialVerbPanel">
-            <div class="verb-study-modes" id="verbStudyModes">
-              <button class="verb-study-mode active" type="button" data-verb-mode="learn">Se och lär</button>
-              <button class="verb-study-mode" type="button" data-verb-mode="choice">Välj rätt</button>
-              <button class="verb-study-mode" type="button" data-verb-mode="write">Skriv själv</button>
-            </div>
-            <div class="verb-content" id="materialVerbContent">Välj ett verb för att se alla böjningar.</div>
-            <button class="primary verb-start" id="verbStartBtn" type="button" disabled>Starta verbträning</button>
-          </div>
         </div>
-        <div class="material-note">Välj Unità i rullmenyn. Glosor som är färdigkontrollerade mot PDF:en kan tränas direkt.</div>
+        <div class="material-note">Välj en Unità eller ett verb. Verb tränas med samma fyra träningssätt som glosorna.</div>
       </div>
 
       <div id="materialStatus" class="hint"></div>
@@ -4215,19 +4206,26 @@ CAPIRE = förstå
   function saveXp(n){const d=loadDaily();d.xp=Math.max(0,Math.floor(Number(n)||0));saveDaily(d)}
   function loadProgress(){try{const p=JSON.parse(localStorage.getItem(PROGRESS_KEY)||'{}');return p&&typeof p==='object'?p:{}}catch{return{}}}
   function saveProgress(p){localStorage.setItem(PROGRESS_KEY,JSON.stringify(p))}
-  function isBuiltInUnit(){return !!state.source && Object.prototype.hasOwnProperty.call(ITALIAN_UNITS,state.source)}
+  function isBuiltInUnit(){return !!state.source && (Object.prototype.hasOwnProperty.call(ITALIAN_UNITS,state.source)||state.source.startsWith('Verb: '))}
   function progressKey(mode=state.mode,level=state.level){return mode==='write'?`${state.source}||write||${level}`:`${state.source}||${mode}`}
   function completionCount(entry){if(!entry)return 0;if(typeof entry.count==='number')return Math.max(0,Math.floor(entry.count));return entry.done?1:0}
   function rankForCount(n){return n>=3?3:n>=2?2:n>=1?1:0}
   function markCompleted(mode=state.mode,level=state.level){if(!isBuiltInUnit())return;const p=loadProgress(),key=progressKey(mode,level),old=p[key],count=completionCount(old)+1;p[key]={done:true,count,at:Date.now()};saveProgress(p);updateProgressMarks()}
-  function updateProgressMarks(){const p=loadProgress(),unit=$('unitSelect')?.value||state.source||'';document.querySelectorAll('.mode-btn').forEach(b=>{const mode=b.dataset.mode,key=mode==='write'?null:`${unit}||${mode}`,rank=key?rankForCount(completionCount(p[key])):0;if(rank)b.dataset.rank=String(rank);else delete b.dataset.rank});document.querySelectorAll('.level-item').forEach(b=>{const key=`${unit}||write||${b.dataset.level}`,rank=rankForCount(completionCount(p[key]));if(rank)b.dataset.rank=String(rank);else delete b.dataset.rank});if($('unitSelect')){[...$('unitSelect').options].forEach(o=>{if(!o.value)return;const counts=Object.keys(p).filter(k=>k.startsWith(o.value+'||')).map(k=>completionCount(p[k]));const rank=rankForCount(counts.length?Math.max(...counts):0);const base=o.dataset.baseLabel||o.textContent.replace(/^★\s*/, '');o.dataset.baseLabel=base;o.textContent=(rank?'★ ':'')+base;o.style.color=rank===1?'#42d66b':rank===2?'#f2c94c':rank===3?'#ef5148':''})}}
+  function updateProgressMarks(){
+    const p=loadProgress(),source=state.source||$('unitSelect')?.value||'';
+    document.querySelectorAll('.mode-btn').forEach(b=>{const mode=b.dataset.mode,key=mode==='write'?null:`${source}||${mode}`,rank=key?rankForCount(completionCount(p[key])):0;if(rank)b.dataset.rank=String(rank);else delete b.dataset.rank});
+    document.querySelectorAll('.level-item').forEach(b=>{const key=`${source}||write||${b.dataset.level}`,rank=rankForCount(completionCount(p[key]));if(rank)b.dataset.rank=String(rank);else delete b.dataset.rank});
+    const paintOptions=(sel,prefix='')=>{if(!sel)return;[...sel.options].forEach(o=>{if(!o.value)return;const sourceKey=prefix+o.value;const counts=Object.keys(p).filter(k=>k.startsWith(sourceKey+'||')).map(k=>completionCount(p[k]));const rank=rankForCount(counts.length?Math.max(...counts):0);const base=o.dataset.baseLabel||o.textContent.replace(/^★\s*/, '');o.dataset.baseLabel=base;o.textContent=(rank?'★ ':'')+base;o.style.color=rank===1?'#42d66b':rank===2?'#f2c94c':rank===3?'#ef5148':''})};
+    paintOptions($('unitSelect'));
+    paintOptions($('materialVerbSelect'),'Verb: ');
+  }
   function updateXpDisplay(gain=0){const d=loadDaily(),xp=d.xp,goal=d.goal||250;$('xpTotal').textContent=xp;$('xpCurrent').textContent=`${xp} / ${goal} XP`;$('xpFill').style.width=`${Math.min(100,xp/goal*100)}%`;const g=$('xpGain');if(gain>0){g.textContent=`+${gain} XP`;g.classList.remove('show');void g.offsetWidth;g.classList.add('show');setTimeout(()=>g.classList.remove('show'),1800)}}
   function awardXp(gain){gain=Math.max(0,Math.floor(Number(gain)||0));if(!gain)return 0;saveXp(loadXp()+gain);updateXpDisplay(gain);return gain}
   function awardSessionXp(completed=true,gameOver=false,mode=state.mode){let gain=0;if(completed&&!gameOver)gain+=50;if(completed&&!gameOver&&state.wrong===0&&state.near===0)gain+=50;return awardXp(gain)}
   function openGoalModal(force=false){const d=loadDaily();if(!force&&d.goal>0)return;$('goalInput').value=d.goal||250;$('goalModal').classList.add('open');setTimeout(()=>$('goalInput').focus(),50)}
   function saveGoal(){const goal=Math.max(10,Math.min(10000,Math.floor(Number($('goalInput').value)||250)));const d=loadDaily();d.goal=goal;saveDaily(d);$('goalModal').classList.remove('open');updateXpDisplay()}
 
-  function buildUnits(){const sel=$('unitSelect');for(const [name,words] of Object.entries(ITALIAN_UNITS)){const o=document.createElement('option');o.value=name;o.textContent=name;sel.appendChild(o)}sel.addEventListener('change',()=>{const name=sel.value;$('materialStatus').textContent='';if(!name){$('selectedMaterial').textContent='Ingen vald';setWords([],'',false);$('unitWordsBtn').disabled=true;return}const words=ITALIAN_UNITS[name]||[];$('selectedMaterial').textContent=name;if(!words.length){setWords([],'',false);$('materialStatus').textContent=`${name}: glosorna är ännu inte färdigkontrollerade från den skannade PDF-sidan.`;return}setWords(words,name,false);$('unitWordsBtn').disabled=false;$('materialStatus').textContent=`✓ ${words.length} glosor klara – välj träningssätt och starta.`;updateProgressMarks()})}
+  function buildUnits(){const sel=$('unitSelect');for(const [name,words] of Object.entries(ITALIAN_UNITS)){const o=document.createElement('option');o.value=name;o.textContent=name;sel.appendChild(o)}sel.addEventListener('change',()=>{const name=sel.value;$('materialStatus').textContent='';if(name&&$('materialVerbSelect')){$('materialVerbSelect').value='';if($('selectedVerb'))$('selectedVerb').textContent=''}if(!name){$('selectedMaterial').textContent='Ingen vald';setWords([],'',false);$('unitWordsBtn').disabled=true;updateProgressMarks();return}const words=ITALIAN_UNITS[name]||[];$('selectedMaterial').textContent=name;if(!words.length){setWords([],'',false);$('materialStatus').textContent=`${name}: glosorna är ännu inte färdigkontrollerade från den skannade PDF-sidan.`;return}setWords(words,name,false);$('unitWordsBtn').disabled=false;$('unitWordsBtn').textContent='Visa alla glosor';$('materialStatus').textContent=`✓ ${words.length} glosor klara – välj träningssätt och starta.`;updateProgressMarks()})}
 
   function setWords(words,source='',persist=true){state.words=dedupe(words);state.source=source;$('wordCount').textContent=state.words.length;$('startBtn').disabled=!state.words.length;$('clearBtn').disabled=!state.words.length;$('toggleWords').disabled=!state.words.length;renderTable();if(persist)localStorage.setItem('glostranaren_words',JSON.stringify(state.words));}
   function renderTable(){
@@ -4289,20 +4287,26 @@ CAPIRE = förstå
   }
   function renderVerb(){const key=$('verbSelect').value;$('verbContent').textContent=VERBS[key]||''}
   function toggleVerbs(){$('verbPanel').classList.toggle('open');if($('verbPanel').classList.contains('open'))renderVerb()}
-  function renderMaterialVerb(){const key=$('materialVerbSelect').value;state.verbKey=key;$('materialVerbPanel').classList.toggle('open',!!key);$('materialVerbContent').textContent=key?(VERBS[key]||''):'Välj ett verb för att se alla böjningar.';$('verbStartBtn').disabled=!key;}
-  function setVerbMode(mode){state.verbMode=mode;document.querySelectorAll('.verb-study-mode').forEach(b=>b.classList.toggle('active',b.dataset.verbMode===mode));$('materialVerbContent').style.display=mode==='learn'?'block':'none';$('verbStartBtn').textContent=mode==='learn'?'Öppna Se och lär':mode==='choice'?'Starta Välj rätt':'Starta Skriv själv';}
-  function startVerbPractice(){const key=$('materialVerbSelect').value;if(!key||!VERB_DATA[key])return;state.verbKey=key;state.verbRight=0;state.verbWrong=0;state.verbIndex=0;state.verbAnswered=false;state.verbQueue=shuffle(VERB_DATA[key].forms.map(([person,form,sv])=>({person,form,sv})));hideAll();$('verbPractice').style.display='flex';showVerbQuestion();}
-  function showVerbQuestion(){const data=VERB_DATA[state.verbKey],mode=state.verbMode;$('verbFeedback').textContent='';$('verbFeedback').className='verb-feedback';$('verbNextBtn').style.display='none';$('verbOptions').innerHTML='';$('verbLearnArea').innerHTML='';$('verbWriteRow').style.display='none';$('verbCounter').textContent=mode==='learn'?'Översikt':`${state.verbIndex+1} / ${state.verbQueue.length}`;$('verbProgress').style.width=mode==='learn'?'100%':`${state.verbIndex/state.verbQueue.length*100}%`;$('verbPracticeModeLabel').textContent=mode==='learn'?'SE OCH LÄR':mode==='choice'?'VÄLJ RÄTT':'SKRIV SJÄLV';$('verbMeaning').textContent=`${data.label} = ${data.meaning}`;
-    if(mode==='learn'){$('verbPrompt').textContent=data.label;$('verbLearnArea').innerHTML=`<div class="verb-learn-table">${data.forms.map(([p,f,sv])=>`<div class="verb-learn-row"><b>(${esc(p)})</b><span>${esc(f)}<small style="display:block;color:#b7a78e;margin-top:2px">${esc(sv||'')}</small></span></div>`).join('')}</div><div class="verb-learn-actions"><button class="secondary" type="button" id="learnChoiceBtn">Träna: Välj rätt</button><button class="primary" type="button" id="learnWriteBtn">Träna: Skriv själv</button></div>`;$('learnChoiceBtn').onclick=()=>{state.verbMode='choice';state.verbQueue=shuffle(data.forms.map(([person,form,sv])=>({person,form,sv})));state.verbIndex=0;showVerbQuestion()};$('learnWriteBtn').onclick=()=>{state.verbMode='write';state.verbQueue=shuffle(data.forms.map(([person,form,sv])=>({person,form,sv})));state.verbIndex=0;showVerbQuestion()};return;}
-    const q=state.verbQueue[state.verbIndex];state.verbAnswered=false;$('verbPrompt').textContent=mode==='choice'?(q.sv||`(${q.person})`):`(${q.person})`;$('verbMeaning').textContent=mode==='choice'?'Välj rätt italienska form':'Skriv rätt italiensk verbform';
-    if(mode==='choice'){const unique=[...new Set(data.forms.map(x=>x[1]))].filter(x=>x!==q.form);const opts=shuffle([q.form,...shuffle(unique).slice(0,3)]);$('verbOptions').innerHTML=opts.map(o=>`<button class="verb-option" type="button" data-answer="${esc(o)}">${esc(q.person)} ${esc(o)}</button>`).join('');$('verbOptions').querySelectorAll('.verb-option').forEach(b=>b.onclick=()=>answerVerbChoice(b,q.form));}
-    else{$('verbWriteRow').style.display='flex';$('verbAnswerInput').value='';$('verbAnswerInput').disabled=false;$('verbCheckBtn').disabled=false;setTimeout(()=>$('verbAnswerInput').focus(),20);}}
-  function answerVerbChoice(btn,correct){if(state.verbAnswered)return;state.verbAnswered=true;const ok=cmp(btn.dataset.answer)===cmp(correct);state[ok?'verbRight':'verbWrong']++;if(ok)awardXp(10);btn.classList.add(ok?'correct':'wrong');$('verbOptions').querySelectorAll('.verb-option').forEach(b=>{b.disabled=true;if(cmp(b.dataset.answer)===cmp(correct))b.classList.add('correct')});$('verbFeedback').textContent=ok?'RÄTT  +10 XP':'FEL';$('verbFeedback').className=`verb-feedback ${ok?'good':'bad'}`;const q=state.verbQueue[state.verbIndex];$('verbLearnArea').innerHTML=`<div class="verb-full-form"><div class="verb-full-form-title">Rätt verbform</div><div class="verb-learn-table"><div class="verb-learn-row current"><b>(${esc(q.person)})</b><span><strong style="font-size:1.15rem">${esc(correct)}</strong><small style="display:block;color:#d9c7aa;margin-top:4px">${esc(q.sv||'')}</small></span></div></div></div>`;speakItalian(`${q.person} ${correct}`);$('verbNextBtn').style.display='inline-block';}
-  function answerVerbWrite(){if(state.verbAnswered)return;const q=state.verbQueue[state.verbIndex],ans=$('verbAnswerInput').value.trim();if(!ans)return;state.verbAnswered=true;const ok=cmp(ans)===cmp(q.form);state[ok?'verbRight':'verbWrong']++;if(ok)awardXp(10);$('verbAnswerInput').disabled=true;$('verbCheckBtn').disabled=true;$('verbFeedback').textContent=ok?'RÄTT!  +10 XP':`Rätt svar: ${q.form}`;$('verbFeedback').className=`verb-feedback ${ok?'good':'bad'}`;speakItalian(`${q.person} ${q.form}`);$('verbNextBtn').style.display='inline-block';}
-  function nextVerbQuestion(){if(state.verbIndex<state.verbQueue.length-1){state.verbIndex++;showVerbQuestion()}else finishVerbPractice()}
-  function finishVerbPractice(){const data=VERB_DATA[state.verbKey],total=state.verbQueue.length;const verbBonus=awardXp(50+(state.verbRight===total?50:0));$('verbPrompt').textContent='Klart!';$('verbMeaning').textContent=`${data.label}: ${state.verbRight} av ${total} rätt · +${verbBonus} XP bonus`;$('verbOptions').innerHTML='';$('verbWriteRow').style.display='none';$('verbLearnArea').innerHTML=`<div class="verb-learn-actions"><button class="primary" type="button" id="verbAgainInner">Träna igen</button><button class="secondary" type="button" id="verbLearnInner">Se alla böjningar</button></div>`;$('verbFeedback').textContent=state.verbRight===total?'Perfekt – alla rätt!':`${state.verbWrong} behöver tränas mer.`;$('verbFeedback').className=`verb-feedback ${state.verbRight===total?'good':'bad'}`;$('verbCounter').textContent=`${state.verbRight}/${total}`;$('verbProgress').style.width='100%';$('verbNextBtn').style.display='none';$('verbAgainInner').onclick=()=>startVerbPractice();$('verbLearnInner').onclick=()=>{state.verbMode='learn';showVerbQuestion()};}
-  function exitVerbPractice(){hideAll();$('emptyState').style.display='grid';}
-  function exitShootout(){stopAnimation();state.roundLocked=true;hideAll();$('emptyState').style.display='grid';$('emptyState').innerHTML='<div><div class="icon">🎯</div><h2 style="font-size:1.5rem">Shootout avslutad</h2><p>Dina glosor är kvar. Välj träningssätt och starta igen när du vill.</p></div>'}
+  function verbWords(key){
+    const data=VERB_DATA[key];
+    if(!data)return [];
+    return data.forms.map(([person,form,sv])=>({sv,target:`${person} ${form}`}));
+  }
+  function renderMaterialVerb(){
+    const key=$('materialVerbSelect').value;
+    if(!key){if($('selectedVerb'))$('selectedVerb').textContent='';updateProgressMarks();return}
+    const data=VERB_DATA[key];if(!data)return;
+    $('unitSelect').value='';
+    const source=`Verb: ${key}`;
+    const words=verbWords(key);
+    $('selectedMaterial').textContent=`${data.label} – ${data.meaning}`;
+    if($('selectedVerb'))$('selectedVerb').textContent=`${words.length} former`;
+    setWords(words,source,false);
+    $('unitWordsBtn').disabled=false;
+    $('unitWordsBtn').textContent='Visa verbformer';
+    $('materialStatus').textContent=`✓ ${data.label}: ${words.length} verbformer klara – välj Matcha, Klicka, Skriv eller Shootout.`;
+    updateProgressMarks();
+  }
 
   function startClickPractice(){
     if(state.words.length<4){$('emptyState').style.display='grid';$('emptyState').innerHTML='<div><div class="icon">👆</div><h2>Klicka behöver minst 4 glosor</h2><p>Lägg in minst fyra glosor för att få fyra olika svarsalternativ.</p></div>';return}
@@ -4451,8 +4455,6 @@ CAPIRE = förstå
   $('startBtn').addEventListener('click',start);$('checkBtn').addEventListener('click',checkAnswer);$('nextBtn').addEventListener('click',nextWord);$('clickNextBtn').addEventListener('click',nextClickWord);$('againBtn').addEventListener('click',start);$('helpBtn').addEventListener('click',giveHelp);$('verbBtn').addEventListener('click',toggleVerbs);$('verbSelect').addEventListener('change',renderVerb);$('exitShootout').addEventListener('click',exitShootout);answerInput.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();state.answered?nextWord():checkAnswer()}});document.addEventListener('keydown',e=>{if(e.key==='Escape'&&$('shootout').style.display==='block')exitShootout()});
   $('unitWordsBtn').addEventListener('click',()=>{if(!state.words.length)return;const v=$('wordList').style.display==='block';$('wordList').style.display=v?'none':'block';$('unitWordsBtn').textContent=v?'Visa alla glosor':'Dölj glosorna';});
   $('materialVerbSelect').addEventListener('change',renderMaterialVerb);
-  document.querySelectorAll('.verb-study-mode').forEach(b=>b.addEventListener('click',()=>setVerbMode(b.dataset.verbMode)));
-  $('verbStartBtn').addEventListener('click',startVerbPractice);
   $('verbExitBtn').addEventListener('click',exitVerbPractice);
   $('verbCheckBtn').addEventListener('click',answerVerbWrite);
   $('verbNextBtn').addEventListener('click',nextVerbQuestion);
@@ -4460,7 +4462,7 @@ CAPIRE = förstå
   $('wordListClose').addEventListener('click',()=>{$('wordList').style.display='none';$('unitWordsBtn').textContent='Visa alla glosor';$('toggleWords').textContent='Visa glosor';});
   $('wordList').addEventListener('click',e=>{if(e.target===$('wordList')){$('wordList').style.display='none';$('unitWordsBtn').textContent='Visa alla glosor';$('toggleWords').textContent='Visa glosor';}});
   document.addEventListener('keydown',e=>{if(e.key==='Escape' && $('wordList').style.display==='block'){$('wordList').style.display='none';$('unitWordsBtn').textContent='Visa alla glosor';$('toggleWords').textContent='Visa glosor';}});
-  $('clearBtn').addEventListener('click',()=>{stopAnimation();state.words=[];localStorage.removeItem('glostranaren_words');setWords([],'',false);manualInput.value='';$('selectedMaterial').textContent='Ingen vald';$('unitSelect').value='';$('unitWordsBtn').disabled=true;$('unitWordsBtn').textContent='Visa alla glosor';$('imagePreview').style.display='none';$('imageStatus').textContent='';$('pdfStatus').textContent='';$('wordList').style.display='none';hideAll();$('emptyState').style.display='grid'});
+  $('clearBtn').addEventListener('click',()=>{stopAnimation();state.words=[];localStorage.removeItem('glostranaren_words');setWords([],'',false);manualInput.value='';$('selectedMaterial').textContent='Ingen vald';$('unitSelect').value='';if($('materialVerbSelect'))$('materialVerbSelect').value='';if($('selectedVerb'))$('selectedVerb').textContent='';$('unitWordsBtn').disabled=true;$('unitWordsBtn').textContent='Visa alla glosor';$('imagePreview').style.display='none';$('imageStatus').textContent='';$('pdfStatus').textContent='';$('wordList').style.display='none';hideAll();$('emptyState').style.display='grid'});
   $('toggleWords').addEventListener('click',()=>{const v=$('wordList').style.display==='block';$('wordList').style.display=v?'none':'block';$('toggleWords').textContent=v?'Visa glosor':'Dölj glosor'});
   const area=$('shootArea'),cross=$('crosshair');area.addEventListener('mousemove',e=>{const r=area.getBoundingClientRect();cross.style.left=`${e.clientX-r.left}px`;cross.style.top=`${e.clientY-r.top}px`});area.addEventListener('click',e=>{if(e.target===area&&!state.roundLocked){state.currentHadMistake=true;state.wrong++;state.shootLives--;updateStats();updateLives();flashShoot('MISS!',false);if(state.shootLives<=0){state.roundLocked=true;setTimeout(()=>finish(true,true),650)}}});
 
